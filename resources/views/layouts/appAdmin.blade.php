@@ -10,8 +10,7 @@
     <!-- ===============================================-->
     <!--    Document Title-->
     <!-- ===============================================-->
-    <title>Falcon | Dashboard &amp; Web App Template</title>
-
+    <title>@yield('title')</title>
 
     <!-- ===============================================-->
     <!--    Favicons-->
@@ -37,6 +36,9 @@
     <link href="{{ asset('admin/assets/css/theme.min.css') }}" rel="stylesheet" id="style-default">
     <link href="{{ asset('admin/assets/css/user-rtl.min.css') }}" rel="stylesheet" id="user-style-rtl">
     <link href="{{ asset('admin/assets/css/user.min.css') }}" rel="stylesheet" id="user-style-default">
+    @yield('styles-plugins')
+    @yield('styles-dist')
+    @yield('styles-own')
     <script>
         var isRTL = JSON.parse(localStorage.getItem('isRTL'));
         if (isRTL) {
@@ -613,143 +615,31 @@
                         <li class="nav-item">
                             <!-- label-->
                             <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
-                                <div class="col-auto navbar-vertical-label">Modules
+                                <div class="col-auto navbar-vertical-label">Habitaciones
                                 </div>
                                 <div class="col ps-0">
                                     <hr class="mb-0 navbar-vertical-divider" />
                                 </div>
                             </div>
-                            <!-- parent pages--><a class="nav-link dropdown-indicator" href="#forms" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="forms">
-                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-file-alt"></span></span><span class="nav-link-text ps-1">Forms</span>
-                                </div>
-                            </a>
-                            <ul class="nav collapse false" id="forms">
-                                <li class="nav-item"><a class="nav-link dropdown-indicator" href="#basic" data-bs-toggle="collapse" aria-expanded="false" aria-controls="forms">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Basic</span>
-                                        </div>
-                                    </a>
-                                    <!-- more inner pages-->
-                                    <ul class="nav collapse false" id="basic">
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/basic/form-control.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Form control</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/basic/input-group.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Input group</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/basic/select.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Select</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/basic/checks.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Checks</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/basic/range.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Range</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/basic/layout.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Layout</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item"><a class="nav-link dropdown-indicator" href="#advance" data-bs-toggle="collapse" aria-expanded="false" aria-controls="forms">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Advance</span>
-                                        </div>
-                                    </a>
-                                    <!-- more inner pages-->
-                                    <ul class="nav collapse false" id="advance">
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/advance/advance-select.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Advance select</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/advance/date-picker.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Date picker</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/advance/editor.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Editor</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/advance/emoji-button.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Emoji button</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/advance/file-uploader.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">File uploader</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                        <li class="nav-item"><a class="nav-link" href="../modules/forms/advance/rating.html" aria-expanded="false">
-                                                <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Rating</span>
-                                                </div>
-                                            </a>
-                                            <!-- more inner pages-->
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="nav-item"><a class="nav-link" href="../modules/forms/floating-labels.html" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Floating labels</span>
-                                        </div>
-                                    </a>
-                                    <!-- more inner pages-->
-                                </li>
-                                <li class="nav-item"><a class="nav-link" href="../modules/forms/wizard.html" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Wizard</span>
-                                        </div>
-                                    </a>
-                                    <!-- more inner pages-->
-                                </li>
-                                <li class="nav-item"><a class="nav-link" href="../modules/forms/validation.html" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Validation</span>
-                                        </div>
-                                    </a>
-                                    <!-- more inner pages-->
-                                </li>
-                            </ul>
                             <!-- parent pages--><a class="nav-link dropdown-indicator" href="#tables" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="tables">
-                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-table"></span></span><span class="nav-link-text ps-1">Tables</span>
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-warehouse"></span></span><span class="nav-link-text ps-1">Tipos de habitación</span>
                                 </div>
                             </a>
                             <ul class="nav collapse false" id="tables">
                                 <li class="nav-item"><a class="nav-link" href="../modules/tables/basic-tables.html" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Basic tables</span>
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
                                 <li class="nav-item"><a class="nav-link" href="../modules/tables/advance-tables.html" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Advance tables</span>
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Crear</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
                                 <li class="nav-item"><a class="nav-link" href="../modules/tables/bulk-select.html" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Bulk select</span>
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
@@ -1727,15 +1617,24 @@
                     </li>
                 </ul>
             </nav>
-            <div class="card">
-                <div class="card-body overflow-hidden p-lg-6">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6"><img class="img-fluid" src="../assets/img/icons/spot-illustrations/21.png" alt="" /></div>
-                        <div class="col-lg-6 ps-lg-4 my-5 text-center text-lg-start">
-                            <h3 class="text-primary">Edit me!</h3>
-                            <p class="lead">Create Something Beautiful.</p><a class="btn btn-falcon-primary" href="../documentation/getting-started.html">Getting started</a>
+            <div class="card mb-3">
+                <div class="card-body position-relative">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            @yield('page-header')
+                        </div>
+                        <div class="col-sm-6 d-flex justify-content-end">
+                            @yield('page-breadcrumb')
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="card card-primary card-outline">
+                <div class="card-header">
+                    @yield('page-title')
+                </div>
+                <div class="card-body">
+                    @yield('content')
                 </div>
             </div>
             <footer class="footer">
@@ -1927,7 +1826,9 @@
 <script src="https://polyfill.io/v3/polyfill.min.js?features=window.scroll"></script>
 <script src="{{ asset('admin/vendors/list.js/list.min.js') }}"></script>
 <script src="{{ asset('admin/assets/js/theme.js') }}"></script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+@yield('plugins')
+@yield('scripts')
 </body>
 
 </html>
