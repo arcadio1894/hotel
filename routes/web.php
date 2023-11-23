@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\SeasonController;
+use App\Http\Controllers\EmployerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,15 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/edit/{season}', [SeasonController::class, 'update'])->name('update');
             Route::delete('/delete/{season}', [SeasonController::class, 'destroy'])->name('destroy');
             Route::post('/restore/{season}', [SeasonController::class, 'restore'])->name('restore');
+        });
+    });
+    Route::prefix('/home/employers')->group(function (){
+        Route::name('employers.')->group(function () {
+            Route::get('listar', [EmployerController::class, 'index'])->name('index');
+            Route::post('', [EmployerController::class, 'store'])->name('store');
+            Route::post('/edit/{employer}', [EmployerController::class, 'update'])->name('update');
+            Route::delete('/delete/{employer}', [EmployerController::class, 'destroy'])->name('destroy');
+            Route::post('/restore/{employer}', [EmployerController::class, 'restore'])->name('restore');
         });
     });
 });
