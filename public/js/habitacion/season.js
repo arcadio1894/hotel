@@ -24,7 +24,7 @@ function saveSeason() {
                 icon: 'success',
                 title: response.success,
             }).then(function () {
-                window.location.href = "/home/seasons";
+                window.location.href = "/home/seasons/listar";
             });
         },
         error: function (xhr) {
@@ -46,7 +46,7 @@ function saveSeason() {
                     icon: 'error',
                     title: 'Hubo un error al procesar la solicitud'
                 }).then(function () {
-                    window.location.href = "/home/seasons";
+                    window.location.href = "/home/seasons/listar";
                 });
             }
         }
@@ -85,7 +85,7 @@ function deleteSeason(btn) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "home/seasons/" + idSeason,
+                url: "/home/seasons/delete/" + idSeason,
                 type: "DELETE",
                 data: {_token: csrfToken},
                 success: function (response) {
@@ -93,7 +93,7 @@ function deleteSeason(btn) {
                         icon: 'success',
                         title: "Eliminado correctamente"
                     }).then(function () {
-                        window.location.href = "/home/seasons";
+                        window.location.href = "/home/seasons/listar";
                     });
                 },
                 error: function (xhr) {
@@ -123,7 +123,7 @@ function restoreSeason(btn){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "home/seasons/restore/" + idSeason,
+                url: "/home/seasons/restore/" + idSeason,
                 type: "POST",
                 data: {_token: csrfToken},
                 success: function (response) {
@@ -131,7 +131,7 @@ function restoreSeason(btn){
                         icon: 'success',
                         title: response.message
                     }).then(function () {
-                        window.location.href = "/home/seasons";
+                        window.location.href = "/home/seasons/listar/eliminados";
                     });
                 },
                 error: function (xhr) {
