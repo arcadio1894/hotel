@@ -24,7 +24,7 @@ function saveRoomType() {
                 icon: 'success',
                 title: response.success,
             }).then(function () {
-                window.location.href = "/home/room/types";
+                window.location.href = "/home/room/types/listar";
             });
         },
         error: function (xhr) {
@@ -46,7 +46,7 @@ function saveRoomType() {
                     icon: 'error',
                     title: 'Hubo un error al procesar la solicitud'
                 }).then(function () {
-                    window.location.href = "/home/room/types";
+                    window.location.href = "/home/room/types/listar";
                 });
             }
         }
@@ -84,7 +84,7 @@ function deleteRoomType(btn) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "home/room/types/" + idRoomType,
+                url: "/home/room/types/delete/" + idRoomType,
                 type: "DELETE",
                 data: {_token: csrfToken},
                 success: function (response) {
@@ -92,7 +92,7 @@ function deleteRoomType(btn) {
                         icon: 'success',
                         title: "Eliminado correctamente"
                     }).then(function () {
-                        window.location.href = "/home/room/types";
+                        window.location.href = "/home/room/types/listar";
                     });
                 },
                 error: function (xhr) {
@@ -122,7 +122,7 @@ function restoreRoomType(btn){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "home/room/types/restore/" + idRoomType,
+                url: "/home/room/types/restore/" + idRoomType,
                 type: "POST",
                 data: {_token: csrfToken},
                 success: function (response) {
@@ -130,7 +130,7 @@ function restoreRoomType(btn){
                         icon: 'success',
                         title: response.message
                     }).then(function () {
-                        window.location.href = "/home/room/types";
+                        window.location.href = "/home/room/types/listar/eliminados";
                     });
                 },
                 error: function (xhr) {

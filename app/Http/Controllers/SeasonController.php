@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Season;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SeasonController extends Controller
 {
@@ -14,8 +15,18 @@ class SeasonController extends Controller
      */
     public function index()
     {
-        $seasons = Season::withTrashed()->orderBy('deleted_at')->get();
-        return view('season.index', compact('seasons'));
+        $seasons = Season::orderBy('start_date')->get();
+        $title = "Temporadas";
+        $lista=true;
+        return view('season.index', compact('seasons', 'title','lista'));
+    }
+
+    public function showDeletes()
+    {
+        $seasons = Season::onlyTrashed()->orderBy('deleted_at')->get();
+        $title = "Temporadas eliminadas";
+        $lista=false;
+        return view('season.index', compact('seasons', 'title','lista'));
     }
 
     /**
@@ -36,41 +47,37 @@ class SeasonController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $season = new Season();
+            $season->name = $request->input('name');
+            $season->start_date = $request->input('start_date');
+            $season->end_date = $request->input('end_date');
+            $season->save();
+            DB::commit();
+            return response()->json(['success' => 'Temporada creada correctamente']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al crear la temporada. Detalles: ' . $e->getMessage()], 500);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Season  $season
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Season $season)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Season  $season
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Season $season)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Season  $season
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, Season $season)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $season = Season::find($request->input('id'));
+            $season->update([
+                'name' => $request->input('name'),
+                'start_date' => $request->input('start_date'),
+                'end_date' => $request->input('end_date'),
+            ]);
+            DB::commit();
+            return response()->json(['success' => 'Temporada actualizada correctamente']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al actualizar la temporada. Detalles: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -79,8 +86,39 @@ class SeasonController extends Controller
      * @param  \App\Models\Season  $season
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Season $season)
+    public function destroy($id)
     {
-        //
+        try {
+            DB::beginTransaction();
+            $season = Season::find($id);
+
+            if (!$season) {
+                return response()->json(['message' => 'La temporada no existe'], 404);
+            }
+            $season->delete();
+            DB::commit();
+            return response()->json(['message' => 'Temporada eliminada correctamente']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al eliminar la temporada. Detalles: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function restore($id)
+    {
+        try {
+            DB::beginTransaction();
+            $season = Season::onlyTrashed()->find($id);
+
+            if (!$season) {
+                return response()->json(['message' => 'La temporada no existe'], 404);
+            }
+            $season->restore();
+            DB::commit();
+            return response()->json(['message' => 'Temporada restaurada correctamente']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al restaurar la temporada. Detalles: ' . $e->getMessage()], 500);
+        }
     }
 }
