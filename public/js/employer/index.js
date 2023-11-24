@@ -84,7 +84,7 @@ function deleteEmployer(btn) {
 
     Swal.fire({
         title: '¿Estas seguro?',
-        text: "¿Realmente quieres eliminar el cliente?",
+        text: "¿Realmente quieres eliminar el empleado?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -99,7 +99,7 @@ function deleteEmployer(btn) {
                 success: function (response) {
                     Toast.fire({
                         icon: 'success',
-                        title: "Cliente eliminado correctamente"
+                        title: "Empleado eliminado correctamente"
                     }).then(function () {
                         window.location.href = "/home/employers";
                     });
@@ -107,7 +107,7 @@ function deleteEmployer(btn) {
                 error: function (xhr) {
                     Toast.fire({
                         icon: 'error',
-                        title: "Error al eliminar el cliente"
+                        title: "Error al eliminar el empleado"
                     })
                 }
             });
@@ -122,7 +122,7 @@ function restoreEmployer(btn){
 
     Swal.fire({
         title: '¿Estas seguro?',
-        text: "¿Realmente quieres restaurar el cliente?",
+        text: "¿Realmente quieres restaurar el empleado?",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -145,7 +145,7 @@ function restoreEmployer(btn){
                 error: function (xhr) {
                     Toast.fire({
                         icon: 'error',
-                        title: "Error al restaurar el cliente"
+                        title: "Error al restaurar el empleado"
                     })
                 }
             });

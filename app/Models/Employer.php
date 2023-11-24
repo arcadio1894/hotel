@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
 class Employer extends Model
 {
     use HasFactory, SoftDeletes;
@@ -20,4 +21,7 @@ class Employer extends Model
         'birth',
         'phone'
     ];
+    public function position(){
+        return $this->belongsTo(Position::class);
+    }
 }

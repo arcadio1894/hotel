@@ -18,7 +18,7 @@ class CreateEmployersTable extends Migration
             $table->foreignId('user_id')->constrained('users');
             $table->string('name');
             $table->string('lastname');
-            $table->string('position');
+            $table->foreignId('position_id')->constrained('positions');
             $table->string('dni');
             $table->string('address');
             $table->date('birth');

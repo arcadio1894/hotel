@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employer;
+use App\Models\Position;
 use Illuminate\Http\Request;
 
 class EmployerController extends Controller

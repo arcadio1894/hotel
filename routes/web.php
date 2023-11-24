@@ -44,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/restore/{season}', [SeasonController::class, 'restore'])->name('restore');
         });
     });
+    // MANTENEDOR: EMPLEADOS
     Route::prefix('/home/employers')->group(function (){
         Route::name('employers.')->group(function () {
             Route::get('listar', [EmployerController::class, 'index'])->name('index');
