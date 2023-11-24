@@ -18,9 +18,14 @@ class Employer extends Model
         'position',
         'dni',
         'address',
+        'email',
         'birth',
         'phone'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     public function position(){
         return $this->belongsTo(Position::class);
     }

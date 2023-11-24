@@ -50,6 +50,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/home/employers')->group(function (){
         Route::name('employers.')->group(function () {
             Route::get('listar', [EmployerController::class, 'index'])->name('index');
+            Route::get('eliminados', [EmployerController::class, 'index_eliminated'])->name('index_eliminated');
             Route::post('', [EmployerController::class, 'store'])->name('store');
             Route::post('/edit/{employer}', [EmployerController::class, 'update'])->name('update');
             Route::delete('/delete/{employer}', [EmployerController::class, 'destroy'])->name('destroy');

@@ -24,7 +24,7 @@ function save() {
                 icon: 'success',
                 title: response.success,
             }).then(function () {
-                window.location.href = "/home/employers";
+                window.location.href = "/home/employers/listar";
             });
         },
         error: function (xhr) {
@@ -46,7 +46,7 @@ function save() {
                     icon: 'error',
                     title: 'Hubo un error al guardar'
                 }).then(function () {
-                    window.location.href = "/home/employers";
+                    window.location.href = "/home/employers/listar";
                 });
             }
         }
@@ -57,9 +57,10 @@ function addEmployer(){
     $('#id').val('');
     $('#name').val('');
     $('#lastname').val('');
-    $('#position').val('');
+    $('#position_id').val('');
     $('#dni').val('');
     $('#address').val('');
+    $('#email').val('');
     $('#birth').val('');
     $('#phone').val('');
     $('#employerModal').modal('show');
@@ -67,15 +68,17 @@ function addEmployer(){
 
 function updateEmployer(btn) {
     $('#id').val($(btn).data('id'));
-    $('#name').val($(btn).data('name'));
-    $('#lastname').val($(btn).data('lastname'));
+    $('#name').val($(btn).data('name')).prop('readonly', true);
+    $('#lastname').val($(btn).data('lastname')).prop('readonly', true);
     $('#position').val($(btn).data('position'));
-    $('#dni').val($(btn).data('dni'));
+    $('#dni').val($(btn).data('dni')).prop('readonly', true);
     $('#address').val($(btn).data('address'));
+    $('#email').val($(btn).data('email')).prop('readonly', true);
     $('#birth').val($(btn).data('birth'));
     $('#phone').val($(btn).data('phone'));
     $('#employerModal').modal('show');
 }
+
 
 
 function deleteEmployer(btn) {
@@ -93,7 +96,7 @@ function deleteEmployer(btn) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "home/employers/" + idEmployer,
+                url: "delete/" + idEmployer,
                 type: "DELETE",
                 data: {_token: csrfToken},
                 success: function (response) {
@@ -101,7 +104,7 @@ function deleteEmployer(btn) {
                         icon: 'success',
                         title: "Empleado eliminado correctamente"
                     }).then(function () {
-                        window.location.href = "/home/employers";
+                        window.location.href = "/home/employers/listar";
                     });
                 },
                 error: function (xhr) {
@@ -131,7 +134,7 @@ function restoreEmployer(btn){
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: "home/employers/restore/" + idEmployer,
+                url: "restore/" + idEmployer,
                 type: "POST",
                 data: {_token: csrfToken},
                 success: function (response) {
@@ -139,7 +142,7 @@ function restoreEmployer(btn){
                         icon: 'success',
                         title: response.message
                     }).then(function () {
-                        window.location.href = "/home/employers";
+                        window.location.href = "/home/employers/eliminados";
                     });
                 },
                 error: function (xhr) {

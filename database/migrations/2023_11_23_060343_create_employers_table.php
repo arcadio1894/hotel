@@ -21,6 +21,7 @@ class CreateEmployersTable extends Migration
             $table->foreignId('position_id')->constrained('positions');
             $table->string('dni');
             $table->string('address');
+            $table->string('email');
             $table->date('birth');
             $table->string('phone');
             $table->softDeletes();

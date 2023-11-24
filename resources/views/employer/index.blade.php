@@ -51,7 +51,7 @@
 @endsection
 
 @section('content')
-    <div id="tableExample2" data-list='{"valueNames":["id","name","lastname","position_id","dni","address","birth","phone"],"page":5,"pagination":true}'>
+    <div id="tableExample2" data-list='{"valueNames":["id","name","lastname","position_id","dni","address","email","birth","phone"],"page":5,"pagination":true}'>
         <div class="table-responsive scrollbar">
             <table class="table table-bordered table-striped fs--1 mb-0">
                 <thead class="bg-200 text-900">
@@ -62,6 +62,7 @@
                         <th class="sort" data-sort="position_id">Puesto</th>
                         <th class="sort" data-sort="dni">Dni</th>
                         <th class="sort" data-sort="address">Dirección</th>
+                        <th class="sort" data-sort="email">Correo</th>
                         <th class="sort" data-sort="birth">Nacimiento</th>
                         <th class="sort" data-sort="phone">Teléfono</th>
                         <th>Acciones</th>
@@ -76,6 +77,7 @@
                         <td>{{ $employer->position->name }}</td>
                         <td>{{ $employer->dni }}</td>
                         <td>{{ $employer->address }}</td>
+                        <td>{{ $employer->email }}</td>
                         <td>{{ $employer->birth }}</td>
                         <td>{{ $employer->phone }}</td>
                         <td>
@@ -84,7 +86,7 @@
                                         <i class="nav-icon fas fa-trash"></i> Restaurar
                                     </button>
                             @else
-                                    <button type="button" class="btn btn-outline-primary" onclick="updateEmployer(this)" data-id="{{ $employer->id }}" data-name="{{ $employer->name }}" data-lastname="{{ $employer->lastname }}" data-position_id="{{ $employer->position->id  }}" data-dni="{{ $employer->dni }}" data-address="{{ $employer->address }}" data-birth="{{ $employer->birth }}" data-phone="{{ $employer->phone }}">
+                                    <button type="button" class="btn btn-outline-primary" onclick="updateEmployer(this)" data-id="{{ $employer->id }}" data-name="{{ $employer->name }}" data-lastname="{{ $employer->lastname }}" data-position_id="{{ $employer->position->id  }}" data-dni="{{ $employer->dni }}" data-address="{{ $employer->address }}"  data-email="{{ $employer->email }}"data-birth="{{ $employer->birth }}" data-phone="{{ $employer->phone }}">
                                         <i class="nav-icon fas fa-pen"></i>
                                     </button>
                                     <button type="button" class="btn btn-outline-danger" onclick="deleteEmployer(this)" data-id="{{ $employer->id }}">
@@ -122,15 +124,18 @@
                             <label for="lastname">Apellidos <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="lastname" name="lastname">
                         </div>
-                        <div class="form-group">
-                            <label for="position_id">Puesto <span class="text-danger">*</span></label>
-                            <select class="form-select mb-3" aria-label="position_id" id="position_id" name="position_id" required="">
+                        <div class="mb-3">
+                            <label for="position_id" class="form-label">Puesto <span class="text-danger">*</span></label>
+                            <select class="form-select" id="position_id" name="position_id" required>
                                 <option value="">-Seleccione-</option>
-                                <?php foreach ($positions as $position) { ?>
-                                <option value="<?= $position->id ?>" <?= ((!empty($employer->position_id) && $employer->position_id== $position->id ) ? 'selected=""' : "") ?>><?= $position->name ?></option>
-                                <?php } ?>
+                                @foreach ($positions as $position)
+                                    <option value="{{ $position->id }}" {{ (!empty($employer->position_id) && $employer->position_id == $position->id) ? 'selected' : '' }}>
+                                        {{ $position->name }}
+                                    </option>
+                                @endforeach
                             </select>
                         </div>
+
                         <div class="form-group">
                             <label for="dni">DNI <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="dni" name="dni">
@@ -138,6 +143,10 @@
                         <div class="form-group">
                             <label for="address">Dirección <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="address" name="address">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="email" name="email">
                         </div>
                         <div class="form-group">
                             <label for="birth">Fecha de Nacimiento <span class="text-danger">*</span></label>

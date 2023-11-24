@@ -86,11 +86,7 @@
                     <button class="btn navbar-toggler-humburger-icon navbar-vertical-toggle" data-bs-toggle="tooltip" data-bs-placement="left" title="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
 
                 </div><a class="navbar-brand" href="../index.html">
-
-                <div class="d-flex align-items-center py-3"><><span class="font-sans-serif">falcon</span>
-
-                <div class="d-flex align-items-center py-3"><span class="font-sans-serif">falcon</span>
-
+                    <div class="d-flex align-items-center py-3"><span class="font-sans-serif">falcon</span>
                     </div>
                 </a>
             </div>
@@ -103,7 +99,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item ">
                             <!-- label-->
                             <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
                                 <div class="col-auto navbar-vertical-label">Empleados
@@ -118,8 +114,12 @@
                             </a>
                             <ul class="nav collapse false" id="employers">
                             <a class="nav-link" href="{{ route('employers.index') }}" role="button" aria-expanded="false">
-                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-list"></span></span><span class="nav-link-text ps-1">Lista de Empleados</span>
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Listado de Empleados</span>
                                 </div>
+                            </a>
+                            <a class="nav-link" href="{{ route('employers.index_eliminated') }}" role="button" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Listado de Eliminados</span>
+                                    </div>
                             </a>
                             </ul>
                         </li>
@@ -150,10 +150,10 @@
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
-                            
+
                             </ul>
                         </li>
-                        
+
                         <li class="nav-item">
                             <!-- label-->
                             <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
@@ -210,12 +210,8 @@
 
                 <button class="btn navbar-toggler-humburger-icon navbar-toggler me-1 me-sm-3" type="button" data-bs-toggle="collapse" data-bs-target="#navbarVerticalCollapse" aria-controls="navbarVerticalCollapse" aria-expanded="false" aria-label="Toggle Navigation"><span class="navbar-toggle-icon"><span class="toggle-line"></span></span></button>
                 <a class="navbar-brand me-1 me-sm-3" href="../index.html">
-
-                <div class="d-flex align-items-center"><><span class="font-sans-serif">falcon</span>
-
-                <div class="d-flex align-items-center"><span class="font-sans-serif">falcon</span>
-
-                </div>
+                    <div class="d-flex align-items-center"><span class="font-sans-serif">falcon</span>
+                    </div>
                 </a>
                 <ul class="navbar-nav align-items-center d-none d-lg-block">
                     <li class="nav-item">
@@ -265,12 +261,8 @@
                                     <hr class="bg-200 dark__bg-900" />
                                     <h6 class="dropdown-header fw-medium text-uppercase px-card fs--2 pt-0 pb-2">Files</h6><a class="dropdown-item px-card py-2" href="#!">
                                         <div class="d-flex align-items-center">
-
-                                        <div class="file-thumbnail me-2"><></div>
-
-                                        <div class="file-thumbnail me-2"></div>
-
-                                        <div class="flex-1">
+                                            <div class="file-thumbnail me-2"></div>
+                                            <div class="flex-1">
                                                 <h6 class="mb-0 title">iPhone</h6>
                                                 <p class="fs--2 mb-0 d-flex"><span class="fw-semi-bold">Antony</span><span class="fw-medium text-600 ms-2">27 Sep at 10:30 AM</span></p>
                                             </div>
@@ -278,11 +270,7 @@
                                     </a>
                                     <a class="dropdown-item px-card py-2" href="#!">
                                         <div class="d-flex align-items-center">
-
-                                        <div class="file-thumbnail me-2"><></div>
-
-                                        <div class="file-thumbnail me-2"></div>
-
+                                            <div class="file-thumbnail me-2"></div>
                                             <div class="flex-1">
                                                 <h6 class="mb-0 title">Falcon v1.8.2</h6>
                                                 <p class="fs--2 mb-0 d-flex"><span class="fw-semi-bold">John</span><span class="fw-medium text-600 ms-2">30 Sep at 12:30 PM</span></p>
@@ -294,7 +282,7 @@
                                     <h6 class="dropdown-header fw-medium text-uppercase px-card fs--2 pt-0 pb-2">Members</h6><a class="dropdown-item px-card py-2" href="../pages/user/profile.html">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-l status-online me-2">
-                                                <>
+
                                             </div>
                                             <div class="flex-1">
                                                 <h6 class="mb-0 title">Anna Karinina</h6>
@@ -305,7 +293,8 @@
                                     <a class="dropdown-item px-card py-2" href="../pages/user/profile.html">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-l me-2">
-                                                <>
+
+
                                             </div>
                                             <div class="flex-1">
                                                 <h6 class="mb-0 title">Antony Hopkins</h6>
@@ -316,7 +305,8 @@
                                     <a class="dropdown-item px-card py-2" href="../pages/user/profile.html">
                                         <div class="d-flex align-items-center">
                                             <div class="avatar avatar-l me-2">
-                                                <>
+
+
                                             </div>
                                             <div class="flex-1">
                                                 <h6 class="mb-0 title">Emma Watson</h6>
@@ -364,7 +354,8 @@
                                             <a class="notification notification-flush notification-unread" href="#!">
                                                 <div class="notification-avatar">
                                                     <div class="avatar avatar-2xl me-3">
-                                                        <>
+
+
                                                     </div>
                                                 </div>
                                                 <div class="notification-body">
@@ -395,7 +386,7 @@
                                             <a class="notification notification-flush" href="#!">
                                                 <div class="notification-avatar">
                                                     <div class="avatar avatar-2xl me-3">
-                                                        <>
+
                                                     </div>
                                                 </div>
                                                 <div class="notification-body">
@@ -410,7 +401,7 @@
                                             <a class="border-bottom-0 notification-unread  notification notification-flush" href="#!">
                                                 <div class="notification-avatar">
                                                     <div class="avatar avatar-xl me-3">
-                                                        <>
+
                                                     </div>
                                                 </div>
                                                 <div class="notification-body">
@@ -425,7 +416,8 @@
                                             <a class="border-bottom-0 notification notification-flush" href="#!">
                                                 <div class="notification-avatar">
                                                     <div class="avatar avatar-xl me-3">
-                                                        <>
+
+
                                                     </div>
                                                 </div>
                                                 <div class="notification-body">
@@ -445,7 +437,8 @@
                     </li>
                     <li class="nav-item dropdown"><a class="nav-link pe-0" id="navbarDropdownUser" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div class="avatar avatar-xl">
-                                <>
+
+
                             </div>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end py-0" aria-labelledby="navbarDropdownUser">
@@ -568,28 +561,17 @@
             <div class="row gx-2">
                 <div class="col-6">
                     <input class="btn-check" id="themeSwitcherLight" name="theme-color" type="radio" value="light" data-theme-control="theme" />
-
-                    <label class="btn d-inline-block btn-navbar-style fs--1" for="themeSwitcherLight"> <span class="hover-overlay mb-2 rounded d-block"><></span><span class="label-text">Light</span></label>
-                </div>
-                <div class="col-6">
-                    <input class="btn-check" id="themeSwitcherDark" name="theme-color" type="radio" value="dark" data-theme-control="theme" />
-                    <label class="btn d-inline-block btn-navbar-style fs--1" for="themeSwitcherDark"> <span class="hover-overlay mb-2 rounded d-block"><></span><span class="label-text"> Dark</span></label>
                     <label class="btn d-inline-block btn-navbar-style fs--1" for="themeSwitcherLight"> <span class="hover-overlay mb-2 rounded d-block"></span><span class="label-text">Light</span></label>
                 </div>
                 <div class="col-6">
                     <input class="btn-check" id="themeSwitcherDark" name="theme-color" type="radio" value="dark" data-theme-control="theme" />
                     <label class="btn d-inline-block btn-navbar-style fs--1" for="themeSwitcherDark"> <span class="hover-overlay mb-2 rounded d-block"></span><span class="label-text"> Dark</span></label>
-
                 </div>
             </div>
         </div>
         <hr />
         <div class="d-flex justify-content-between">
-
-            <div class="d-flex align-items-start"><>
-
             <div class="d-flex align-items-start">
-
                 <div class="flex-1">
                     <h5 class="fs-0">RTL Mode</h5>
                     <p class="fs--1 mb-0">Switch your language direction </p><a class="fs--1" href="../documentation/customization/configuration.html">RTL Documentation</a>
@@ -601,11 +583,7 @@
         </div>
         <hr />
         <div class="d-flex justify-content-between">
-
-            <div class="d-flex align-items-start"><>
-
             <div class="d-flex align-items-start">
-
                 <div class="flex-1">
                     <h5 class="fs-0">Fluid Layout</h5>
                     <p class="fs--1 mb-0">Toggle container layout system </p><a class="fs--1" href="../documentation/customization/configuration.html">Fluid Documentation</a>
@@ -616,11 +594,7 @@
             </div>
         </div>
         <hr />
-
-        <div class="d-flex align-items-start"><>
-
         <div class="d-flex align-items-start">
-
             <div class="flex-1">
                 <h5 class="fs-0 d-flex align-items-center">Navigation Position </h5>
                 <p class="fs--1 mb-2">Select a suitable navigation system for your web application </p>
@@ -648,25 +622,6 @@
             <div class="row gx-2">
                 <div class="col-6">
                     <input class="btn-check" id="navbar-style-transparent" type="radio" name="navbarStyle" value="transparent" data-theme-control="navbarStyle" />
-
-                    <label class="btn d-block w-100 btn-navbar-style fs--1" for="navbar-style-transparent"> <><span class="label-text"> Transparent</span></label>
-                </div>
-                <div class="col-6">
-                    <input class="btn-check" id="navbar-style-inverted" type="radio" name="navbarStyle" value="inverted" data-theme-control="navbarStyle" />
-                    <label class="btn d-block w-100 btn-navbar-style fs--1" for="navbar-style-inverted"> <><span class="label-text"> Inverted</span></label>
-                </div>
-                <div class="col-6">
-                    <input class="btn-check" id="navbar-style-card" type="radio" name="navbarStyle" value="card" data-theme-control="navbarStyle" />
-                    <label class="btn d-block w-100 btn-navbar-style fs--1" for="navbar-style-card"> <><span class="label-text"> Card</span></label>
-                </div>
-                <div class="col-6">
-                    <input class="btn-check" id="navbar-style-vibrant" type="radio" name="navbarStyle" value="vibrant" data-theme-control="navbarStyle" />
-                    <label class="btn d-block w-100 btn-navbar-style fs--1" for="navbar-style-vibrant"> <><span class="label-text"> Vibrant</span></label>
-                </div>
-            </div>
-        </div>
-        <div class="text-center mt-5"><>
-
                     <label class="btn d-block w-100 btn-navbar-style fs--1" for="navbar-style-transparent"> <span class="label-text"> Transparent</span></label>
                 </div>
                 <div class="col-6">
@@ -684,7 +639,6 @@
             </div>
         </div>
         <div class="text-center mt-5">
-
             <h5>Like What You See?</h5>
             <p class="fs--1">Get Falcon now and create beautiful dashboards with hundreds of widgets.</p><a class="mb-3 btn btn-primary" href="https://themes.getbootstrap.com/product/falcon-admin-dashboard-webapp-template/" target="_blank">Purchase</a>
         </div>
