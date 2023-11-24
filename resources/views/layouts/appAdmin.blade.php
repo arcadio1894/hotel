@@ -133,7 +133,7 @@
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="../modules/tables/advance-tables.html" aria-expanded="false">
+                                <li class="nav-item"><a class="nav-link" href="{{ route('customers.report')}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Reporte</span>
                                         </div>
                                     </a>

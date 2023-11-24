@@ -57,11 +57,12 @@ Route::middleware(['auth'])->group(function () {
     //  MANTENEDOR: CLIENTES
     Route::prefix('/home/clientes')->group(function (){
         Route::name('customers.')->group(function () {
-            Route::get('listar', [CustomerController::class, 'index'])->name('index');
-            Route::post('', [CustomerController::class, 'store'])->name('store');
+            Route::get('/listar', [CustomerController::class, 'index'])->name('index');
+            Route::post('/crear', [CustomerController::class, 'store'])->name('store');
             Route::post('/editar/{id}', [CustomerController::class, 'update'])->name('update');
             Route::delete('/borrar/{id}', [CustomerController::class, 'destroy'])->name('destroy');
             Route::post('/restaurar/{id}', [CustomerController::class, 'restore'])->name('restore');
+            Route::get('/reporte', [CustomerController::class, 'report'])->name('report');
         });
     });
 
