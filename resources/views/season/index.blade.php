@@ -1,35 +1,20 @@
 @extends('layouts.appadmin')
 
 @section('styles-plugins')
-    <link rel="stylesheet" href="{{asset('admin/plugins/fontawesome-free/css/all.min.css')}}">
-    <link rel="stylesheet" href="{{asset('admin/plugins/toastr/toastr.min.css')}}">
 @endsection
 
 @section('styles-dist')
-    <link rel="stylesheet" href="{{asset('admin/dist/css/adminlte.min.css')}}">
 @endsection
 
 @section('styles-own')
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.28/dist/sweetalert2.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css')}}">
-    <link rel="stylesheet" href="{{asset('admin/plugins/datatables-responsive/css/responsive.bootstrap4.min.css')}}">
 @endsection
 
 @section('plugins')
-    <script src="{{asset('admin/plugins/jquery/jquery.min.js')}}"></script>
-    <script src="{{asset('admin/plugins/jquery-ui/jquery-ui.min.js')}}"></script>
-    <script> $.widget.bridge('uibutton', $.ui.button) </script>
-    <script src="{{asset('admin/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="{{asset('admin/plugins/toastr/toastr.min.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.28/dist/sweetalert2.all.min.js"></script>
-    <script src="{{ asset('admin/plugins/datatables/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('admin/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('admin/plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
-    <script src="{{ asset('admin/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
 @endsection
 
 @section('scripts')
-    <script src="vendors/list.js/list.min.js"></script>
+
     <script src="{{asset('js/habitacion/season.js')}}"></script>
     <script>
         var csrfToken = "{{ csrf_token() }}";
@@ -37,25 +22,27 @@
 @endsection
 
 @section('page-header')
-    <h3 class="m-0 text-dark">Listado de Temporadas</h3>
+    <h3 class="m-0 text-dark">{{$title}}</h3>
 @endsection
 
 @section('page-breadcrumb')
     <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
-        <li class="breadcrumb-item active">Temporadas</li>
+        <li class="breadcrumb-item active">{{$title}}</li>
     </ol>
 @endsection
 
 @section('page-title')
     <div class="row">
         <div class="col-10">
-        <h5 class="card-title col-7">Administra la lista de temporadas</h5>
+        <h5 class="card-title col-7">Administra la lista de {{$title}}</h5>
         </div>
         <div class="d-flex justify-content-end col-2">
-        <button type="button" class="btn btn-outline-success" onclick="cleanSeason()">
-            <i class="fa fa-plus"></i> Nuevo
-        </button>
+            @if ($lista)
+                <button type="button" class="btn btn-outline-success" onclick="cleanSeason()">
+                    <i class="fa fa-plus"></i> Nuevo
+                </button>
+            @endif
         </div>
     </div>
 @endsection
@@ -106,13 +93,12 @@
             <button class="btn btn-sm btn-falcon-default ms-1" type="button" title="Next" data-list-pagination="next"><span class="fas fa-chevron-right"> </span></button>
         </div>
     </div>
-    <div class="modal fade" id="seasonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div class="modal fade" id="seasonModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Datos de la temporada</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     </button>
                 </div>
                 <form id="seasonForm">
@@ -132,7 +118,7 @@
                         </div>
                         <div class="modal-footer">
                             <input type="hidden" id="id" name="id">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             <button type="button" class="btn btn-primary" id="guardar" onclick="saveSeason()">Guardar</button>
                         </div>
                     </div>

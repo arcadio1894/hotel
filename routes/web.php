@@ -29,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/home/room/types')->group(function (){
         Route::name('roomTypes.')->group(function () {
             Route::get('listar', [RoomTypeController::class, 'index'])->name('index');
+            Route::get('listar/eliminados', [RoomTypeController::class, 'showDeletes'])->name('showDeletes');
             Route::post('', [RoomTypeController::class, 'store'])->name('store');
             Route::post('/edit/{roomType}', [RoomTypeController::class, 'update'])->name('update');
             Route::delete('/delete/{roomType}', [RoomTypeController::class, 'destroy'])->name('destroy');
@@ -38,6 +39,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/home/seasons')->group(function (){
         Route::name('seasons.')->group(function () {
             Route::get('listar', [SeasonController::class, 'index'])->name('index');
+            Route::get('listar/eliminados', [SeasonController::class, 'showDeletes'])->name('showDeletes');
             Route::post('', [SeasonController::class, 'store'])->name('store');
             Route::post('/edit/{season}', [SeasonController::class, 'update'])->name('update');
             Route::delete('/delete/{season}', [SeasonController::class, 'destroy'])->name('destroy');
