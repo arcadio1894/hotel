@@ -17,7 +17,7 @@
 @section('page-breadcrumb')
     <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
-        <li class="breadcrumb-item active">Lista de Clientes</li>
+        <li class="breadcrumb-item active">{{$tipo}} de Clientes</li>
     </ol>
 @endsection
 
@@ -25,22 +25,26 @@
     <div class="row">
         <div class="col-10">
             
-                <h5 class="card-title col-7">Administra la lista de los Clientes</h5>
+                <h5 class="card-title col-7">Administrar {{$tipo}} de los Clientes</h5>
         </div>
         <div class="d-flex justify-content-end col-2">
-            
+            @if($tipo == 'lista')
             <button type="button" class="btn btn-outline-success" onclick="cleanRoomType()">
                 <i class="fa fa-plus"></i> Nuevo
             </button>
-        
-            <button type="button" class="btn btn-outline-info" onclick="exportarExcel()">
-                    <i class="far fa-file-excel"></i> Descargar Excel
-            </button>
+            @endif
+            @if($tipo == 'reporte')
+                <button type="button" class="btn btn-outline-info" onclick="exportarExcel()">
+                        <i class="far fa-file-excel"></i> Descargar Excel
+                </button>
+            @endif
         </div>
     </div>
 @endsection
 
 @section('content')
+
+    <input type="hidden" id="tipo" value="{{ $tipo }}">
     <!--begin::Card-->
     <!--begin::Form-->
     <form action="#">
@@ -60,7 +64,7 @@
                             </svg>
                         </span>
                         <!--end::Svg Icon-->
-                        <input type="text" class="form-control form-control-solid ps-10" id="inputCodigoOperacion" name="search" value="" placeholder="Nombre" />
+                        <input type="text" class="form-control form-control-solid ps-10" id="inputName" name="search" value="" placeholder="Nombre" />
                     </div>
                     <!--end::Input group-->
                     <!--begin:Action-->
@@ -86,7 +90,7 @@
                                 <div class="col">
                                     <label class="form-label fw-bolder text-dark">Tipo de Documento</label>
                                     <!--begin::Select-->
-                                    <select id="selectBanco" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione un Tipo de Documento" data-hide-search="true">
+                                    <select id="selectType" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione un Tipo de Documento" data-hide-search="true">
                                         <option value=""></option>
                                         @foreach( $document_types as $document_type )
                                             <option value="{{ $document_type }}">{{ $document_type }}</option>
@@ -191,7 +195,9 @@
                             <th class="sort">Email</th>
                             <th class="sort">Cumpleaños</th>
                             <th class="sort">Direccíón</th>
+                            @if($tipo=='lista' or $tipo =='eliminados')
                             <th class="sort">Acciones</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody id="body-table" class="list">
@@ -268,9 +274,11 @@
                     <h5 class="fw-bold text-gray-400 mb-6" data-birth></h5>
                     <h4 class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">Dirección</h4>
                     <h5 class="fw-bold text-gray-400 mb-6" data-address></h5>
+                    @if($tipo=='lista' or $tipo =='eliminados')
                     <div data-buttons>
 
                     </div>
+                    @endif
                 </div>
                 <!--end::Card body-->
             </div>
@@ -291,12 +299,73 @@
             <td data-email></td>
             <td data-birth></td>
             <td data-address></td>
+            @if($tipo=='lista' or $tipo =='eliminados')
             <td class="text-end" data-buttons>
 
             </td>
+            @endif
         </tr>
         <!--end::Col-->
     </template>
+
+    <div class="modal fade" id="roomTypeModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Datos del Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="roomTypeForm">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="document_type">Tipo de Documento <span class="text-danger">*</span></label>
+                            <select name="document_type" id="document_type">
+                                @foreach ($document_types as $type)
+                                    <option value="{{ $type }}">{{ $type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="document">Nro. Documento <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="document" name="document" >
+                        </div>
+                        <div class="form-group">
+                            <label for="name">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" >
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Apellidos <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="lastname" name="lastname" >
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Telefono <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="phone" name="phone" >
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="email" name="email" >
+                        </div>
+                        <div class="form-group">
+                            <label for="birth">Cumpleaños <span class="text-danger">*</span></label>
+                            <input type="date" class="form-control" id="birth" name="birth" >
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Dirección <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="address" name="address" >
+                        </div>
+                        <div class="modal-footer">
+                            <input type="hidden" id="id" name="id">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            <button type="button" class="btn btn-primary" id="guardar" onclick="saveRoomType()">Guardar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 
 
@@ -310,6 +379,7 @@
 
 @section('scripts')
     <script src="{{asset('js/customer/index.js')}}"></script>
+    <script src="{{asset('js/customer/all.js')}}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
     <script>
         var csrfToken = "{{ csrf_token() }}";

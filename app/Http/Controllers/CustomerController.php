@@ -13,20 +13,14 @@ use App\Exports\ReportCustomerExport;
 class CustomerController extends Controller
 {
     function index(){
-        $customers = Customer::orderBy('id')->get();
-        $title="Clientes";
-        $lista=true;
-        $report=false;
+        $tipo='lista';
         $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
-        return view('customer.index', compact('customers', "title",'lista','document_types','report'));
+        return view('customer.index', compact('tipo','document_types'));
     }
     public function showDeletes(){
-        $customers = Customer::onlyTrashed()->orderBy('deleted_at')->get();
-        $title="Clientes Eliminados";
-        $lista=false;
-        $report=false;
+        $tipo='eliminados';
         $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
-        return view('customer.index', compact('customers', 'title','lista','document_types','report'));
+        return view('customer.index', compact('tipo','document_types'));
     }
 
     public function store(Request $request)
@@ -113,12 +107,9 @@ class CustomerController extends Controller
     }
 
     function report(){
-        $customers = Customer::withTrashed()->get();
-        $title="Clientes";
-        $lista=true;
-        $report=true;
+        $tipo = "reporte";
         $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
-        return view('customer.index', compact('customers', "title",'lista','document_types', 'report'));
+        return view('customer.index',compact('tipo','document_types'));
     }
 
 
@@ -127,22 +118,30 @@ class CustomerController extends Controller
         $perPage = 10;
 
         $documentCliente = $request->input('document_cliente');
-        $codigoOperacion = $request->input('codigo_operacion');
-        $bancoId = $request->input('banco_id');
-
-        $query = Customer::orderBy('created_at', 'DESC');
+        $name = $request->input('name');
+        $type = $request->input('type');
+        $tipo = $request->input('tipo');
+        if($tipo=='lista'){
+            $query = Customer::orderBy('id', 'DESC');
+        }
+        elseif($tipo=='eliminados'){
+                $query = Customer::onlyTrashed()->orderBy('id', 'DESC');
+        }
+        elseif ($tipo=='reporte'){
+            $query = Customer::withTrashed()->orderBy('id', 'DESC');
+        }
 
         // Aplicar filtros si se proporcionan
         if ($documentCliente) {
             $query->where('document', $documentCliente);
         }
 
-        if ($codigoOperacion) {
-            $query->where('name', $codigoOperacion);
+        if ($name) {
+            $query->where('name', $name);
         }
 
-        if ($bancoId) {
-            $query->where('document_type', $bancoId);
+        if ($type) {
+            $query->where('document_type', $type);
         }
 
         $totalFilteredRecords = $query->count();
