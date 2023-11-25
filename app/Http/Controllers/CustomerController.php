@@ -121,6 +121,72 @@ class CustomerController extends Controller
         return view('customer.index', compact('customers', "title",'lista','document_types', 'report'));
     }
 
+
+    public function getDataOperations(Request $request, $pageNumber = 1)
+    {
+        $perPage = 10;
+
+        $documentCliente = $request->input('document_cliente');
+        $codigoOperacion = $request->input('codigo_operacion');
+        $bancoId = $request->input('banco_id');
+
+        $query = Customer::orderBy('created_at', 'DESC');
+
+        // Aplicar filtros si se proporcionan
+        if ($documentCliente) {
+            $query->where('document', $documentCliente);
+        }
+
+        if ($codigoOperacion) {
+            $query->where('name', $codigoOperacion);
+        }
+
+        if ($bancoId) {
+            $query->where('document_type', $bancoId);
+        }
+
+        $totalFilteredRecords = $query->count();
+        $totalPages = ceil($totalFilteredRecords / $perPage);
+
+        $startRecord = ($pageNumber - 1) * $perPage + 1;
+        $endRecord = min($totalFilteredRecords, $pageNumber * $perPage);
+
+        $operations = $query->skip(($pageNumber - 1) * $perPage)
+            ->take($perPage)
+            ->get();
+
+        $arrayOperations = [];
+
+        foreach ( $operations as $operation )
+        {
+            array_push($arrayOperations, [
+                "id" => $operation->id,
+                "document_type" => $operation->document_type,
+                "document" => $operation->document,
+                "name" => $operation->name,
+                "lastname" => $operation->lastname,
+                "phone" => $operation->phone,
+                "email" => $operation->email,
+                "birth" => $operation->birth,
+                "address" => $operation->address,
+            ]);
+        }
+
+        $pagination = [
+            'currentPage' => (int)$pageNumber,
+            'totalPages' => (int)$totalPages,
+            'startRecord' => $startRecord,
+            'endRecord' => $endRecord,
+            'totalRecords' => $totalFilteredRecords,
+            'totalFilteredRecords' => $totalFilteredRecords
+        ];
+
+        return ['data' => $arrayOperations, 'pagination' => $pagination];
+
+    }
+
+
+
     public function generateReport()
     {
         $customers = DB::table('customers')->whereNull('deleted_at')->get();
@@ -159,6 +225,8 @@ class CustomerController extends Controller
 
         return Excel::download(new ReportCustomerExport($data,$deletedData), 'ReporteDeClientes.xlsx');
     }
+
+
 
 
 }
