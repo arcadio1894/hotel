@@ -7,6 +7,24 @@ $(document).ready(function () {
     $(document).on('click', '[data-item]', showData);
     $("#btn-search").on('click', showDataSeach);
 
+        // Escuchar el evento de cambio en el select
+        $('#document_type').change(function () {
+            // Obtener el valor seleccionado
+            var selectedValue = $(this).val();
+            // Modificar el label y ocultar o mostrar el input de lastname según la opción seleccionada
+            if (selectedValue === 'RUC') {
+                $('#exampleModalLabel').text('Datos del Cliente Empresarial');
+                $('#name-label').text('Razon Social');
+                $('#lastname-group').hide();
+                $('#birth-label').text('Fecha de Constitución');
+            } else {
+                $('#exampleModalLabel').text('Datos del Cliente');
+                $('#name-label').text('Nombre');
+                $('#lastname-group').show();
+                $('#birth-label').text('Cumpleaños');
+            }
+        });
+
 });
 
 
@@ -149,15 +167,18 @@ function renderDataTableCard(data) {
     clone.querySelector("[data-id]").innerHTML = data.id;
     clone.querySelector("[data-document_type]").innerHTML = data.document_type;
     clone.querySelector("[data-document]").innerHTML = data.document;
-    clone.querySelector("[data-name]").innerHTML = data.name;
-    clone.querySelector("[data-lastname]").innerHTML = data.lastname;
+    if (data.lastname !== null) {
+        clone.querySelector("[data-name]").innerHTML = data.name+ ' ' + data.lastname;
+    } else {
+        clone.querySelector("[data-name]").innerHTML = data.name;
+    }
+    //clone.querySelector("[data-lastname]").innerHTML = data.lastname;
     clone.querySelector("[data-phone]").innerHTML = data.phone;
     clone.querySelector("[data-email]").innerHTML = data.email;
     clone.querySelector("[data-birth]").innerHTML = data.birth;
     clone.querySelector("[data-address]").innerHTML = data.address;
 
     if($('#tipo').val()==="lista"){
-        console.log("jxjx")
     // Configurar los botones en el nuevo td
     var buttonsTd = clone.querySelector("[data-buttons]");
     buttonsTd.innerHTML = ''; // Limpiar contenido existente
@@ -190,7 +211,6 @@ function renderDataTableCard(data) {
     else{
         if($('#tipo').val()==="eliminados")
         {
-            console.log('pipipi')
             var buttonsTd = clone.querySelector("[data-buttons]");
             buttonsTd.innerHTML = '';
             var restoreButton = document.createElement('button');
@@ -210,20 +230,6 @@ function renderDataTableCard(data) {
     }
 
     $("#body-table").append(clone);
-
-    var clone2 = activateTemplate('#item-card');
-    clone2.querySelector("[data-id]").innerHTML = data.id;
-    clone2.querySelector("[data-document_type]").innerHTML = data.document_type;
-    clone2.querySelector("[data-document]").innerHTML = data.document;
-    clone2.querySelector("[data-name]").innerHTML = data.name;
-    clone2.querySelector("[data-lastname]").innerHTML = data.lastname;
-    clone2.querySelector("[data-phone]").innerHTML = data.phone;
-    clone2.querySelector("[data-email]").innerHTML = data.email;
-    clone2.querySelector("[data-birth]").innerHTML = data.birth;
-    clone2.querySelector("[data-address]").innerHTML = data.address;
-
-    
-    $("#body-card").append(clone2);
 
     $('[data-toggle="tooltip"]').tooltip();
 }

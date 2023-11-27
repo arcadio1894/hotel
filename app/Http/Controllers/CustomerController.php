@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Http\Requests\CreateCustomerRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,31 +11,37 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Exports\ReportCustomerExport;
 
+use Carbon\Carbon;
+
 class CustomerController extends Controller
 {
     function index(){
         $tipo='lista';
-        $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
+        $document_types = DB::table('document_types')->get()->pluck('name')->toArray();
         return view('customer.index', compact('tipo','document_types'));
     }
     public function showDeletes(){
         $tipo='eliminados';
-        $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
+        $document_types = DB::table('document_types')->get()->pluck('name')->toArray();
         return view('customer.index', compact('tipo','document_types'));
     }
 
-    public function store(Request $request)
-    {
+    public function store(CreateCustomerRequest $request)
+    {   
         try {
+            // Verifica las condiciones antes de crear el cliente
+            if ($request->input('document_type') != 'RUC' && is_null($request->input('lastname'))) {
+                throw new \Exception('Error: El Apellido es requerido');
+            }
             DB::beginTransaction();
             $customer = new Customer();
             $customer->document_type = $request->input('document_type');
             $customer->document = $request->input('document');
             $customer->name = $request->input('name');
-            $customer->lastname = $request->input('lastname');
+            $customer->lastname = $request->input('lastname', null);
             $customer->phone = $request->input('phone');
             $customer->email = $request->input('email');
-            $customer->birth = $request->input('birth');
+            $customer->birth = Carbon::createFromFormat('Y-m-d', $request->input('birth'))->format('d-m-Y');
             $customer->address = $request->input('address');
 
             $customer->save();
@@ -42,13 +49,13 @@ class CustomerController extends Controller
             return response()->json(['success' => 'Cliente creado correctamente']);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['error' => 'Error al crear el Cliente. Detalles: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al crear el Cliente. Detalles: ' . $e->getMessage(), 'customError' => true], 500);
         }
     }
 
 
     public function update(Request $request, Customer $customer)
-    {
+    {   
         try {
             DB::beginTransaction();
             $customer = Customer::find($request->input('id'));
@@ -59,7 +66,7 @@ class CustomerController extends Controller
                 'lastname' => $request->input('lastname'),
                 'phone' => $request->input('phone'),
                 'email' => $request->input('email'),
-                'birth' => $request->input('birth'),
+                'birth' => Carbon::createFromFormat('Y-m-d', $request->input('birth'))->format('d-m-Y'),
                 'address' => $request->input('address'),
             ]);
             DB::commit();
@@ -108,7 +115,7 @@ class CustomerController extends Controller
 
     function report(){
         $tipo = "reporte";
-        $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
+        $document_types = DB::table('document_types')->get()->pluck('name')->toArray();
         return view('customer.index',compact('tipo','document_types'));
     }
 

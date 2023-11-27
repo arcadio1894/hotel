@@ -33,15 +33,21 @@ function saveRoomType() {
             if (xhr.responseJSON && xhr.responseJSON.errors) {
                 let errors = xhr.responseJSON.errors;
                 let errorMessage = "Errores de validación:<br>";
-
+        
                 for (let field in errors) {
                     errorMessage += `- ${errors[field][0]}<br>`;
                 }
-
+        
                 Toast.fire({
                     icon: 'error',
                     title: errorMessage
                 });
+            } else if (xhr.responseJSON && xhr.responseJSON.customError) {
+                let customErrorMessage = xhr.responseJSON.error;
+                Toast.fire({
+                    icon: 'error',
+                    title: 'El campo Apellido es requerido'
+                })
             } else {
                 Toast.fire({
                     icon: 'error',
@@ -57,6 +63,11 @@ function saveRoomType() {
 function cleanRoomType(){
     $('#id').val('');
     $('#document_type').val('');
+
+    $('#document_type option:not(:selected)').prop('disabled', false);
+    $('#document_type option:selected').prop('disabled', false);
+    $('#document_type option[value="RUC"]').show();
+
     $('#document').val('');
     $('#name').val('');
     $('#lastname').val('');
@@ -74,10 +85,38 @@ function updateRoomType(btn){
     $('#document').val($(btn).data('document'));
     $('#name').val($(btn).data('name'));
     $('#lastname').val($(btn).data('lastname'));
+    console.log($(btn).data('id'));
+    console.log($(btn).data('document_type'));
+    console.log($(btn).data('document'));
+    console.log($(btn).data('name'));
+    console.log($(btn).data('lastname'));
+    console.log($(btn).data('phone'));
+    console.log($(btn).data('email'));
+    console.log($(btn).data('birth'));
+    console.log($(btn).data('address'));
+
     $('#phone').val($(btn).data('phone'));
     $('#email').val($(btn).data('email'));
-    $('#birth').val($(btn).data('birth'));
+    $('#birth').val(moment($(btn).data('birth'), 'DD-MM-YYYY').format('YYYY-MM-DD'));
     $('#address').val($(btn).data('address'));
+
+    if($('#document_type').val()==='RUC'){
+        $('#exampleModalLabel').text('Datos del Cliente Empresarial');
+        $('#document_type option:not(:selected)').attr('disabled',true);
+        $('#document_type option[value="RUC"]').show();
+        $('#name-label').text('Razon Social');
+        $('#lastname-group').hide();
+        $('#birth-label').text('Fecha de Constitución');
+        //$('#lastname').val(null);
+    } else {
+        $('#exampleModalLabel').text('Datos del Cliente');
+        $('#document_type option:not(:selected)').prop('disabled', false);
+        $('#document_type option:selected').prop('disabled', false);
+        $('#document_type option[value="RUC"]').hide();
+        $('#name-label').text('Nombre');
+        $('#lastname-group').show();
+        $('#birth-label').text('Cumpleaños');
+    }
 
     $('#roomTypeModal').modal('show');
 }
