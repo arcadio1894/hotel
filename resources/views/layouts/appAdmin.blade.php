@@ -99,7 +99,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item ">
+                        <li class="nav-item has-treeview menu-open">
                             <!-- label-->
                             <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
                                 <div class="col-auto navbar-vertical-label">Empleados
@@ -117,6 +117,8 @@
                                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Listado de Empleados</span>
                                 </div>
                             </a>
+                            </ul>
+                            <ul class="nav collapse false" id="employers">
                             <a class="nav-link" href="{{ route('employers.index_eliminated') }}" role="button" aria-expanded="false">
                                     <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Listado de Eliminados</span>
                                     </div>

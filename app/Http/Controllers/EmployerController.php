@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEmployerRequest;
+use App\Http\Requests\UpdateEmployerRequest;
 use App\Models\Employer;
 use App\Models\Position;
 use App\Models\User;
@@ -25,13 +27,7 @@ class EmployerController extends Controller
         return view('employer.index_eliminated', compact('employers','positions'));
     }
 
-    public function create()
-    {
-
-    }
-
-
-    public function store(Request $request)
+    public function store(StoreEmployerRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -64,17 +60,7 @@ class EmployerController extends Controller
         }
     }
 
-    public function show($id)
-    {
-
-    }
-
-    public function edit($id)
-    {
-
-    }
-
-    public function update(Request $request, $id)
+    public function update(UpdateEmployerRequest $request, $id)
     {
         try {
             DB::beginTransaction();

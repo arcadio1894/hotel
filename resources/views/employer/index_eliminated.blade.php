@@ -58,7 +58,7 @@
                         <th class="sort" data-sort="name">Nombres</th>
                         <th class="sort" data-sort="lastname">Apellidos</th>
                         <th class="sort" data-sort="position_id">Puesto</th>
-                        <th class="sort" data-sort="dni">Dni</th>
+                        <th class="sort" data-sort="dni">Dni/C.E</th>
                         <th class="sort" data-sort="address">Dirección</th>
                         <th class="sort" data-sort="birth">Nacimiento</th>
                         <th class="sort" data-sort="phone">Teléfono</th>
@@ -79,7 +79,7 @@
                         <td>
                             @if ($employer->trashed())
                                     <button type="button" class="btn btn-outline-warning" onclick="restoreEmployer(this)" data-id="{{ $employer->id }}">
-                                        <i class="nav-icon fas fa-trash"></i> Restaurar
+                                        <i class="nav-icon fas fa-check"></i> Restaurar
                                     </button>
                             @else
                                     <button type="button" class="btn btn-outline-primary" onclick="updateEmployer(this)" data-id="{{ $employer->id }}" data-name="{{ $employer->name }}" data-lastname="{{ $employer->lastname }}" data-position_id="{{ $employer->position->id  }}" data-dni="{{ $employer->dni }}" data-address="{{ $employer->address }}" data-birth="{{ $employer->birth }}" data-phone="{{ $employer->phone }}">

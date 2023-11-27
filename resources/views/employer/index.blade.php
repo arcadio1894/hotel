@@ -60,7 +60,7 @@
                         <th class="sort" data-sort="name">Nombres</th>
                         <th class="sort" data-sort="lastname">Apellidos</th>
                         <th class="sort" data-sort="position_id">Puesto</th>
-                        <th class="sort" data-sort="dni">Dni</th>
+                        <th class="sort" data-sort="dni">Dni/C.E.</th>
                         <th class="sort" data-sort="address">Dirección</th>
                         <th class="sort" data-sort="email">Correo</th>
                         <th class="sort" data-sort="birth">Nacimiento</th>
@@ -137,7 +137,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="dni">DNI <span class="text-danger">*</span></label>
+                            <label for="dni">DNI/CE <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="dni" name="dni">
                         </div>
                         <div class="form-group">

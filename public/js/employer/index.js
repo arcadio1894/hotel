@@ -68,12 +68,12 @@ function addEmployer(){
 
 function updateEmployer(btn) {
     $('#id').val($(btn).data('id'));
-    $('#name').val($(btn).data('name')).prop('readonly', true);
-    $('#lastname').val($(btn).data('lastname')).prop('readonly', true);
-    $('#position').val($(btn).data('position'));
-    $('#dni').val($(btn).data('dni')).prop('readonly', true);
+    $('#name').val($(btn).data('name'));
+    $('#lastname').val($(btn).data('lastname'));
+    $('#position_id').val($(btn).data('position_id'));
+    $('#dni').val($(btn).data('dni'));
     $('#address').val($(btn).data('address'));
-    $('#email').val($(btn).data('email')).prop('readonly', true);
+    $('#email').val($(btn).data('email'));
     $('#birth').val($(btn).data('birth'));
     $('#phone').val($(btn).data('phone'));
     $('#employerModal').modal('show');
