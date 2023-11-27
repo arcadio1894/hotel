@@ -36,6 +36,9 @@
     <link href="{{ asset('admin/assets/css/theme.min.css') }}" rel="stylesheet" id="style-default">
     <link href="{{ asset('admin/assets/css/user-rtl.min.css') }}" rel="stylesheet" id="user-style-rtl">
     <link href="{{ asset('admin/assets/css/user.min.css') }}" rel="stylesheet" id="user-style-default">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     @yield('styles-plugins')
     @yield('styles-dist')
@@ -146,7 +149,13 @@
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="../modules/tables/advance-tables.html" aria-expanded="false">
+                                <li class="nav-item"><a class="nav-link" href="{{ route('customers.showDeletes')}}" aria-expanded="false">
+                                    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
+                                    </div>
+                                </a>
+                                <!-- more inner pages-->
+                            </li>
+                                <li class="nav-item"><a class="nav-link" href="{{ route('customers.report')}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Reporte</span>
                                         </div>
                                     </a>
