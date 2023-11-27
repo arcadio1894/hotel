@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Http\Requests\CreateCustomerRequest;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,37 +11,37 @@ use Maatwebsite\Excel\Facades\Excel;
 
 use App\Exports\ReportCustomerExport;
 
+use Carbon\Carbon;
+
 class CustomerController extends Controller
 {
     function index(){
-        $customers = Customer::orderBy('id')->get();
-        $title="Clientes";
-        $lista=true;
-        $report=false;
-        $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
-        return view('customer.index', compact('customers', "title",'lista','document_types','report'));
+        $tipo='lista';
+        $document_types = DB::table('document_types')->get()->pluck('name')->toArray();
+        return view('customer.index', compact('tipo','document_types'));
     }
     public function showDeletes(){
-        $customers = Customer::onlyTrashed()->orderBy('deleted_at')->get();
-        $title="Clientes Eliminados";
-        $lista=false;
-        $report=false;
-        $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
-        return view('customer.index', compact('customers', 'title','lista','document_types','report'));
+        $tipo='eliminados';
+        $document_types = DB::table('document_types')->get()->pluck('name')->toArray();
+        return view('customer.index', compact('tipo','document_types'));
     }
 
-    public function store(Request $request)
-    {
+    public function store(CreateCustomerRequest $request)
+    {   
         try {
+            // Verifica las condiciones antes de crear el cliente
+            if ($request->input('document_type') != 'RUC' && is_null($request->input('lastname'))) {
+                throw new \Exception('Error: El Apellido es requerido');
+            }
             DB::beginTransaction();
             $customer = new Customer();
             $customer->document_type = $request->input('document_type');
             $customer->document = $request->input('document');
             $customer->name = $request->input('name');
-            $customer->lastname = $request->input('lastname');
+            $customer->lastname = $request->input('lastname', null);
             $customer->phone = $request->input('phone');
             $customer->email = $request->input('email');
-            $customer->birth = $request->input('birth');
+            $customer->birth = Carbon::createFromFormat('Y-m-d', $request->input('birth'))->format('d-m-Y');
             $customer->address = $request->input('address');
 
             $customer->save();
@@ -48,13 +49,13 @@ class CustomerController extends Controller
             return response()->json(['success' => 'Cliente creado correctamente']);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['error' => 'Error al crear el Cliente. Detalles: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al crear el Cliente. Detalles: ' . $e->getMessage(), 'customError' => true], 500);
         }
     }
 
 
     public function update(Request $request, Customer $customer)
-    {
+    {   
         try {
             DB::beginTransaction();
             $customer = Customer::find($request->input('id'));
@@ -65,7 +66,7 @@ class CustomerController extends Controller
                 'lastname' => $request->input('lastname'),
                 'phone' => $request->input('phone'),
                 'email' => $request->input('email'),
-                'birth' => $request->input('birth'),
+                'birth' => Carbon::createFromFormat('Y-m-d', $request->input('birth'))->format('d-m-Y'),
                 'address' => $request->input('address'),
             ]);
             DB::commit();
@@ -113,12 +114,9 @@ class CustomerController extends Controller
     }
 
     function report(){
-        $customers = Customer::withTrashed()->get();
-        $title="Clientes";
-        $lista=true;
-        $report=true;
-        $document_types=['DNI','PASAPORTE','CARNÉ DE EXTRANJERIA','LICENCIA DE CONDUCIR','CARNÉ DE ESTUDIANTE'];
-        return view('customer.index', compact('customers', "title",'lista','document_types', 'report'));
+        $tipo = "reporte";
+        $document_types = DB::table('document_types')->get()->pluck('name')->toArray();
+        return view('customer.index',compact('tipo','document_types'));
     }
 
 
@@ -127,22 +125,30 @@ class CustomerController extends Controller
         $perPage = 10;
 
         $documentCliente = $request->input('document_cliente');
-        $codigoOperacion = $request->input('codigo_operacion');
-        $bancoId = $request->input('banco_id');
-
-        $query = Customer::orderBy('created_at', 'DESC');
+        $name = $request->input('name');
+        $type = $request->input('type');
+        $tipo = $request->input('tipo');
+        if($tipo=='lista'){
+            $query = Customer::orderBy('id', 'DESC');
+        }
+        elseif($tipo=='eliminados'){
+                $query = Customer::onlyTrashed()->orderBy('id', 'DESC');
+        }
+        elseif ($tipo=='reporte'){
+            $query = Customer::withTrashed()->orderBy('id', 'DESC');
+        }
 
         // Aplicar filtros si se proporcionan
         if ($documentCliente) {
             $query->where('document', $documentCliente);
         }
 
-        if ($codigoOperacion) {
-            $query->where('name', $codigoOperacion);
+        if ($name) {
+            $query->where('name', $name);
         }
 
-        if ($bancoId) {
-            $query->where('document_type', $bancoId);
+        if ($type) {
+            $query->where('document_type', $type);
         }
 
         $totalFilteredRecords = $query->count();

@@ -1,18 +1,32 @@
 $(document).ready(function () {
 
     getDataOperations(1);
+    $tipo = $('#tipo').val();
+    console.log($tipo);
 
     $(document).on('click', '[data-item]', showData);
     $("#btn-search").on('click', showDataSeach);
 
+        // Escuchar el evento de cambio en el select
+        $('#document_type').change(function () {
+            // Obtener el valor seleccionado
+            var selectedValue = $(this).val();
+            // Modificar el label y ocultar o mostrar el input de lastname según la opción seleccionada
+            if (selectedValue === 'RUC') {
+                $('#exampleModalLabel').text('Datos del Cliente Empresarial');
+                $('#name-label').text('Razon Social');
+                $('#lastname-group').hide();
+                $('#birth-label').text('Fecha de Constitución');
+            } else {
+                $('#exampleModalLabel').text('Datos del Cliente');
+                $('#name-label').text('Nombre');
+                $('#lastname-group').show();
+                $('#birth-label').text('Cumpleaños');
+            }
+        });
+
 });
 
-var $formEdit;
-var $modalEdit;
-var $buttonSubmit;
-var $buttonCancel;
-var $buttonClose;
-var $formValidation;
 
 function showDataSeach() {
     getDataOperations(1)
@@ -26,13 +40,15 @@ function showData() {
 
 function getDataOperations($numberPage) {
     var documentCliente = $('#inputDocumentCliente').val(); // Obtén el valor del input de documento cliente
-    var codigoOperacion = $('#inputCodigoOperacion').val(); // Obtén el valor del input de código de operación
-    var bancoId = $('#selectBanco').val();
+    var name = $('#inputName').val(); // Obtén el valor del input de código de operación
+    var type = $('#selectType').val();
+    var tipo = $('#tipo').val();
 
     $.get('/home/clientes/get/data/'+$numberPage, {
         document_cliente: documentCliente,
-        codigo_operacion: codigoOperacion,
-        banco_id: bancoId
+        name: name,
+        type: type,
+        tipo: tipo
     }, function(data) {
         renderDataOperations(data);
 
@@ -151,58 +167,69 @@ function renderDataTableCard(data) {
     clone.querySelector("[data-id]").innerHTML = data.id;
     clone.querySelector("[data-document_type]").innerHTML = data.document_type;
     clone.querySelector("[data-document]").innerHTML = data.document;
-    clone.querySelector("[data-name]").innerHTML = data.name;
-    clone.querySelector("[data-lastname]").innerHTML = data.lastname;
+    if (data.lastname !== null) {
+        clone.querySelector("[data-name]").innerHTML = data.name+ ' ' + data.lastname;
+    } else {
+        clone.querySelector("[data-name]").innerHTML = data.name;
+    }
+    //clone.querySelector("[data-lastname]").innerHTML = data.lastname;
     clone.querySelector("[data-phone]").innerHTML = data.phone;
     clone.querySelector("[data-email]").innerHTML = data.email;
     clone.querySelector("[data-birth]").innerHTML = data.birth;
     clone.querySelector("[data-address]").innerHTML = data.address;
 
-   // Configurar los botones en el nuevo td
-   var buttonsTd = clone.querySelector("[data-buttons]");
-   buttonsTd.innerHTML = ''; // Limpiar contenido existente
+    if($('#tipo').val()==="lista"){
+    // Configurar los botones en el nuevo td
+    var buttonsTd = clone.querySelector("[data-buttons]");
+    buttonsTd.innerHTML = ''; // Limpiar contenido existente
 
-   var updateButton = document.createElement('button');
-   updateButton.setAttribute('type', 'button');
-   updateButton.setAttribute('class', 'btn btn-outline-primary');
-   updateButton.setAttribute('onclick', 'updateRoomType(this)');
-   updateButton.setAttribute('data-id', data.id);
-   updateButton.setAttribute('data-document_type', data.document_type);
-   updateButton.setAttribute('data-document', data.document);
-   updateButton.setAttribute('data-name', data.name);
-   updateButton.setAttribute('data-lastname', data.lastname);
-   updateButton.setAttribute('data-phone', data.phone);
-   updateButton.setAttribute('data-email', data.email);
-   updateButton.setAttribute('data-birth', data.birth);
-   updateButton.setAttribute('data-address', data.address);
+    var updateButton = document.createElement('button');
+    updateButton.setAttribute('type', 'button');
+    updateButton.setAttribute('class', 'btn btn-outline-primary');
+    updateButton.setAttribute('onclick', 'updateRoomType(this)');
+    updateButton.setAttribute('data-id', data.id);
+    updateButton.setAttribute('data-document_type', data.document_type);
+    updateButton.setAttribute('data-document', data.document);
+    updateButton.setAttribute('data-name', data.name);
+    updateButton.setAttribute('data-lastname', data.lastname);
+    updateButton.setAttribute('data-phone', data.phone);
+    updateButton.setAttribute('data-email', data.email);
+    updateButton.setAttribute('data-birth', data.birth);
+    updateButton.setAttribute('data-address', data.address);
 
-   updateButton.innerHTML = '<i class="nav-icon fas fa-pen"></i>';
-   buttonsTd.appendChild(updateButton);
+    updateButton.innerHTML = '<i class="nav-icon fas fa-pen"></i>';
+    buttonsTd.appendChild(updateButton);
 
-   var deleteButton = document.createElement('button');
-   deleteButton.setAttribute('type', 'button');
-   deleteButton.setAttribute('class', 'btn btn-outline-danger');
-   deleteButton.setAttribute('onclick', 'deleteRoomType(this)');
-   deleteButton.setAttribute('data-id', data.id);
-   deleteButton.innerHTML = '<i class="nav-icon fas fa-trash"></i>';
-   buttonsTd.appendChild(deleteButton);
+    var deleteButton = document.createElement('button');
+    deleteButton.setAttribute('type', 'button');
+    deleteButton.setAttribute('class', 'btn btn-outline-danger');
+    deleteButton.setAttribute('onclick', 'deleteRoomType(this)');
+    deleteButton.setAttribute('data-id', data.id);
+    deleteButton.innerHTML = '<i class="nav-icon fas fa-trash"></i>';
+    buttonsTd.appendChild(deleteButton);
+    }
+    else{
+        if($('#tipo').val()==="eliminados")
+        {
+            var buttonsTd = clone.querySelector("[data-buttons]");
+            buttonsTd.innerHTML = '';
+            var restoreButton = document.createElement('button');
+            restoreButton.setAttribute('type', 'button');
+            restoreButton.setAttribute('class', 'btn btn-outline-warning');
+            restoreButton.setAttribute('onclick', 'restoreRoomType(this)');
+            restoreButton.setAttribute('data-id', data.id);
+            restoreButton.innerHTML = '<i class="nav-icon fas fa-check"></i>';
+            buttonsTd.appendChild(restoreButton);
+        }
+        else{
+            if($('#tipo').val()==="reporte")
+            {
 
+            }
+        }
+    }
 
     $("#body-table").append(clone);
-
-    var clone2 = activateTemplate('#item-card');
-    clone2.querySelector("[data-id]").innerHTML = data.id;
-    clone2.querySelector("[data-document_type]").innerHTML = data.document_type;
-    clone2.querySelector("[data-document]").innerHTML = data.document;
-    clone2.querySelector("[data-name]").innerHTML = data.name;
-    clone2.querySelector("[data-lastname]").innerHTML = data.lastname;
-    clone2.querySelector("[data-phone]").innerHTML = data.phone;
-    clone2.querySelector("[data-email]").innerHTML = data.email;
-    clone2.querySelector("[data-birth]").innerHTML = data.birth;
-    clone2.querySelector("[data-address]").innerHTML = data.address;
-
-    
-    $("#body-card").append(clone2);
 
     $('[data-toggle="tooltip"]').tooltip();
 }

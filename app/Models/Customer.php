@@ -21,4 +21,11 @@ class Customer extends Model
         'address',
 
     ];
+    protected $attributes = [
+        'lastname' => null, // Establecer lastname como nullable
+    ];
+
+    protected $casts = [
+        'lastname' => 'string', // Asegurarse de que se caste a string
+    ];
 }
