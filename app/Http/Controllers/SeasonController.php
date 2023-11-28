@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\SeasonRequest;
 use App\Models\Season;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,16 +19,16 @@ class SeasonController extends Controller
     {
         $seasons = Season::orderBy('start_date')->get();
         $title = "Temporadas";
-        $lista=true;
-        return view('season.index', compact('seasons', 'title','lista'));
+        $tipo='Lista';
+        return view('season.index', compact('seasons', 'title','tipo'));
     }
 
     public function showDeletes()
     {
         $seasons = Season::onlyTrashed()->orderBy('deleted_at')->get();
         $title = "Temporadas eliminadas";
-        $lista=false;
-        return view('season.index', compact('seasons', 'title','lista'));
+        $tipo='Eliminados';
+        return view('season.index', compact('seasons', 'title','tipo'));
     }
 
     /**
@@ -45,7 +47,7 @@ class SeasonController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SeasonRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -62,7 +64,7 @@ class SeasonController extends Controller
         }
     }
 
-    public function update(Request $request, Season $season)
+    public function update(SeasonRequest $request, Season $season)
     {
         try {
             DB::beginTransaction();
@@ -120,5 +122,54 @@ class SeasonController extends Controller
             DB::rollback();
             return response()->json(['error' => 'Error al restaurar la temporada. Detalles: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function getDataSeason(Request $request, $pageNumber = 1){
+        $perPage = 10;
+
+        $nameSeason = $request->input('nameSeason');
+        $tipo = $request->input('tipo');
+        if ($tipo == 'Lista') {
+            $query = Season::orderBy('name', 'ASC');
+        } else{
+            $query = Season::onlyTrashed()->orderBy('name', 'ASC');
+        }
+        if ($nameSeason) {
+            $query->where('name', $nameSeason);
+        }
+        $results = $query->get();
+
+
+        $totalFilteredRecords = $results->count();
+        $totalPages = ceil($totalFilteredRecords / $perPage);
+
+        $startRecord = ($pageNumber - 1) * $perPage + 1;
+        $endRecord = min($totalFilteredRecords, $pageNumber * $perPage);
+
+        $seasons = $results->skip(($pageNumber - 1) * $perPage)
+            ->take($perPage);
+
+        $arraySeasons = [];
+
+        foreach ( $seasons as $season )
+        {
+            array_push($arraySeasons, [
+                "id" => $season->id,
+                "name" => $season->name,
+                "start_date" => Carbon::parse($season->start_date)->format('d/m/Y'),
+                "end_date" => Carbon::parse($season->end_date)->format('d/m/Y'),
+            ]);
+        }
+
+        $pagination = [
+            'currentPage' => (int)$pageNumber,
+            'totalPages' => (int)$totalPages,
+            'startRecord' => $startRecord,
+            'endRecord' => $endRecord,
+            'totalRecords' => $totalFilteredRecords,
+            'totalFilteredRecords' => $totalFilteredRecords
+        ];
+
+        return ['data' => $arraySeasons, 'pagination' => $pagination];
     }
 }

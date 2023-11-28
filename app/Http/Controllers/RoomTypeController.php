@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RoomTypeRequest;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -17,18 +18,18 @@ class RoomTypeController extends Controller
     public function index(){
         $roomTypes = RoomType::orderBy('name')->get();
         $title="Tipos de Habitación";
-        $lista=true;
-        return view('roomType.index', compact('roomTypes', "title",'lista'));
+        $tipo="Lista";
+        return view('roomType.index', compact('roomTypes', "title",'tipo'));
     }
 
     public function showDeletes(){
         $roomTypes = RoomType::onlyTrashed()->orderBy('deleted_at')->get();
         $title="Tipos de Habitación Eliminados";
-        $lista=false;
-        return view('roomType.index', compact('roomTypes', 'title','lista'));
+        $tipo="Eliminados";
+        return view('roomType.index', compact('roomTypes', 'title','tipo'));
     }
 
-    public function store(Request $request)
+    public function store(RoomTypeRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -46,7 +47,7 @@ class RoomTypeController extends Controller
     }
 
 
-    public function update(Request $request, RoomType $roomType)
+    public function update(RoomTypeRequest $request, RoomType $roomType)
     {
         try {
             DB::beginTransaction();
@@ -98,5 +99,52 @@ class RoomTypeController extends Controller
             DB::rollback();
             return response()->json(['error' => 'Error al restaurar el tipo de habitación. Detalles: ' . $e->getMessage()], 500);
         }
+    }
+    public function getDataRoomType(Request $request, $pageNumber = 1){
+        $perPage = 10;
+
+        $nameRoomType = $request->input('nameRoomType');
+        $tipo = $request->input('tipo');
+        if ($tipo == 'Lista') {
+            $query = RoomType::orderBy('name', 'ASC');
+        } else{
+            $query = RoomType::onlyTrashed()->orderBy('name', 'ASC');
+        }
+        if ($nameRoomType) {
+            $query->where('name', $nameRoomType);
+        }
+        $results = $query->get();
+
+
+        $totalFilteredRecords = $results->count();
+        $totalPages = ceil($totalFilteredRecords / $perPage);
+        $startRecord = ($pageNumber - 1) * $perPage + 1;
+        $endRecord = min($totalFilteredRecords, $pageNumber * $perPage);
+
+        $roomTypes = $results->skip(($pageNumber - 1) * $perPage)
+            ->take($perPage);
+
+        $arrayRoomTypes = [];
+
+        foreach ( $roomTypes as $roomType )
+        {
+            array_push($arrayRoomTypes, [
+                "id" => $roomType->id,
+                "name" => $roomType->name,
+                "description" => $roomType->description,
+                "capacity" => $roomType->capacity
+            ]);
+        }
+
+        $pagination = [
+            'currentPage' => (int)$pageNumber,
+            'totalPages' => (int)$totalPages,
+            'startRecord' => $startRecord,
+            'endRecord' => $endRecord,
+            'totalRecords' => $totalFilteredRecords,
+            'totalFilteredRecords' => $totalFilteredRecords
+        ];
+
+        return ['data' => $arrayRoomTypes, 'pagination' => $pagination];
     }
 }
