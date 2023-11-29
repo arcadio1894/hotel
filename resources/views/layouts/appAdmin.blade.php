@@ -189,36 +189,42 @@
                                     <hr class="mb-0 navbar-vertical-divider" />
                                 </div>
                             </div>
-                            <!-- parent pages--><a class="nav-link dropdown-indicator" href="#roomTypes" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="tables">
+                            <!-- parent pages-->
+                            <a class="nav-link dropdown-indicator" href="#roomTypes" role="button" data-bs-toggle="collapse" @yield('activeRoomType') aria-controls="roomTypes">
                                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-warehouse"></span></span><span class="nav-link-text ps-1">Tipos de habitación</span>
                                 </div>
                             </a>
-                            <ul class="nav collapse false" id="roomTypes">
-                                <li class="nav-item"><a class="nav-link" href="{{route("roomTypes.index")}}" aria-expanded="false">
+                            <ul class="nav collapse @yield('openRoomType')" id="roomTypes">
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeListRoomType')" href="{{route("roomTypes.index")}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="{{route("roomTypes.showDeletes")}}" aria-expanded="false">
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeDeleteRoomType')" href="{{route("roomTypes.showDeletes")}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
                             </ul>
-                            <!-- parent pages--><a class="nav-link dropdown-indicator" href="#seasons" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="tables">
+                            <!-- parent pages-->
+                            <a class="nav-link dropdown-indicator " href="#seasons" role="button" data-bs-toggle="collapse" @yield('activeSeason') aria-controls="seasons">
                                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-gifts"></span></span><span class="nav-link-text ps-1">Temporadas</span>
                                 </div>
                             </a>
-                            <ul class="nav collapse false" id="seasons">
-                                <li class="nav-item"><a class="nav-link" href="{{route("seasons.index")}}" aria-expanded="false">
+                            <ul class="nav collapse @yield('openSeason')" id="seasons">
+                                <li class="nav-item ">
+                                    <a class="nav-link @yield('activeListSeason')" href="{{route("seasons.index")}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="{{route("seasons.showDeletes")}}" aria-expanded="false">
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeDeleteSeason')" href="{{route("seasons.showDeletes")}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
                                         </div>
                                     </a>
@@ -694,6 +700,22 @@
 <script src="{{ asset('admin/vendors/list.js/list.min.js') }}"></script>
 <script src="{{ asset('admin/assets/js/theme.js') }}"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Obtén la ruta actual de la URL
+        var currentPath = window.location.pathname;
+
+        // Itera sobre los elementos de la barra de navegación y marca como activo el que coincida con la ruta actual
+        $('#navbarVerticalNav a.nav-link').each(function () {
+            var navItemPath = $(this).attr('href');
+
+            // Compara la ruta actual con la ruta del elemento de navegación
+            if (currentPath.startsWith(navItemPath)) {
+                $(this).addClass('active');
+            }
+        });
+    });
+</script>
 @yield('plugins')
 @yield('scripts')
 </body>
