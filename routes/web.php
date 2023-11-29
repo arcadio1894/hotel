@@ -55,6 +55,8 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/edit/{employer}', [EmployerController::class, 'update'])->name('update');
             Route::delete('/delete/{employer}', [EmployerController::class, 'destroy'])->name('destroy');
             Route::post('/restore/{employer}', [EmployerController::class, 'restore'])->name('restore');
+
+            Route::get('/get/data/{numberPage}', [EmployerController::class, 'getDataOperations']);
         });
     });
 

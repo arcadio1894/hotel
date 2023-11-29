@@ -97,12 +97,13 @@
                 <div class="navbar-vertical-content scrollbar">
                     <ul class="navbar-nav flex-column mb-3" id="navbarVerticalNav">
                         <li class="nav-item">
-                            <!-- parent pages--><a class="nav-link dropdown-indicator" href="#dashboard" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="dashboard">
+                            <!-- parent pages-->
+                            <a class="nav-link dropdown-indicator" href="#dashboard" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="dashboard">
                                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-chart-pie"></span></span><span class="nav-link-text ps-1">Dashboard</span>
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item has-treeview menu-open">
+                        <li class="nav-item ">
                             <!-- label-->
                             <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
                                 <div class="col-auto navbar-vertical-label">Empleados
@@ -111,21 +112,24 @@
                                     <hr class="mb-0 navbar-vertical-divider" />
                                 </div>
                             </div>
-                            <a class="nav-link dropdown-indicator" href="#employers" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="tables">
-                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fa fa-user fa-w-14"></span></span><span class="nav-link-text ps-1">Empleados</span>
+                            <a class="nav-link dropdown-indicator" href="#employers" role="button" data-bs-toggle="collapse"  @yield('activeEmployer')  aria-controls="employers">
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-user"></span></span><span class="nav-link-text ps-1">Empleados</span>
                                 </div>
                             </a>
-                            <ul class="nav collapse false" id="employers">
-                            <a class="nav-link" href="{{ route('employers.index') }}" role="button" aria-expanded="false">
-                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Listado de Empleados</span>
-                                </div>
-                            </a>
-                            </ul>
-                            <ul class="nav collapse false" id="employers">
-                            <a class="nav-link" href="{{ route('employers.index_eliminated') }}" role="button" aria-expanded="false">
-                                    <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-calendar-alt"></span></span><span class="nav-link-text ps-1">Listado de Eliminados</span>
-                                    </div>
-                            </a>
+                            <ul class="nav collapse @yield('openEmployer')" id="employers">
+                                <li class="nav-item ">
+                                    <a class="nav-link @yield('activeListEmployer')" href="{{ route('employers.index') }}"  aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listado de Empleados</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeDeleteEmployer')" href="{{ route('employers.index_eliminated') }}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
                             </ul>
                         </li>
                         <li class="nav-item">

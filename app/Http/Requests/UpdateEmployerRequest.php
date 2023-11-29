@@ -46,6 +46,7 @@ class UpdateEmployerRequest extends FormRequest
             'address.max'=> 'La :attribute debe contener máximo 255 caracteres.',
             'email.required'=> 'El :attribute es obligatorio.',
             'birth.required'=> 'El :attribute es obligatorio.',
+            'birth.date'=> 'La :attribute no cumple con el formato.',
             'phone.required' => 'El :attribute es obligatorio.',
             'phone.numeric'=> 'El :attribute debe contener datos válidos.',
             'phone.min'=> 'El :attribute debe contener minimo 9 dígitos.',

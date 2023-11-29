@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateEmployerRequest;
 use App\Models\Employer;
 use App\Models\Position;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -16,15 +17,15 @@ class EmployerController extends Controller
 
     public function index()
     {
-        $employers = Employer::all();
+        $tipo='lista';
         $positions = Position::all();
-        return view('employer.index', compact('employers','positions'));
+        return view('employer.index', compact('tipo','positions'));
     }
     public function index_eliminated()
     {
-        $employers = Employer::onlyTrashed()->orderBy('deleted_at')->get();
+        $tipo='eliminados';
         $positions = Position::all();
-        return view('employer.index_eliminated', compact('employers','positions'));
+        return view('employer.index', compact('tipo','positions'));
     }
 
     public function store(StoreEmployerRequest $request)
@@ -139,6 +140,72 @@ class EmployerController extends Controller
             DB::rollback();
             return response()->json(['error' => 'Error al restaurar el empleado. Detalles: ' . $e->getMessage()], 500);
         }
+    }
+
+    public function getDataOperations(Request $request, $pageNumber = 1)
+    {
+        $perPage = 10;
+
+        $dni = $request->input('document_employer');
+        $names = $request->input('name');
+        $tipo = $request->input('tipo');
+        if($tipo=='lista'){
+            $query = Employer::orderBy('id', 'DESC');
+        }
+        elseif($tipo=='eliminados'){
+            $query = Employer::onlyTrashed()->orderBy('id', 'DESC');
+        }
+
+        // Aplicar filtros si se proporcionan
+        if ($dni) {
+            $query->where('dni', $dni);
+        }
+
+        if ($names) {
+            $query->where('name', $names);
+        }
+
+
+        $totalFilteredRecords = $query->count();
+        $totalPages = ceil($totalFilteredRecords / $perPage);
+
+        $startRecord = ($pageNumber - 1) * $perPage + 1;
+        $endRecord = min($totalFilteredRecords, $pageNumber * $perPage);
+
+        $operations = $query->skip(($pageNumber - 1) * $perPage)
+            ->take($perPage)
+            ->get();
+
+        $arrayOperations = [];
+
+        foreach ( $operations as $operation )
+        {
+
+            array_push($arrayOperations, [
+                "id" => $operation->id,
+                "name" => $operation->name,
+                "lastname" => $operation->lastname,
+                "position_name" => $operation->position->name,
+                "position_id" => $operation->position->id,
+                "dni" => $operation->dni,
+                "address" => $operation->address,
+                "email" => $operation->email,
+                "birth" => Carbon::parse($operation->birth)->format('d/m/Y'),
+                "phone" => $operation->phone,
+            ]);
+        }
+
+        $pagination = [
+            'currentPage' => (int)$pageNumber,
+            'totalPages' => (int)$totalPages,
+            'startRecord' => $startRecord,
+            'endRecord' => $endRecord,
+            'totalRecords' => $totalFilteredRecords,
+            'totalFilteredRecords' => $totalFilteredRecords
+        ];
+
+        return ['data' => $arrayOperations, 'pagination' => $pagination];
+
     }
 
 }
