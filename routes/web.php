@@ -6,6 +6,10 @@ use App\Http\Controllers\SeasonController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployerController;
 use App\Http\Controllers\ReservationController;
+
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -49,13 +53,17 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/restore/{season}', [SeasonController::class, 'restore'])->name('restore');
         });
     });
+    // MANTENEDOR: EMPLEADOS
     Route::prefix('/home/employers')->group(function (){
         Route::name('employers.')->group(function () {
             Route::get('listar', [EmployerController::class, 'index'])->name('index');
+            Route::get('eliminados', [EmployerController::class, 'index_eliminated'])->name('index_eliminated');
             Route::post('', [EmployerController::class, 'store'])->name('store');
             Route::post('/edit/{employer}', [EmployerController::class, 'update'])->name('update');
             Route::delete('/delete/{employer}', [EmployerController::class, 'destroy'])->name('destroy');
             Route::post('/restore/{employer}', [EmployerController::class, 'restore'])->name('restore');
+
+            Route::get('/get/data/{numberPage}', [EmployerController::class, 'getDataOperations']);
         });
     });
 
@@ -93,4 +101,28 @@ Route::middleware(['auth'])->group(function () {
         });
 
 
+    //RUTAS DE PERMISOS
+    Route::prefix('permission')->group(function(){
+        Route::name('permission.')->group(function(){
+            Route::get('/',[PermissionController::class,'index'])->name('index');
+            Route::post('/store', [PermissionController::class, 'store'])->name('store');
+            Route::post('/update', [PermissionController::class,'update'])->name('update');
+            Route::post('/destroy', [PermissionController::class,'destroy'])->name('destroy');
+            //Route::post('/restore', [PermissionController::class, 'restore'])->name('restore');
+            Route::get('/all', [PermissionController::class,'getPermissions']);
+        });
+    });
+
+    //RUTAS DE ROLES
+    Route::prefix('/roles')->group(function (){
+        Route::name('roles.')->group(function () {
+            Route::get('', [RoleController::class, 'index'])->name('index');
+            Route::post('', [RoleController::class, 'store'])->name('store');
+            Route::post('/edit/{role}', [RoleController::class, 'update'])->name('update');
+            Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+            Route::post('/restore/{role}', [RoleController::class, 'restore'])->name('restore');
+            Route::get('/{role}/permisos', [RoleController::class,'editPermissions'])->name('editPermissions');
+            Route::post('/{role}/permisos', [RoleController::class,'savePermissions'])->name('savePermissions');
+        });
+    });
 });
