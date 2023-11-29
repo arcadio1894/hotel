@@ -3,82 +3,95 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function index()
     {
-        //
+        $tipo='lista';
+        return view('role.index', compact('tipo'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function create()
     {
-        //
+
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //
+
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        //
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        //
+
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        //
+
+    }
+    public function getDataOperations(Request $request, $pageNumber = 1)
+    {
+        $perPage = 10;
+
+        $description = $request->input('description');
+        $tipo = $request->input('tipo');
+        if($tipo=='lista'){
+            $query = Role::orderBy('id', 'DESC');
+        }
+
+        // Aplicar filtros si se proporcionan
+
+        if ($description) {
+            $query->where('description', $description);
+        }
+
+        $totalFilteredRecords = $query->count();
+        $totalPages = ceil($totalFilteredRecords / $perPage);
+
+        $startRecord = ($pageNumber - 1) * $perPage + 1;
+        $endRecord = min($totalFilteredRecords, $pageNumber * $perPage);
+
+        $operations = $query->skip(($pageNumber - 1) * $perPage)
+            ->take($perPage)
+            ->get();
+
+        $arrayOperations = [];
+
+        foreach ( $operations as $operation )
+        {
+
+            array_push($arrayOperations, [
+                "id" => $operation->id,
+                "name" => $operation->name,
+                "description" => $operation->description,
+            ]);
+        }
+
+        $pagination = [
+            'currentPage' => (int)$pageNumber,
+            'totalPages' => (int)$totalPages,
+            'startRecord' => $startRecord,
+            'endRecord' => $endRecord,
+            'totalRecords' => $totalFilteredRecords,
+            'totalFilteredRecords' => $totalFilteredRecords
+        ];
+
+        return ['data' => $arrayOperations, 'pagination' => $pagination];
+
     }
 }
