@@ -5,6 +5,8 @@ use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\SeasonController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\RoleController;
 
 /*
 |--------------------------------------------------------------------------
@@ -76,5 +78,28 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+    //RUTAS DE PERMISOS
+    Route::prefix('permission')->group(function(){
+        Route::name('permission.')->group(function(){
+            Route::get('/',[PermissionController::class,'index'])->name('index');
+            Route::post('/store', [PermissionController::class, 'store'])->name('store');
+            Route::post('/update', [PermissionController::class,'update'])->name('update');
+            Route::post('/destroy', [PermissionController::class,'destroy'])->name('destroy');
+            //Route::post('/restore', [PermissionController::class, 'restore'])->name('restore');
+            Route::get('/all', [PermissionController::class,'getPermissions']);
+        });
+    });
 
+    //RUTAS DE ROLES
+    Route::prefix('/roles')->group(function (){
+        Route::name('roles.')->group(function () {
+            Route::get('', [RoleController::class, 'index'])->name('index');
+            Route::post('', [RoleController::class, 'store'])->name('store');
+            Route::post('/edit/{role}', [RoleController::class, 'update'])->name('update');
+            Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
+            Route::post('/restore/{role}', [RoleController::class, 'restore'])->name('restore');
+            Route::get('/{role}/permisos', [RoleController::class,'editPermissions'])->name('editPermissions');
+            Route::post('/{role}/permisos', [RoleController::class,'savePermissions'])->name('savePermissions');
+        });
+    });
 });
