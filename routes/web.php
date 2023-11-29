@@ -5,7 +5,7 @@ use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\SeasonController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployerController;
-
+use App\Http\Controllers\ReservationController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -71,6 +71,23 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/get/data/{numberPage}', [CustomerController::class, 'getDataOperations']);
         });
     });
+
+        //  MANTENEDOR: RESERVAS
+        Route::prefix('/home/reservas')->group(function (){
+            Route::name('reservations.')->group(function () {
+                Route::get('/listar', [ReservationController::class, 'index'])->name('index');
+                /*Route::get('/listar/eliminados', [CustomerController::class, 'showDeletes'])->name('showDeletes');
+                Route::post('/crear', [CustomerController::class, 'store'])->name('store');
+                Route::post('/editar/{customer}', [CustomerController::class, 'update'])->name('update');
+                Route::delete('/borrar/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
+                Route::post('/restaurar/{customer}', [CustomerController::class, 'restore'])->name('restore');
+                Route::get('/reporte', [CustomerController::class, 'report'])->name('report');
+                Route::get('/reporte/descargar',[CustomerController::class,'generateReport'])->name('reportExcel');
+    
+                Route::get('/get/data/{numberPage}', [CustomerController::class, 'getDataOperations']);
+                */
+            });
+        });
 
 
 });

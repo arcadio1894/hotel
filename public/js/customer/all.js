@@ -10,7 +10,7 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 });
-function saveRoomType() {
+function saveCustomer() {
     $("#guardar").prop("disabled", true);
     let url = $('#id').val() ? '/home/clientes/editar/' + $('#id').val() : '/home/clientes/crear';
 
@@ -46,7 +46,7 @@ function saveRoomType() {
                 let customErrorMessage = xhr.responseJSON.error;
                 Toast.fire({
                     icon: 'error',
-                    title: 'El campo Apellido es requerido'
+                    title: customErrorMessage
                 })
             } else {
                 Toast.fire({
@@ -60,7 +60,7 @@ function saveRoomType() {
     });
 }
 
-function cleanRoomType(){
+function cleanCustomer(){
     $('#id').val('');
     $('#document_type').val('');
 
@@ -79,7 +79,7 @@ function cleanRoomType(){
     $('#roomTypeModal').modal('show');
 }
 
-function updateRoomType(btn){
+function updateCustomer(btn){
     $('#id').val($(btn).data('id'));
     $('#document_type').val($(btn).data('document_type'));
     $('#document').val($(btn).data('document'));
@@ -121,7 +121,7 @@ function updateRoomType(btn){
     $('#roomTypeModal').modal('show');
 }
 
-function deleteRoomType(btn) {
+function deleteCustomer(btn) {
     $(btn).attr("disabled", true);
     idRoomType= $(btn).data('id');
 
@@ -159,7 +159,7 @@ function deleteRoomType(btn) {
         }
     });
 }
-function restoreRoomType(btn){
+function restoreCustomer(btn){
     $(btn).attr("disabled", true);
     idRoomType = $(btn).data('id');
 

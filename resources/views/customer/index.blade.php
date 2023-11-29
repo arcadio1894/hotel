@@ -10,6 +10,38 @@
 
 @endsection
 
+@section('openCustomer')
+    menu-open
+@endsection
+
+@section('activeCustomer')
+    active
+@endsection
+
+@section('openUlCustomer')
+    show
+@endsection
+@if($tipo=='lista')
+    @section('activeListCustomer')
+        active
+    @endsection
+@else
+    @if($tipo=='eliminados')
+        @section('activeDeletedCustomer')
+        active
+        @endsection
+    @else
+        @section('activeReportCustomer')
+        active
+        @endsection
+    @endif
+
+@endif
+
+@section('title')
+    Clientes
+@endsection
+
 @section('page-header')
     <h3 class="m-0 text-dark">Clientes</h3>
 @endsection
@@ -29,7 +61,7 @@
         </div>
         <div class="d-flex justify-content-end col-2">
             @if($tipo == 'lista')
-            <button type="button" class="btn btn-outline-success" onclick="cleanRoomType()">
+            <button type="button" class="btn btn-outline-success" onclick="cleanCustomer()">
                 <i class="fa fa-plus"></i> Nuevo
             </button>
             @endif
@@ -241,7 +273,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="document_type">Tipo de Documento <span class="text-danger">*</span></label>
-                            <select name="document_type" id="document_type">
+                            <select name="document_type" id="document_type" class="form-select">
                                 @foreach ($document_types as $type)
                                     <option value="{{ $type }}">{{ $type }}</option>
                                 @endforeach
@@ -278,7 +310,7 @@
                         <div class="modal-footer">
                             <input type="hidden" id="id" name="id">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" id="guardar" onclick="saveRoomType()">Guardar</button>
+                            <button type="button" class="btn btn-primary" id="guardar" onclick="saveCustomer()">Guardar</button>
                         </div>
                     </div>
                 </form>

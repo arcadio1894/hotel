@@ -116,7 +116,7 @@
                                 </div>
                             </a>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item has-treeview @yield('openCustomer')">
                             <!-- label-->
                             <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
                                 <div class="col-auto navbar-vertical-label">Clientes
@@ -126,30 +126,57 @@
                                 </div>
                             </div>
                             <!-- parent pages-->
-                            <a class="nav-link dropdown-indicator" href="#customers" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="tables">
+                            <a class="nav-link @yield('activeCustomer') dropdown-indicator" href="#customers" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="tables">
                                 <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fa fa-user fa-w-14"></span></span><span class="nav-link-text ps-1">Clientes</span>
                                 </div>
                             </a>
-                            <ul class="nav collapse false" id="customers">
-                                <li class="nav-item"><a class="nav-link" href="{{ route('customers.index')}}" aria-expanded="false">
+                            <ul class="nav collapse @yield('openUlCustomer')" id="customers">
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeListCustomer')" href="{{ route('customers.index')}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
-                                <li class="nav-item"><a class="nav-link" href="{{ route('customers.showDeletes')}}" aria-expanded="false">
-                                    <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
-                                    </div>
-                                </a>
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeDeletedCustomer')" href="{{ route('customers.showDeletes')}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
+                                        </div>
+                                    </a>
                                 <!-- more inner pages-->
-                            </li>
-                                <li class="nav-item"><a class="nav-link" href="{{ route('customers.report')}}" aria-expanded="false">
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeReportCustomer')" href="{{ route('customers.report')}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Reporte</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
                                 </li>
                             
+                            </ul>
+                        </li>
+                        <li class="nav-item has-treeview @yield('openReservation')">
+                            <!-- label-->
+                            <div class="row navbar-vertical-label-wrapper mt-3 mb-2">
+                                <div class="col-auto navbar-vertical-label">Reservas
+                                </div>
+                                <div class="col ps-0">
+                                    <hr class="mb-0 navbar-vertical-divider" />
+                                </div>
+                            </div>
+                            <!-- parent pages-->
+                            <a class="nav-link @yield('activeReservation') dropdown-indicator" href="#reservations" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="tables">
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fa fa-user fa-w-14"></span></span><span class="nav-link-text ps-1">Reservas</span>
+                                </div>
+                            </a>
+                            <ul class="nav collapse @yield('openUlReservation')" id="reservations">
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeListReservation')" href="{{ route('reservations.index')}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
                             </ul>
                         </li>
                         
