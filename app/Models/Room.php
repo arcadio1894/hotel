@@ -4,17 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Season extends Model
+class Room extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
     protected $primaryKey = 'id';
     protected $fillable = [
-        'name',
-        'start_date',
-        'end_date'
+        'room_type_id',
+        'level',
+        'number',
+        'status',
     ];
+    public function roomType()
+    {
+        return $this->belongsTo(RoomType::class);
+    }
 
     public function roomPrices()
     {
