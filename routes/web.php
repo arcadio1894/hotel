@@ -9,6 +9,7 @@ use App\Http\Controllers\ReservationController;
 
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RoomPriceController;
 
 /*
 |--------------------------------------------------------------------------
@@ -123,6 +124,13 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/restore/{role}', [RoleController::class, 'restore'])->name('restore');
             Route::get('/{role}/permisos', [RoleController::class,'editPermissions'])->name('editPermissions');
             Route::post('/{role}/permisos', [RoleController::class,'savePermissions'])->name('savePermissions');
+        });
+    });
+
+    Route::prefix('/home/room/prices')->group(function (){
+        Route::name('roomPrices.')->group(function () {
+            Route::get('listar', [RoomPriceController::class, 'index'])->name('index');
+            Route::get('/get/data/{numberPage}', [RoomPriceController::class, 'getDataRoomPrice']);
         });
     });
 });

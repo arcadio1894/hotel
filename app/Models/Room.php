@@ -14,14 +14,11 @@ class Room extends Model
         'level',
         'number',
         'status',
+        'description',
+        'image'
     ];
     public function roomType()
     {
         return $this->belongsTo(RoomType::class);
-    }
-
-    public function roomPrices()
-    {
-        return $this->hasMany(RoomPrice::class);
     }
 }
