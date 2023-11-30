@@ -32,15 +32,13 @@ function showData() {
 
 function getDataOperations($numberPage) {
     var nameSeason = $('#inputNameSeason').val();
-    var levelRoom = $('#levelRoom').val();
-    var numberRoom = $('#numberRoom').val();
+    var typeRoom = $('#typeRoom').val();
     var priceRoom = $('#priceRoom').val();
     var durationHoursRoom = $('#durationHoursRoom').val();
 
     $.get('/home/room/prices/get/data/'+$numberPage, {
         nameSeason: nameSeason,
-        levelRoom: levelRoom,
-        numberRoom: numberRoom,
+        typeRoom: typeRoom,
         priceRoom: priceRoom,
         durationHoursRoom: durationHoursRoom
     }, function(data) {
@@ -160,10 +158,15 @@ function renderDataTableCard(data) {
     var clone = activateTemplate('#item-table');
     clone.querySelector("[data-id]").innerHTML = data.id;
     clone.querySelector("[data-season]").innerHTML = data.season;
-    clone.querySelector("[data-number]").innerHTML = data.number;
-    clone.querySelector("[data-level]").innerHTML = data.level;
+    clone.querySelector("[data-type_room]").innerHTML = data.type_room;
     clone.querySelector("[data-price]").innerHTML = data.price;
-    clone.querySelector("[data-duration_hours]").innerHTML = data.duration_hours;
+
+    if (data.duration_hours == 24) {
+        clone.querySelector("[data-duration_hours]").innerHTML = "1 Día";
+    } else {
+        // Si no es de 24 horas, muestra la duración normalmente
+        clone.querySelector("[data-duration_hours]").innerHTML = data.duration_hours + " Horas";
+    }
 
     $("#body-table").append(clone);
 

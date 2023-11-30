@@ -83,31 +83,25 @@
                             <div class="row ">
                                 <!--begin::Col-->
                                 <div class="col">
-                                    <label class="form-label fw-bolder text-dark">Piso</label>
+                                    <label class="form-label fw-bolder text-dark">Tipo de Habitación</label>
                                     <!--begin::Select-->
-                                    <input type="number" class="form-control form-control form-control-solid" name="levelRoom" id="levelRoom" />
+                                    <input type="text" class="form-control form-control form-control-solid" name="typeRoom" id="typeRoom" />
                                     <!--end::Select-->
                                 </div>
                                 <!--end::Col-->
-                                <!--begin::Col-->
-                                <div class="col">
-                                    <label class="form-label fw-bolder text-dark">Número</label>
-                                    <input type="number" class="form-control form-control form-control-solid" name="numberRoom" id="numberRoom" />
-                                </div>
                                 <div class="col">
                                     <label class="form-label fw-bolder text-dark">Precio</label>
                                     <!--begin::Select-->
                                     <input type="number" class="form-control form-control form-control-solid" name="priceRoom" id="priceRoom" />
                                     <!--end::Select-->
                                 </div>
-                                <!--end::Col-->
                                 <!--begin::Col-->
                                 <div class="col">
-                                    <label class="form-label fw-bolder text-dark">Horas</label>
+                                    <label class="form-label fw-bolder text-dark">Duración</label>
                                     <select id="durationHoursRoom" name="durationHoursRoom" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione las horas" data-hide-search="true">
                                         <option value=""></option>
                                         <option value="1">1 Hora</option>
-                                        <option value="24">24 Horas</option>
+                                        <option value="24">1 Día</option>
                                     </select>
                                 </div>
                                 <!--end::Col-->
@@ -142,10 +136,9 @@
                     <tr>
                         <th class="sort">ID</th>
                         <th class="sort">Temporada</th>
-                        <th class="sort">Piso</th>
-                        <th class="sort">Habitación</th>
+                        <th class="sort">Tipo de Hábitación</th>
                         <th class="sort">Precio</th>
-                        <th class="sort">Horas</th>
+                        <th class="sort">Duración</th>
                     </tr>
                     </thead>
                     <tbody id="body-table" class="list">
@@ -204,8 +197,7 @@
         <tr>
             <td data-id></td>
             <td data-season></td>
-            <td data-level></td>
-            <td data-number></td>
+            <td data-type_room></td>
             <td data-price></td>
             <td data-duration_hours></td>
         </tr>

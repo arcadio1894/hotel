@@ -23,37 +23,27 @@ class RoomPriceController extends Controller
         $perPage = 10;
 
         $nameSeason = $request->input('nameSeason');
-        $levelRoom = $request->input('levelRoom');
-        $numberRoom = $request->input('numberRoom');
+        $typeRoom = $request->input('typeRoom');
         $priceRoom = $request->input('priceRoom');
         $durationHoursRoom = $request->input('durationHoursRoom');
-        $query = RoomPrice::with(['room', 'season'])->orderBy('price', 'ASC');
+        $query = RoomPrice::with(['room_type', 'season'])->orderBy('price', 'ASC');
         if ($nameSeason) {
             $query->whereHas('season', function ($query) use ($nameSeason) {
                 $query->where('name', $nameSeason);
             });
         }
-        if ($levelRoom) {
-            $query->whereHas('room', function ($query) use ($levelRoom) {
-                $query->where('level', $levelRoom);
-            });
-        }
 
-        if ($numberRoom) {
-            $query->whereHas('room', function ($query) use ($numberRoom) {
-                $query->where('number', $numberRoom);
+        if ($typeRoom) {
+            $query->whereHas('room_type', function ($query) use ($typeRoom) {
+                $query->where('name', $typeRoom);
             });
         }
         if ($priceRoom) {
-            $query->whereHas('room', function ($query) use ($priceRoom) {
-                $query->where('price', $priceRoom);
-            });
+            $query->where('price', $priceRoom);
         }
 
         if ($durationHoursRoom) {
-            $query->whereHas('room', function ($query) use ($durationHoursRoom) {
-                $query->where('duration_hours', $durationHoursRoom);
-            });
+            $query->where('duration_hours', $durationHoursRoom);
         }
         $results = $query->get();
 
@@ -73,8 +63,7 @@ class RoomPriceController extends Controller
             array_push($arrayRoomPrices, [
                 "id" => $roomPrice->id,
                 "season" => $roomPrice->season->name,
-                "number" => $roomPrice->room->number,
-                "level" => $roomPrice->room->level,
+                "type_room" => $roomPrice->room_type->name,
                 "price" => $roomPrice->price,
                 "duration_hours" => $roomPrice->duration_hours,
             ]);
