@@ -29,4 +29,9 @@ class Employer extends Model
     public function position(){
         return $this->belongsTo(Position::class);
     }
+    
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }

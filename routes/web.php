@@ -94,9 +94,9 @@ Route::middleware(['auth'])->group(function () {
                 Route::post('/restaurar/{customer}', [CustomerController::class, 'restore'])->name('restore');
                 Route::get('/reporte', [CustomerController::class, 'report'])->name('report');
                 Route::get('/reporte/descargar',[CustomerController::class,'generateReport'])->name('reportExcel');
-    
-                Route::get('/get/data/{numberPage}', [CustomerController::class, 'getDataOperations']);
-                */
+                    */
+                Route::get('/get/data/{numberPage}', [ReservationController::class, 'getDataReservation']);
+
             });
         });
 
