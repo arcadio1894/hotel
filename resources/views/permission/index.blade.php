@@ -108,6 +108,9 @@
                         <th class="sort">Nombre</th>
                         <th class="sort">Descripcion</th>
                         <th class="sort">Acciones</th>
+                        @if($tipo=='lista' or $tipo =='eliminados')
+                            <th class="sort">Acciones</th>
+                        @endif
                     </tr>
                     </thead>
                     <tbody id="body-table" class="list">
@@ -161,7 +164,10 @@
             <td data-id></td>
             <td data-name></td>
             <td data-description></td>
-            <td class="text-end" data-buttons></td>
+            @if($tipo=='lista' or $tipo =='eliminados')
+                <td class="text-end" data-buttons>
+                </td>
+            @endif
         </tr>
         <!--end::Col-->
     </template>

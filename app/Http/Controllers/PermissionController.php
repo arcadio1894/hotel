@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
@@ -14,34 +15,71 @@ class PermissionController extends Controller
         return view('permission.index', compact('tipo'));
     }
 
-    public function create()
-    {
-
-    }
-
     public function store(Request $request)
     {
+        try {
+            DB::beginTransaction();
 
-    }
+            $permission = new Permission;
+            $permission->name = $request->name;
+            $permission->description = $request->description;
 
-    public function show($id)
-    {
+            $permission->save();
 
-    }
+            DB::commit();
+            return response()->json(['message' => 'Permiso guardado con éxito.'], 200);
 
-    public function edit($id)
-    {
-
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al crear este permiso. Detalles: ' . $e->getMessage()], 500);
+        }
     }
 
     public function update(Request $request, $id)
     {
+        try {
+            DB::beginTransaction();
 
+            $permission = Permission::find($id);
+
+            if (!$permission) {
+                return response()->json(['error' => 'Permiso no encontrado'], 404);
+            }
+
+            $permission->name = $request->get('name');
+            $permission->description = $request->get('description');
+
+            $permission->save();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Permiso actualizado correctamente']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al actualizar el permiso. Detalles: ' . $e->getMessage()], 500);
+        }
     }
 
     public function destroy($id)
     {
+        try {
+            DB::beginTransaction();
 
+            $permission = Permission::find($id);
+
+            if (!$permission) {
+                return response()->json(['error' => 'Permiso no encontrado'], 404);
+            }
+
+            $permission->delete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Permiso eliminado correctamente']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al eliminar el permiso. Detalles: ' . $e->getMessage()], 500);
+        }
     }
     public function getDataOperations(Request $request, $pageNumber = 1)
     {
@@ -56,7 +94,7 @@ class PermissionController extends Controller
         // Aplicar filtros si se proporcionan
 
         if ($description) {
-            $query->where('description', $description);
+            $query->where('description', "like" ,"%" .$description."%" );
         }
 
         $totalFilteredRecords = $query->count();

@@ -57,7 +57,7 @@ class RoleController extends Controller
         // Aplicar filtros si se proporcionan
 
         if ($description) {
-            $query->where('description', $description);
+            $query->where('description', "like" ,"%" .$description."%" );
         }
 
         $totalFilteredRecords = $query->count();

@@ -172,6 +172,7 @@ function renderDataTableCard(data) {
     buttonsTd.appendChild(deleteButton);
     }
 
+
     $("#body-table").append(clone);
 
     $('[data-toggle="tooltip"]').tooltip();

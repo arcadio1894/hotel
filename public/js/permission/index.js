@@ -22,7 +22,7 @@ function save() {
             $("#guardar").prop("disabled", false);
             Toast.fire({
                 icon: 'success',
-                title: response.success,
+                title: response.message,
             }).then(function () {
                 window.location.href = "/home/permissions/listar";
             });
@@ -68,7 +68,6 @@ function updatePermission(btn) {
     console.log($(btn).data('name'));
     console.log($(btn).data('description'));
     $('#permissionModal').modal('show');
-
 }
 
 function deletePermission(btn) {
