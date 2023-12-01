@@ -132,10 +132,10 @@ Route::middleware(['auth'])->group(function () {
         Route::name('roomPrices.')->group(function () {
             Route::get('listar', [RoomPriceController::class, 'index'])->name('index');
             Route::get('/get/data/{numberPage}', [RoomPriceController::class, 'getDataRoomPrice']);
+            Route::get('listar/eliminados', [RoomPriceController::class, 'showDeletes'])->name('showDeletes');
             Route::post('', [RoomPriceController::class, 'store'])->name('store');
             Route::post('/edit/{room}', [RoomPriceController::class, 'update'])->name('update');
             Route::delete('/delete/{room}', [RoomPriceController::class, 'destroy'])->name('destroy');
-            Route::post('/restore/{room}', [RoomPriceController::class, 'restore'])->name('restore');
         });
     });
 

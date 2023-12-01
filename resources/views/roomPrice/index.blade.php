@@ -31,7 +31,15 @@
 @endsection
 
 @section('activeListRoomPrice')
+    @if($tipo=='Lista')
         active
+    @endif
+@endsection
+
+@section('activeDeleteRoomPrice')
+    @if($tipo=='Eliminados')
+        active
+    @endif
 @endsection
 
 
@@ -50,6 +58,13 @@
     <div class="row">
         <div class="col-10">
         <h5 class="card-title col-7">Administra la lista de los {{$title}}</h5>
+        </div>
+        <div class="d-flex justify-content-end col-2">
+            @if($tipo=='Lista')
+                <button type="button" class="btn btn-outline-success" onclick="cleanRoomPrice()">
+                    <i class="fa fa-plus"></i> Nuevo
+                </button>
+            @endif
         </div>
     </div>
 @endsection
@@ -139,6 +154,9 @@
                         <th class="sort">Tipo de Hábitación</th>
                         <th class="sort">Precio</th>
                         <th class="sort">Duración</th>
+                        @if($tipo=='Lista' or $tipo=='Eliminados')
+                            <th class="sort">Acciones</th>
+                        @endif
                     </tr>
                     </thead>
                     <tbody id="body-table" class="list">
@@ -200,6 +218,11 @@
             <td data-type_room></td>
             <td data-price></td>
             <td data-duration_hours></td>
+            @if($tipo=='Lista' or $tipo=='Eliminados')
+                <td class="text-end" data-buttons>
+
+                </td>
+            @endif
         </tr>
         <!--end::Col-->
     </template>
@@ -210,24 +233,42 @@
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Datos del tipo de habitación</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <form id="roomPriceForm">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="name">Nombre <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name" >
+                            <label for="room_type">Tipo de Habitación <span class="text-danger">*</span></label>
+                            <select class="form-select " id="room_type" name="room_type" required data-options='{"removeItemButton":true,"placeholder":true}'>
+                                <option value="">-Seleccione-</option>
+                                @foreach ($types as $name => $id)
+                                    <option value="{{ $id}}">{{ $name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="description">Descripción</label>
-                            <textarea class="form-control" id="description" name="description" rows="4"></textarea>
+                            <label for="season">Temporada <span class="text-danger">*</span></label>
+                            <select class="form-select " id="season" name="season" required data-options='{"removeItemButton":true,"placeholder":true}'>
+                                <option value="">-Seleccione-</option>
+                                @foreach ($seasons as $name => $id)
+                                    <option value="{{ $id}}">{{ $name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
-                            <label for="capacity">Cantidad máxima de personas<span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="capacity" name="capacity" >
+                            <label for="duration_hours">Duración <span class="text-danger">*</span></label>
+                            <select class="form-select " id="duration_hours" name="duration_hours" required data-options='{"removeItemButton":true,"placeholder":true}'>
+                                <option value="">-Seleccione-</option>
+                                <option value="1">1 Hora</option>
+                                <option value="24">1 Día</option>
+                            </select>
                         </div>
+                        <div class="form-group">
+                            <label for="price">Precio<span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="price" name="price" >
+                        </div>
+
                         <div class="modal-footer">
                             <input type="hidden" id="id" name="id">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>

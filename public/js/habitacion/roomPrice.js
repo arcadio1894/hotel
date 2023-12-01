@@ -165,7 +165,48 @@ function renderDataTableCard(data) {
         clone.querySelector("[data-duration_hours]").innerHTML = "1 Día";
     } else {
         // Si no es de 24 horas, muestra la duración normalmente
-        clone.querySelector("[data-duration_hours]").innerHTML = data.duration_hours + " Horas";
+        clone.querySelector("[data-duration_hours]").innerHTML = data.duration_hours + " Hora";
+    }
+
+    if($('#tipo').val()==="Lista"){
+        var buttonsTd = clone.querySelector("[data-buttons]");
+        buttonsTd.innerHTML = '';
+
+        var updateButton = document.createElement('button');
+        updateButton.setAttribute('type', 'button');
+        updateButton.setAttribute('class', 'btn btn-outline-primary');
+        updateButton.setAttribute('onclick', 'updateRoomPrice(this)');
+        updateButton.setAttribute('data-id', data.id);
+        updateButton.setAttribute('data-season_id', data.season_id);
+        updateButton.setAttribute('data-type_room_id', data.type_room_id);
+        updateButton.setAttribute('data-price', data.price);
+        updateButton.setAttribute('data-duration_hours', data.duration_hours);
+
+
+        updateButton.innerHTML = '<i class="nav-icon fas fa-pen"></i>';
+        buttonsTd.appendChild(updateButton);
+
+        var deleteButton = document.createElement('button');
+        deleteButton.setAttribute('type', 'button');
+        deleteButton.setAttribute('class', 'btn btn-outline-danger');
+        deleteButton.setAttribute('onclick', 'deleteRoomPrice(this)');
+        deleteButton.setAttribute('data-id', data.id);
+        deleteButton.innerHTML = '<i class="nav-icon fas fa-trash"></i>';
+        buttonsTd.appendChild(deleteButton);
+    }
+    else{
+        if($('#tipo').val()==="Eliminados")
+        {
+            var buttonsTd = clone.querySelector("[data-buttons]");
+            buttonsTd.innerHTML = '';
+            var restoreButton = document.createElement('button');
+            restoreButton.setAttribute('type', 'button');
+            restoreButton.setAttribute('class', 'btn btn-outline-warning');
+            restoreButton.setAttribute('onclick', 'restoreRoomPrice(this)');
+            restoreButton.setAttribute('data-id', data.id);
+            restoreButton.innerHTML = '<i class="nav-icon fas fa-check"></i>';
+            buttonsTd.appendChild(restoreButton);
+        }
     }
 
     $("#body-table").append(clone);
@@ -208,4 +249,143 @@ function renderNextPage($numberPage) {
 function activateTemplate(id) {
     var t = document.querySelector(id);
     return document.importNode(t.content, true);
+}
+
+function saveRoomPrice() {
+    $("#guardar").prop("disabled", true);
+    let url = $('#id').val() ? '/home/room/prices/edit/' + $('#id').val() : '/home/room/prices';
+
+    $.ajax({
+        url: url,
+        method: 'POST',
+        data: $('#roomPriceForm').serialize(),
+        success: function (response) {
+            $("#roomPriceModal").modal("hide");
+            $("#guardar").prop("disabled", false);
+            Toast.fire({
+                icon: 'success',
+                title: response.success,
+            }).then(function () {
+                window.location.href = "/home/room/prices/listar";
+            });
+        },
+        error: function (xhr) {
+            $("#guardar").prop("disabled", false);
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                let errors = xhr.responseJSON.errors;
+                let errorMessage = "Errores de validación:<br>";
+
+                for (let field in errors) {
+                    errorMessage += `- ${errors[field][0]}<br>`;
+                }
+
+                Toast.fire({
+                    icon: 'error',
+                    title: errorMessage
+                });
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Hubo un error al procesar la solicitud'
+                }).then(function () {
+                    window.location.href = "/home/room/prices/listar";
+                });
+            }
+        }
+    });
+}
+
+function cleanRoomPrice(){
+    $('#id').val('');
+    $('#season').val('');
+    $('#room_type').val('');
+    $('#price').val('');
+    $('#duration_hours').val('');
+    $('#roomPriceModal').modal('show');
+}
+
+function updateRoomPrice(btn){
+    $('#id').val($(btn).data('id'));
+    $('#season').val($(btn).data('season_id'));
+    $('#room_type').val($(btn).data('type_room_id'));
+    $('#price').val($(btn).data('price'));
+    $('#duration_hours').val($(btn).data('duration_hours'));
+    $('#roomPriceModal').modal('show');
+}
+
+function deleteRoomPrice(btn) {
+    $(btn).attr("disabled", true);
+    idRoomPrice= $(btn).data('id');
+
+    Swal.fire({
+        title: '¿Estas seguro?',
+        text: "¿Realmente quieres eliminar el precio?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, borrar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/home/room/prices/delete/" + idRoomPrice,
+                type: "DELETE",
+                data: {_token: csrfToken},
+                success: function (response) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: "Eliminado correctamente"
+                    }).then(function () {
+                        window.location.href = "/home/room/prices/listar";
+                    });
+                },
+                error: function (xhr) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: "Error al eliminar"
+                    })
+                }
+            });
+        } else {
+            $(btn).attr("disabled", false);
+        }
+    });
+}
+function restoreRoomPrice(btn){
+    $(btn).attr("disabled", true);
+    idRoomPrice = $(btn).data('id');
+
+    Swal.fire({
+        title: '¿Estas seguro?',
+        text: "¿Realmente quieres restaurar el precio?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, restaurar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/home/room/prices/restore/" + idRoomPrice,
+                type: "POST",
+                data: {_token: csrfToken},
+                success: function (response) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: response.message
+                    }).then(function () {
+                        window.location.href = "/home/room/prices/listar/eliminados";
+                    });
+                },
+                error: function (xhr) {
+                    Toast.fire({
+                        icon: 'error',
+                        title: "Error al restaurar"
+                    })
+                }
+            });
+        } else {
+            $(btn).attr("disabled", false);
+        }
+    });
 }
