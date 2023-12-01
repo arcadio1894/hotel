@@ -150,6 +150,7 @@ function renderDataTableCard(data) {
     var clone = activateTemplate('#item-card');
     clone.querySelector("[data-id]").innerHTML = data.id;
     clone.querySelector("[data-room_type_id]").innerHTML = data.room_type_id;
+    clone.querySelector("[data-room_type_name]").innerHTML = data.room_type_name;
     clone.querySelector("[data-level]").innerHTML = data.level;
     clone.querySelector("[data-number]").innerHTML = data.number;
     clone.querySelector("[data-status]").innerHTML = data.status;

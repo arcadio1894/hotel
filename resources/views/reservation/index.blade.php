@@ -7,7 +7,7 @@
 @endsection
 
 @section('styles-own')
-
+<link href="{{asset('admin/vendors/flatpickr/flatpickr.min.css')}}" rel="stylesheet" />
 @endsection
 
 @section('openReservation')
@@ -105,9 +105,17 @@
                         </div>
                         <!--end::Input group-->
                         <!--begin:Action-->
-                        <div class="d-flex align-items-center">
+                        <div>
+                            <label>&nbsp;</label><br>
                             <button type="button" id="btn-search" class="btn btn-primary me-5">Buscar</button>
-                            <a id="kt_horizontal_search_advanced_link" class="btn btn-link" data-bs-toggle="collapse" href="#kt_advanced_search_form">Búsqueda avanzada</a>
+                            <!--
+                            <div class="btn-group" role="group" aria-label="Basic example" hidden>
+                                <button class="btn btn-secondary" id="btn-search" type="button" value="">Todas</button>
+                                @foreach( $room_types as $room_type )
+                                    <button class="btn btn-secondary" id="btn-search" type="button" value="{{ $room_type->id }}">{{ $room_type->name }}</button>
+                                @endforeach
+                            </div>
+                            -->
                         </div>
                         <!--end:Action-->
                     </div>
@@ -192,28 +200,43 @@
 
         <template id="item-card">
             <!--begin::Col-->
-            <div class="col-md-4 col-xxl-4">
+            <!--<div class="col-md-4 col-xxl-4">-->
+            <div class="col-md-3">
                 <!--begin::Card-->
-                <div class="card">
                     <!--begin::Card body-->
-                    <div class="card-body d-flex flex-center flex-column">
-                        <h4 class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">ID</h4>
-                        <h5 class="fw-bold text-gray-400 mb-1" data-id></h5>
-                        <h4 class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">room_type_id</h4>
-                        <h5 class="fw-bold text-gray-400 mb-1" data-room_type_id=""></h5>
-                        <h4 class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">Nivel</h4>
-                        <h5 class="fw-bold text-gray-400 mb-1" data-level></h5>
-                        <h4 class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">Numero</h4>
-                        <h5 class="fw-bold text-gray-400 mb-1" data-number></h5>
-                        <h4 class="fs-4 text-gray-800 text-hover-primary fw-bolder mb-0">Estado</h4>
-                        <h5 class="fw-bold text-gray-400 mb-1" data-status></h5>
+                    <div class="card bg-success" style="width: 22rem;">
+                        <!--<img src="https://images.unsplash.com/photo-1579705790929-7b93d00463f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" class="card-img-top" alt="...">-->
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <span style="display: inline;">
+                                    Habitación 
+                                    <p data-number style="display: inline;"></p> 
+                                    - 
+                                    <p data-room_type_name style="display: inline;"></p>
+                                    <p data-room_type_id hidden></p>
+                                </span>
+                            </h5>
 
-                        <div data-buttons>
-
+                            <p class="card-text">Descripción de la habitación aquí...
+                                    <p data-id hidden></p>
+                                <span style="display: inline;">
+                                    Nivel: 
+                                    <p data-level style="display: inline;"></p>
+                                </span>
+                            </p>
+                            <p class="card-text">
+                                <p data-id hidden></p>
+                                <span style="display: inline;">
+                                    Estado: 
+                                    <p data-status style="display: inline;"></p>
+                                </span>
+                            </p>
+                            <button type="button" class="btn btn-outline-primary" onclick="cleanCustomer()">
+                                <i class="fa fa-plus"></i> 
+                            </button>
                         </div>
                     </div>
                     <!--end::Card body-->
-                </div>
                 <!--end::Card-->
             </div>
             <!--end::Col-->
@@ -224,6 +247,7 @@
             <tr>
                 <td data-id></td>
                 <td data-room_type_id></td>
+                <td data-room_type_name></td>
                 <td data-level></td>
                 <td data-number></td>
                 <td data-status></td>
@@ -236,21 +260,104 @@
             <!--end::Col-->
         </template>
 
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card" style="width: 18rem;">
-                    <img src="https://images.unsplash.com/photo-1579705790929-7b93d00463f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" class="card-img-top" alt="...">
-                    <div class="card-body">
-                        <h5 class="card-title">Habitación 301 - Simple</h5>
-                        <p class="card-text">Descripción de la habitación aquí...</p>
-                        <p class="card-text">Disponible: SI</p>
-                        <a href="#" class="btn btn-primary">Ver más</a>
-                    </div>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg mt-6">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Creación de Reservación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+                    <form class="row g-3">
+                        @csrf
+                        <div class="col-md-6">
+                            <label class="form-label" for="document">Documento</label>
+                            <input class="form-control" id="document" type="text" />
+                        </div>
+                        <div class="col-md-6">
+                            <label>&nbsp;</label><br>
+                            <button type="button" id="buscarBtn" class="btn btn-primary">Buscar</button>
+                        </div>
+                    <form>
+                    
+                        
+                    <form class="row g-3" id="reservationForm">
+                        @csrf
+                        <div class="col-md-12" hidden>
+                            <label class="form-label" for="id">ID</label>
+                            <input class="form-control" id="id" type="text"/>
+                        </div>
+
+                        <div class="col-md-8 d-none" id="inputName">
+                            <label class="form-label" for="name">Nombres</label>
+                            <input class="form-control" id="name" type="text" placeholder="Pablito"/>
+                        </div>
+                        <div class="col-md-4 d-none" id="inputPhone" >
+                            <label class="form-label" for="phone">Teléfono</label>
+                            <input class="form-control" id="phone" type="text" placeholder="987654321"/>
+                        </div>
+
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="code">Codigo de Reserva</label>
+                            <input class="form-control" id="code" type="text" placeholder="RS-00000" readonly/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="startdate">Fecha de Inicio</label>
+
+                            <input class="form-control datetimepicker" id="startdate" type="text" placeholder="dd/mm/yy HH:ii" data-options='{"enableTime":true,"dateFormat":"d/m/y H:i","disableMobile":true}' />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="enddate">Fecha de Fin</label>
+               
+                            <input class="form-control datetimepicker" id="enddate" type="text" placeholder="dd/mm/yy HH:ii" data-options='{"enableTime":true,"dateFormat":"d/m/y H:i","disableMobile":true}' />
+                            <span id="error-message" style="color: red;"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="status">Estado</label>
+                            <input class="form-control" id="status" type="text" placeholder="libre" readonly/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="initialpay">Pago Inicial</label>
+                            <input class="form-control" id="initialpay" type="text" placeholder="100" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="totalguest">Numero de Personas</label>
+                            <input class="form-control" id="totalguest" type="text" placeholder="2" />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="paymethod">Método de Pago</label>
+                            <select class="form-select" id="paymethod">
+                                <option selected="selected">Elegir</option>
+                                @foreach($paymethods as $paymethod)
+                                    <option value= "{{$paymethod->id}}">{{$paymethod->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-12" hidden>
+                            <label class="form-label" for="employeerid">Atendido por:</label>
+                            <input class="form-control" id="employeerid" type="text" value={{ $user->id}} readonly/>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="employeername">Atendido por:</label>
+                            <input class="form-control" id="employeername" type="text" value= {{$user->name}} readonly />
+                        </div>
+
+                      </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Crear Reservación</button>
                 </div>
             </div>
         </div>
-
-
+    </div>
 
 
     
@@ -263,7 +370,8 @@
 
 @section('scripts')
     <script src="{{asset('js/reservation/index.js')}}"></script>
-    <!--<script src="{{-- asset('js/customer/all.js') --}}"></script>-->
+    <script src="{{ asset('js/reservation/all.js') }}"></script>
+    <script src="{{asset('admin/assets/js/flatpickr.js')}}"></script>
     <!-- Incluye moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
