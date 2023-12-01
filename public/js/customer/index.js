@@ -16,6 +16,7 @@ $(document).ready(function () {
                 $('#exampleModalLabel').text('Datos del Cliente Empresarial');
                 $('#name-label').text('Razon Social');
                 $('#lastname-group').hide();
+                $('#lastname').val(null);
                 $('#birth-label').text('Fecha de Constitución');
             } else {
                 $('#exampleModalLabel').text('Datos del Cliente');
@@ -186,7 +187,7 @@ function renderDataTableCard(data) {
     var updateButton = document.createElement('button');
     updateButton.setAttribute('type', 'button');
     updateButton.setAttribute('class', 'btn btn-outline-primary');
-    updateButton.setAttribute('onclick', 'updateRoomType(this)');
+    updateButton.setAttribute('onclick', 'updateCustomer(this)');
     updateButton.setAttribute('data-id', data.id);
     updateButton.setAttribute('data-document_type', data.document_type);
     updateButton.setAttribute('data-document', data.document);
@@ -203,7 +204,7 @@ function renderDataTableCard(data) {
     var deleteButton = document.createElement('button');
     deleteButton.setAttribute('type', 'button');
     deleteButton.setAttribute('class', 'btn btn-outline-danger');
-    deleteButton.setAttribute('onclick', 'deleteRoomType(this)');
+    deleteButton.setAttribute('onclick', 'deleteCustomer(this)');
     deleteButton.setAttribute('data-id', data.id);
     deleteButton.innerHTML = '<i class="nav-icon fas fa-trash"></i>';
     buttonsTd.appendChild(deleteButton);
@@ -216,7 +217,7 @@ function renderDataTableCard(data) {
             var restoreButton = document.createElement('button');
             restoreButton.setAttribute('type', 'button');
             restoreButton.setAttribute('class', 'btn btn-outline-warning');
-            restoreButton.setAttribute('onclick', 'restoreRoomType(this)');
+            restoreButton.setAttribute('onclick', 'restoreCustomer(this)');
             restoreButton.setAttribute('data-id', data.id);
             restoreButton.innerHTML = '<i class="nav-icon fas fa-check"></i>';
             buttonsTd.appendChild(restoreButton);

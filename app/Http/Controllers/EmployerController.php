@@ -32,7 +32,8 @@ class EmployerController extends Controller
     {
         try {
             DB::beginTransaction();
-
+            //dump($request);
+            //dd($request);
             $user = new User;
 
             $user->name = $request->name.' '.$request->lastname;

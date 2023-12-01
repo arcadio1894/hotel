@@ -31,7 +31,20 @@ class CustomerController extends Controller
         try {
             // Verifica las condiciones antes de crear el cliente
             if ($request->input('document_type') != 'RUC' && is_null($request->input('lastname'))) {
-                throw new \Exception('Error: El Apellido es requerido');
+                throw new \Exception('El Apellido es requerido');
+            }
+            $existingCustomer = Customer::where('document', $request->input('document'))->first();
+            if ($request->input('document_type') != 'RUC' and $existingCustomer) {
+                throw new \Exception('El número de documento ya está registrado.');
+            }
+            if ($request->input('document_type') == 'DNI' and strlen($request->input('document')) != 8 ) {
+                throw new \Exception('El DNI debe ser de 8 Dígitos.');
+            }
+            if ($request->input('document_type') == 'CARNÉ DE EXTRANJERIA' and strlen($request->input('document')) != 12 ) {
+                throw new \Exception('El DNI debe ser de 12 Dígitos.');
+            }
+            if ($request->input('document_type') == 'RUC' and strlen($request->input('document')) != 11 ) {
+                throw new \Exception('El RUC debe ser de 11 Dígitos.');
             }
             DB::beginTransaction();
             $customer = new Customer();
@@ -58,8 +71,31 @@ class CustomerController extends Controller
     {   
         try {
             DB::beginTransaction();
-            $customer = Customer::find($request->input('id'));
-            $customer->update([
+            $existingCustomer = Customer::find($request->input('id'));
+
+            $duplicateCustomer = Customer::where('document', $request->input('document'))
+                ->where('id', '!=', $existingCustomer->id)
+                ->where(function ($query) use ($request) {
+                    $query->where('document_type', '!=', 'RUC')
+                        ->orWhereNull('document_type');
+                })
+                ->first();
+
+            if ($duplicateCustomer) {
+                throw new \Exception('Ya existe otro cliente con el mismo documento y un tipo de documento diferente.');
+            }
+
+            if ($request->input('document_type') == 'DNI' and strlen($request->input('document')) != 8 ) {
+                throw new \Exception('El DNI debe ser de 8 Dígitos.');
+            }
+            if ($request->input('document_type') == 'CARNÉ DE EXTRANJERIA' and strlen($request->input('document')) != 12 ) {
+                throw new \Exception('El DNI debe ser de 12 Dígitos.');
+            }
+            if ($request->input('document_type') == 'RUC' and strlen($request->input('document')) != 11 ) {
+                throw new \Exception('El RUC debe ser de 11 Dígitos.');
+            }
+
+            $existingCustomer->update([
                 'document_type' => $request->input('document_type'),
                 'document' => $request->input('document'),
                 'name' => $request->input('name'),
@@ -73,7 +109,7 @@ class CustomerController extends Controller
             return response()->json(['success' => 'Cliente actualizado correctamente']);
         } catch (\Exception $e) {
             DB::rollback();
-            return response()->json(['error' => 'Error al actualizar el Cliente. Detalles: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Error al actualizar el Cliente. Detalles: ' . $e->getMessage(), 'customError' => true], 500);
         }
     }
 

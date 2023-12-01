@@ -5,6 +5,8 @@ use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\SeasonController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\EmployerController;
+use App\Http\Controllers\ReservationController;
+
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 
@@ -32,6 +34,7 @@ Route::middleware(['auth'])->group(function () {
         Route::name('roomTypes.')->group(function () {
             Route::get('listar', [RoomTypeController::class, 'index'])->name('index');
             Route::get('listar/eliminados', [RoomTypeController::class, 'showDeletes'])->name('showDeletes');
+            Route::get('/get/data/{numberPage}', [RoomTypeController::class, 'getDataRoomType']);
             Route::post('', [RoomTypeController::class, 'store'])->name('store');
             Route::post('/edit/{roomType}', [RoomTypeController::class, 'update'])->name('update');
             Route::delete('/delete/{roomType}', [RoomTypeController::class, 'destroy'])->name('destroy');
@@ -42,6 +45,8 @@ Route::middleware(['auth'])->group(function () {
         Route::name('seasons.')->group(function () {
             Route::get('listar', [SeasonController::class, 'index'])->name('index');
             Route::get('listar/eliminados', [SeasonController::class, 'showDeletes'])->name('showDeletes');
+            Route::get('/get/data/{numberPage}', [SeasonController::class, 'getDataSeason']);
+            //Route::get('/get/typeahead', [SeasonController::class, 'getSeasonTypeahead']);
             Route::post('', [SeasonController::class, 'store'])->name('store');
             Route::post('/edit/{season}', [SeasonController::class, 'update'])->name('update');
             Route::delete('/delete/{season}', [SeasonController::class, 'destroy'])->name('destroy');
@@ -77,6 +82,24 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/get/data/{numberPage}', [CustomerController::class, 'getDataOperations']);
         });
     });
+
+        //  MANTENEDOR: RESERVAS
+        Route::prefix('/home/reservas')->group(function (){
+            Route::name('reservations.')->group(function () {
+                Route::get('/listar', [ReservationController::class, 'index'])->name('index');
+                /*Route::get('/listar/eliminados', [CustomerController::class, 'showDeletes'])->name('showDeletes');
+                Route::post('/crear', [CustomerController::class, 'store'])->name('store');
+                Route::post('/editar/{customer}', [CustomerController::class, 'update'])->name('update');
+                Route::delete('/borrar/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
+                Route::post('/restaurar/{customer}', [CustomerController::class, 'restore'])->name('restore');
+                Route::get('/reporte', [CustomerController::class, 'report'])->name('report');
+                Route::get('/reporte/descargar',[CustomerController::class,'generateReport'])->name('reportExcel');
+    
+                Route::get('/get/data/{numberPage}', [CustomerController::class, 'getDataOperations']);
+                */
+            });
+        });
+
 
     //RUTAS DE PERMISOS
     Route::prefix('/home/permissions')->group(function(){
