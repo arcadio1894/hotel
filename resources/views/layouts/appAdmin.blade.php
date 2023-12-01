@@ -267,13 +267,13 @@
                             </a>
                             <ul class="nav collapse @yield('openRoom')" id="rooms">
                                 <li class="nav-item ">
-                                    <a class="nav-link @yield('activeListRoom')" href="{{route("roomPrices.index")}}" aria-expanded="false">
+                                    <a class="nav-link @yield('activeListRoom')" href="{{route("rooms.index")}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
                                         </div>
                                     </a>
                                 </li>
                                 <li class="nav-item ">
-                                    <a class="nav-link @yield('activeDeleteRoom')" href="{{route("roomPrices.index")}}" aria-expanded="false">
+                                    <a class="nav-link @yield('activeDeleteRoom')" href="{{route("rooms.showDeletes")}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
                                         </div>
                                     </a>
