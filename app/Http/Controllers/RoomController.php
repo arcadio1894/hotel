@@ -17,7 +17,7 @@ class RoomController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(){
-        $title="Habitación";
+        $title="Habitaciones";
         $tipo="Lista";
         $states= [
             'D' => 'Disponible',
@@ -47,7 +47,7 @@ class RoomController extends Controller
         $inputStatus = $request->input('inputStatus');
         $tipo = $request->input('tipo');
         if ($tipo == 'Lista') {
-            $query = Room::with(['roomType'])->orderBy('status', 'ASC');
+            $query = Room::with(['roomType'])->orderBy('level', 'ASC');
         } else{
             $query = Room::onlyTrashed()->orderBy('status', 'ASC');
         }

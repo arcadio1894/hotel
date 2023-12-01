@@ -58,7 +58,7 @@
 @section('page-title')
     <div class="row">
         <div class="col-10">
-        <h5 class="card-title col-7">Administra la lista de los {{$title}}</h5>
+        <h5 class="card-title col-7">Administra la lista de las {{$title}}</h5>
         </div>
         <div class="d-flex justify-content-end col-2">
             @if($tipo=='Lista')
@@ -205,6 +205,7 @@
         </li>
     </template>
 
+    @if($tipo=='Lista')
     <div class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -264,5 +265,5 @@
             </div>
         </div>
     </div>
-
+    @endif
 @endsection
