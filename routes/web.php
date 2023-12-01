@@ -96,10 +96,10 @@ Route::middleware(['auth'])->group(function () {
         Route::name('roles.')->group(function () {
             Route::get('/listar', [RoleController::class, 'index'])->name('index');
             Route::post('', [RoleController::class, 'store'])->name('store');
-            Route::post('/editar/{role}', [RoleController::class, 'update'])->name('update');
+            Route::post('/edit/{role}', [RoleController::class, 'update'])->name('update');
             Route::delete('/delete/{role}', [RoleController::class, 'destroy'])->name('destroy');
-            Route::get('/{role}/permisos', [RoleController::class,'editPermissions'])->name('editPermissions');
-            Route::post('/{role}/permisos', [RoleController::class,'savePermissions'])->name('savePermissions');
+            Route::get('/permisos/{role}', [RoleController::class,'editPermissions'])->name('editPermissions');
+            Route::post('/permisos/{role}', [RoleController::class,'savePermissions'])->name('savePermissions');
 
             Route::get('/get/data/{numberPage}', [RoleController::class, 'getDataOperations']);
         });

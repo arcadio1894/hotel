@@ -107,7 +107,6 @@
                         <th class="sort">ID</th>
                         <th class="sort">Nombre</th>
                         <th class="sort">Descripcion</th>
-                        <th class="sort">Acciones</th>
                         @if($tipo=='lista' or $tipo =='eliminados')
                             <th class="sort">Acciones</th>
                         @endif

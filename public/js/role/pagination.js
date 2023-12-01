@@ -152,6 +152,14 @@ function renderDataTableCard(data) {
     var buttonsTd = clone.querySelector("[data-buttons]");
     buttonsTd.innerHTML = ''; // Limpiar contenido existente
 
+    var permissionButton = document.createElement('button');
+    permissionButton.setAttribute('type', 'button');
+    permissionButton.setAttribute('class', 'btn btn-outline-primary');
+    permissionButton.setAttribute('onclick','redirectRol(this)');
+    permissionButton.setAttribute('data-id', data.id);
+    permissionButton.innerHTML = '<i class="nav-icon fas fa-user-check"></i>';
+    buttonsTd.appendChild(permissionButton);
+
     var updateButton = document.createElement('button');
     updateButton.setAttribute('type', 'button');
     updateButton.setAttribute('class', 'btn btn-outline-primary');

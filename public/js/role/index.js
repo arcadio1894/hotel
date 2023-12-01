@@ -109,4 +109,160 @@ function deleteRol(btn) {
         }
     });
 }
+function redirectRol(btn) {
+    $(btn).attr("disabled", true);
+    idRol = $(btn).data('id');
+
+    Swal.fire({
+        title: "Cargando...",
+        html: "Redirigiendo en <b></b> segundos.",
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: () => {
+            Swal.showLoading();
+            const timer = Swal.getPopup().querySelector("b");
+            timerInterval = setInterval(() => {
+                timer.textContent = `${Math.ceil(Swal.getTimerLeft() / 1000)}`;
+            }, 100);
+        },
+        willClose: () => {
+            clearInterval(timerInterval);
+            window.location.href = "/home/roles/permisos/" + idRol;
+        }
+    });
+}
+function restaurarRol(btn){
+    $(btn).attr("disabled", true);
+    idrol = $(btn).data('id');
+
+    Swal.fire({
+        title: '¿Estas seguro?',
+        text: "¿Realmente quieres restaurar el rol?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, restaurar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: "/roles/restore/" + idrol,
+                type: "POST",
+                data: {_token: csrfToken},
+                success: function (response) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: response.message
+                    }).then(function () {
+                        window.location.href = "/roles";
+                    });
+                },
+                error: function (xhr) {
+                    if (xhr.responseJSON && xhr.responseJSON.error) {
+                        let errorDetails = xhr.responseJSON.error;
+                        Toast.fire({
+                            icon: 'error',
+                            title: 'Error al restaurar',
+                            html: `Detalles: ${errorDetails}`
+                        }).then(function () {
+                            window.location.href = "/roles";
+                        });
+                    }
+                }
+            });
+        }
+        else {
+            $(btn).attr("disabled", false);
+        }
+    });
+}
+
+function asignarForm() {
+    $("#asignar").prop("disabled", true);
+    var form = $('#asignarEdit');
+
+    if ($('input[type="checkbox"]:checked').length === 0) {
+        Swal.fire({
+            title: 'Ningún permiso asignado',
+            text: "¿Realmente no quieres asignar permisos a este rol?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, guardar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: form.attr('method'),
+                    data: form.serialize(),
+                    success: function (response) {
+                        $("#asignar").prop("disabled", false);
+                        Toast.fire({
+                            icon: 'success',
+                            title: response.message
+                        });
+                    },
+                    error: function (xhr) {
+                        if (xhr.responseJSON && xhr.responseJSON.error) {
+                            let errorDetails = xhr.responseJSON.error;
+                            Toast.fire({
+                                icon: 'error',
+                                title: 'Error al guardar los permisos',
+                                html: `Detalles: ${errorDetails}`
+                            }).then(function () {
+                                window.location.href = "/roles";
+                            });
+                        }
+                    }
+                });
+            }else {
+                $("#asignar").prop("disabled", false);
+            }
+        });
+    }else {
+        $.ajax({
+            url: form.attr('action'),
+            type: form.attr('method'),
+            data: form.serialize(),
+            success: function (response) {
+                $("#asignar").prop("disabled", false);
+                Toast.fire({
+                    icon: 'success',
+                    title: response.message
+                });
+            },
+            error: function (xhr) {
+                if (xhr.responseJSON && xhr.responseJSON.error) {
+                    let errorDetails = xhr.responseJSON.error;
+                    Toast.fire({
+                        icon: 'error',
+                        title: 'Error al guardar los permisos',
+                        html: `Detalles: ${errorDetails}`
+                    }).then(function () {
+                        window.location.href = "/roles";
+                    });
+                }
+            }
+        });
+    }
+}
+
+$(document).ready(function() {
+    $('.checkbox-select-all').each(function() {
+        var groupId = $(this).data('group-id');
+        var groupCheckboxSelector = '.group-checkbox-' + groupId;
+        var allChecked = $(groupCheckboxSelector).length === $(groupCheckboxSelector + ':checked').length;
+        $(this).prop('checked', allChecked);
+    });
+
+    $('.checkbox-select-all').click(function() {
+        var isChecked = $(this).prop('checked');
+        var groupId = $(this).data('group-id');
+        var groupCheckboxSelector = '.group-checkbox-' + groupId;
+        $(groupCheckboxSelector).prop('checked', isChecked);
+    });
+});
+
+
 

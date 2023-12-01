@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePermissionRequest;
+use App\Http\Requests\UpdatePermissionRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Permission;
@@ -15,7 +17,7 @@ class PermissionController extends Controller
         return view('permission.index', compact('tipo'));
     }
 
-    public function store(Request $request)
+    public function store(StorePermissionRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -35,7 +37,7 @@ class PermissionController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdatePermissionRequest $request, $id)
     {
         try {
             DB::beginTransaction();
