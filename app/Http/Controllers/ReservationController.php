@@ -31,11 +31,14 @@ class ReservationController extends Controller
         //$documentCliente = $request->input('document_cliente');
         //$name = $request->input('name');
         $type = $request->input('type');
+        $status = $request->input('idle');
         $tipo = $request->input('tipo');
+        //dump($request);
+        //dd($request);
         if($tipo=='lista'){
             $query = Room::join('room_types', 'rooms.room_type_id', '=', 'room_types.id')
                         ->select('rooms.id', 'rooms.room_type_id', 'room_types.name', 'rooms.level', 'rooms.number', 'rooms.status')
-                        ->where('rooms.status', 'D')->orderBy('id','ASC');
+                        ->orderBy('id','ASC');
         }
         //dump($query);
         //dd($query);
@@ -60,6 +63,9 @@ class ReservationController extends Controller
 
         if ($type) {
             $query->where('room_type_id', $type);
+        }
+        if ($status) {
+            $query->where('status', $status);
         }
 
         $totalFilteredRecords = $query->count();

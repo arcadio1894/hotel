@@ -94,28 +94,38 @@
                             </span>
                             -->
                             <!--end::Svg Icon-->
-                            <label class="form-label fw-bolder text-dark">Tipo de Habitación</label>
+                            <label class="form-label fw-bolder text-dark">Tipos de Habitación: </label>
+
+                            <div class="btn-group" role="group" aria-label="Tipo de Habitación">
+                                <button class="btn btn-primary btn-search" type="button" value="">Todas</button>
+                                @foreach( $room_types as $room_type )
+                                    <button class="btn btn-secondary btn-search" type="button" value="{{ $room_type->id }}">{{ $room_type->name }}</button>
+                                @endforeach
+                            </div>
+
                             <!--begin::Select-->
+                            <!--
                             <select id="selectType" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione un Tipo de Habitación" data-hide-search="true">
                                 <option value=""></option>
                                 @foreach( $room_types as $room_type )
                                     <option value="{{ $room_type->id }}">{{ $room_type->name }}</option>
                                 @endforeach
                             </select>
+                            -->
                         </div>
                         <!--end::Input group-->
                         <!--begin:Action-->
                         <div>
+                            <!--
                             <label>&nbsp;</label><br>
                             <button type="button" id="btn-search" class="btn btn-primary me-5">Buscar</button>
-                            <!--
-                            <div class="btn-group" role="group" aria-label="Basic example" hidden>
-                                <button class="btn btn-secondary" id="btn-search" type="button" value="">Todas</button>
-                                @foreach( $room_types as $room_type )
-                                    <button class="btn btn-secondary" id="btn-search" type="button" value="{{ $room_type->id }}">{{ $room_type->name }}</button>
-                                @endforeach
-                            </div>
                             -->
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" id="idle" type="checkbox" />
+                                <label class="form-check-label" for="idle">Ocupados</label>
+                            </div>
+                            <input type="hidden" id="estadoSwitch" name="estadoSwitch" value="D">      
+
                         </div>
                         <!--end:Action-->
                     </div>

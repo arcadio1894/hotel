@@ -5,13 +5,26 @@ $(document).ready(function () {
     console.log($tipo);
 
     $(document).on('click', '[data-item]', showData);
-    $("#btn-search").on('click', showDataSeach);
+    $(".btn-search").on('click', showDataSeach);
 
 });
 
 
 function showDataSeach() {
-    getDataOperations(1)
+    var type = $(this).val();
+    if ($("#idle").is(":checked")) {
+        // Si está activado, establece el valor "O"
+        $("#estadoSwitch").val("O");
+        $("cardColor").removeClass("bg-success");
+        $("cardColor").addClass("bg-warning");
+    } else {
+        // Si está desactivado, establece el valor "D"
+        $("#estadoSwitch").val("D");
+        $("cardColor").removeClass("bg-warning");
+        $("cardColor").addClass("bg-success");
+    }
+    
+    getDataOperations(1,type);
 }
 
 function showData() {
@@ -20,18 +33,19 @@ function showData() {
     getDataOperations(numberPage)
 }
 
-function getDataOperations($numberPage) {
-    /*
-    var documentCliente = $('#inputDocumentCliente').val(); // Obtén el valor del input de documento cliente
-    var name = $('#inputName').val(); // Obtén el valor del input de código de operación
-    */
-    var type = $('#selectType').val();
-    
+function getDataOperations($numberPage,$type) {
+
+    //var type = $('#selectType').val();
+
+    var type =$type;
+    var idle =$('#estadoSwitch').val();
     var tipo = $('#tipo').val();
+    console.log(type,idle,tipo)
 
 
     $.get('/home/reservas/get/data/'+$numberPage, {
         type: type,
+        idle: idle,
         tipo: tipo
     }, function(data) {
         renderDataOperations(data);
@@ -148,12 +162,24 @@ function renderDataOperations(data) {
 
 function renderDataTableCard(data) {
     var clone = activateTemplate('#item-card');
+    var cardElement = clone.querySelector(".card");
+
     clone.querySelector("[data-id]").innerHTML = data.id;
     clone.querySelector("[data-room_type_id]").innerHTML = data.room_type_id;
     clone.querySelector("[data-room_type_name]").innerHTML = data.room_type_name;
     clone.querySelector("[data-level]").innerHTML = data.level;
     clone.querySelector("[data-number]").innerHTML = data.number;
     clone.querySelector("[data-status]").innerHTML = data.status;
+
+    // Limpia las clases de contexto de Bootstrap
+    cardElement.classList.remove("bg-success", "bg-danger");
+
+    // Agrega la clase de contexto de Bootstrap según el valor de data.status
+    if (data.status === 'O') {
+        cardElement.classList.add("bg-danger");
+    } else if (data.status === 'D') {
+        cardElement.classList.add("bg-success");
+    }
 
 /*
     if($('#tipo').val()==="lista"){
