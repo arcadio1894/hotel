@@ -104,27 +104,29 @@ Route::middleware(['auth'])->group(function () {
 
 
     //RUTAS DE PERMISOS
-    Route::prefix('permission')->group(function(){
-        Route::name('permission.')->group(function(){
-            Route::get('/',[PermissionController::class,'index'])->name('index');
-            Route::post('/store', [PermissionController::class, 'store'])->name('store');
-            Route::post('/update', [PermissionController::class,'update'])->name('update');
-            Route::post('/destroy', [PermissionController::class,'destroy'])->name('destroy');
-            //Route::post('/restore', [PermissionController::class, 'restore'])->name('restore');
+    Route::prefix('/home/permissions')->group(function(){
+        Route::name('permissions.')->group(function(){
+            Route::get('/listar',[PermissionController::class,'index'])->name('index');
+            Route::post('/', [PermissionController::class, 'store'])->name('store');
+            Route::post('/edit/{permission}', [PermissionController::class,'update'])->name('update');
+            Route::delete('/delete/{permission}', [PermissionController::class,'destroy'])->name('destroy');
             Route::get('/all', [PermissionController::class,'getPermissions']);
+
+            Route::get('/get/data/{numberPage}', [PermissionController::class, 'getDataOperations']);
         });
     });
 
     //RUTAS DE ROLES
-    Route::prefix('/roles')->group(function (){
+    Route::prefix('/home/roles')->group(function (){
         Route::name('roles.')->group(function () {
-            Route::get('', [RoleController::class, 'index'])->name('index');
+            Route::get('/listar', [RoleController::class, 'index'])->name('index');
             Route::post('', [RoleController::class, 'store'])->name('store');
             Route::post('/edit/{role}', [RoleController::class, 'update'])->name('update');
-            Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy');
-            Route::post('/restore/{role}', [RoleController::class, 'restore'])->name('restore');
-            Route::get('/{role}/permisos', [RoleController::class,'editPermissions'])->name('editPermissions');
-            Route::post('/{role}/permisos', [RoleController::class,'savePermissions'])->name('savePermissions');
+            Route::delete('/delete/{role}', [RoleController::class, 'destroy'])->name('destroy');
+            Route::get('/permisos/{role}', [RoleController::class,'editPermissions'])->name('editPermissions');
+            Route::post('/permisos/{role}', [RoleController::class,'savePermissions'])->name('savePermissions');
+
+            Route::get('/get/data/{numberPage}', [RoleController::class, 'getDataOperations']);
         });
     });
 
