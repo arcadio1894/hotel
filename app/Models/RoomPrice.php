@@ -10,15 +10,15 @@ class RoomPrice extends Model
     use HasFactory;
 
     protected $fillable = [
-        'room_id',
+        'room_type_id',
         'season_id',
         'duration_hours',
         'price',
     ];
 
-    public function room()
+    public function room_type()
     {
-        return $this->belongsTo(Room::class);
+        return $this->belongsTo(RoomType::class);
     }
 
     public function season()
