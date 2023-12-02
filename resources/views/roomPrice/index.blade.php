@@ -151,7 +151,7 @@
                     <tr>
                         <th class="sort">ID</th>
                         <th class="sort">Temporada</th>
-                        <th class="sort">Tipo de Hábitación</th>
+                        <th class="sort">Tipo de Habitación</th>
                         <th class="sort">Precio</th>
                         <th class="sort">Duración</th>
                         @if($tipo=='Lista' or $tipo=='Eliminados')

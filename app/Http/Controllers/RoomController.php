@@ -8,6 +8,7 @@ use App\Models\Room;
 use App\Models\RoomType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Intervention\Image\Facades\Image;
 
 class RoomController extends Controller
 {
@@ -39,7 +40,7 @@ class RoomController extends Controller
     }
 
     public function getDataRoom(Request $request, $pageNumber = 1){
-        $perPage = 10;
+        $perPage = 12;
 
         $inputType = $request->input('inputType');
         $inputLevel = $request->input('inputLevel');
@@ -95,6 +96,7 @@ class RoomController extends Controller
             ]);
         }
 
+
         $pagination = [
             'currentPage' => (int)$pageNumber,
             'totalPages' => (int)$totalPages,
@@ -111,16 +113,30 @@ class RoomController extends Controller
     {
         try {
             DB::beginTransaction();
-            Room::create([
+            $room=Room::create([
                 'room_type_id' => $request->input('room_type'),
                 'level' => $request->input('level'),
                 'number' => $request->input('number'),
                 'description' => $request->input('description'),
                 'status' => $request->input('status'),
-                'image' => $request->input('image', 'no_image.png'), // Valor por defecto si 'image' no está presente en la solicitud
+                //'image' => $request->input('image', 'no_image.png'), // Valor por defecto si 'image' no está presente en la solicitud
             ]);
+            if (!$request->file('image')) {
+                $room->image = 'no_image.png';
+                $room->save();
+
+            } else {
+                $path = public_path().'/images/rooms/';
+                $image = $request->file('image');
+                $filename = $room->id . '.JPG';
+                $img = Image::make($image);
+                $img->orientate();
+                $img->save($path.$filename, 80, 'JPG');
+                $room->image = $filename;
+                $room->save();
+            }
             DB::commit();
-            return response()->json(['success' => 'Tipo de habitación creada correctamente']);
+            return response()->json(['success' => 'Habitación creada correctamente']);
         } catch (\Exception $e) {
             DB::rollback();
             return response()->json(['error' => 'Error al crear el tipo de habitación. Detalles: ' . $e->getMessage()], 500);
@@ -139,8 +155,19 @@ class RoomController extends Controller
                 'number' => $request->input('number'),
                 'description' => $request->input('description'),
                 'status' => $request->input('status'),
-                'image' => ($request->input('image')) ? ($request->input('image')) : 'no_image.png',
+                //'image' => ($request->input('image')) ? ($request->input('image')) : 'no_image.png',
             ]);
+            if ($request->hasFile('image')) {
+                $path = public_path().'/images/rooms/';
+                $image = $request->file('image');
+                $filename = $room->id . '.JPG';
+                $img = Image::make($image);
+                $img->orientate();
+                $img->save($path.$filename, 80, 'JPG');
+                $room->image = $filename;
+            }
+
+            $room->save();
             DB::commit();
             return response()->json(['success' => 'Habitación actualizada correctamente']);
         } catch (\Exception $e) {

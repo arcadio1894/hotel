@@ -291,11 +291,13 @@ function activateTemplate(id) {
 function saveRoom() {
     $("#guardar").prop("disabled", true);
     let url = $('#id').val() ? '/home/rooms/edit/' + $('#id').val() : '/home/rooms';
-
+    var formData = new FormData($('#roomForm')[0]);
     $.ajax({
         url: url,
         method: 'POST',
-        data: $('#roomForm').serialize(),
+        data: formData,
+        processData: false,
+        contentType: false,
         success: function (response) {
             $("#roomModal").modal("hide");
             $("#guardar").prop("disabled", false);
@@ -451,8 +453,6 @@ function previewImage(input) {
         preview.src = reader.result;
         preview.style.display = 'block';
 
-        // Restablecer el valor del campo de entrada de archivo
-        input.value = '';
     };
 
     if (file) {

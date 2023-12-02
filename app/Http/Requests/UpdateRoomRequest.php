@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateRoomRequest extends FormRequest
 {
@@ -27,13 +28,12 @@ class UpdateRoomRequest extends FormRequest
         return [
             'room_type' => 'required',
             'level' => 'required|integer',
-            'number' => 'required|unique:rooms,number,' . $roomId,
+            'number' => 'required',
             'description' => 'nullable',
             'status' => 'required',
             'image' => 'nullable|image',
         ];
     }
-
     public function messages()
     {
         return [

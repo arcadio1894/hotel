@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRoomPriceRequest;
+use App\Http\Requests\UpdateRoomPriceRequest;
 use App\Models\RoomPrice;
 use App\Models\RoomType;
 use App\Models\Season;
@@ -88,7 +90,7 @@ class RoomPriceController extends Controller
         return ['data' => $arrayRoomPrices, 'pagination' => $pagination];
     }
 
-    public function store(Request $request)
+    public function store(StoreRoomPriceRequest $request)
     {
         try {
             DB::beginTransaction();
@@ -106,7 +108,7 @@ class RoomPriceController extends Controller
         }
     }
 
-    public function update(Request $request, RoomPrice $room)
+    public function update(UpdateRoomPriceRequest $request, RoomPrice $room)
     {
         try {
             DB::beginTransaction();
