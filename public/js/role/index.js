@@ -252,10 +252,14 @@ $(document).ready(function() {
     $('.checkbox-select-all').each(function() {
         var groupId = $(this).data('group-id');
         var groupCheckboxSelector = '.group-checkbox-' + groupId;
-        var allChecked = $(groupCheckboxSelector).length === $(groupCheckboxSelector + ':checked').length;
-        $(this).prop('checked', allChecked);
-    });
+        var updateSelectAllCheckbox = function() {
+            var allChecked = $(groupCheckboxSelector).length === $(groupCheckboxSelector + ':checked').length;
+            $(this).prop('checked', allChecked);
+        };
 
+        $(groupCheckboxSelector).change(updateSelectAllCheckbox.bind(this));
+        updateSelectAllCheckbox.call(this);
+    });
     $('.checkbox-select-all').click(function() {
         var isChecked = $(this).prop('checked');
         var groupId = $(this).data('group-id');
