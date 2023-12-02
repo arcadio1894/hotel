@@ -59,7 +59,7 @@ class Rooms extends Seeder
         $season = Season::first();
 
         RoomPrice::create([
-            'room_id' => $room->id,
+            'room_type_id' => $room->id,
             'season_id' => $season->id,
             'duration_hours' => 24,
             'price' => 150.00,

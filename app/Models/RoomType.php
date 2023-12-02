@@ -20,4 +20,9 @@ class RoomType extends Model
     {
         return $this->hasMany(Room::class);
     }
+
+    public function roomPrices()
+    {
+        return $this->hasMany(RoomPrice::class);
+    }
 }
