@@ -16,27 +16,28 @@
 
 @section('scripts')
 
-    <script src="{{asset('js/habitacion/roomPrice.js')}}"></script>
+    <script src="{{asset('js/habitacion/room.js')}}"></script>
     <script>
         var csrfToken = "{{ csrf_token() }}";
+        var imageUrl = "{{ asset('images/rooms') }}/";
     </script>
 @endsection
 
-@section('openRoomPrice')
+@section('openRoom')
     show
 @endsection
 
-@section('activeRoomPrice')
+@section('activeRoom')
     aria-expanded="true"
 @endsection
 
-@section('activeListRoomPrice')
+@section('activeListRoom')
     @if($tipo=='Lista')
         active
     @endif
 @endsection
 
-@section('activeDeleteRoomPrice')
+@section('activeDeleteRoom')
     @if($tipo=='Eliminados')
         active
     @endif
@@ -57,11 +58,11 @@
 @section('page-title')
     <div class="row">
         <div class="col-10">
-        <h5 class="card-title col-7">Administra la lista de los {{$title}}</h5>
+        <h5 class="card-title col-7">Administra la lista de las {{$title}}</h5>
         </div>
         <div class="d-flex justify-content-end col-2">
             @if($tipo=='Lista')
-                <button type="button" class="btn btn-outline-success" onclick="cleanRoomPrice()">
+                <button type="button" class="btn btn-outline-success" onclick="cleanRoom()">
                     <i class="fa fa-plus"></i> Nuevo
                 </button>
             @endif
@@ -77,7 +78,7 @@
                 <div class="row">
                     <div class="col-md-8">
                         <div class="form-group">
-                            <input type="text" placeholder="Nombre de la temporada" id="inputNameSeason" class="form-control rounded-0 typeahead seasonTypeahead">
+                            <input type="text" placeholder="Tipo de habitación" id="inputType" class="form-control rounded-0 typeahead roomTypeahead">
                         </div>
                     </div>
                     <div class="d-flex align-items-center col-md-4">
@@ -98,28 +99,18 @@
                             <div class="row ">
                                 <!--begin::Col-->
                                 <div class="col">
-                                    <label class="form-label fw-bolder text-dark">Tipo de Habitación</label>
+                                    <label class="form-label fw-bolder text-dark">Piso</label>
                                     <!--begin::Select-->
-                                    <input type="text" class="form-control form-control form-control-solid" name="typeRoom" id="typeRoom" />
+                                    <input type="text" class="form-control form-control form-control-solid" name="inputLevel" id="inputLevel" />
                                     <!--end::Select-->
                                 </div>
                                 <!--end::Col-->
                                 <div class="col">
-                                    <label class="form-label fw-bolder text-dark">Precio</label>
+                                    <label class="form-label fw-bolder text-dark">Número</label>
                                     <!--begin::Select-->
-                                    <input type="number" class="form-control form-control form-control-solid" name="priceRoom" id="priceRoom" />
+                                    <input type="number" class="form-control form-control form-control-solid" name="inputNumber" id="inputNumber" />
                                     <!--end::Select-->
                                 </div>
-                                <!--begin::Col-->
-                                <div class="col">
-                                    <label class="form-label fw-bolder text-dark">Duración</label>
-                                    <select id="durationHoursRoom" name="durationHoursRoom" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione las horas" data-hide-search="true">
-                                        <option value=""></option>
-                                        <option value="1">1 Hora</option>
-                                        <option value="24">1 Día</option>
-                                    </select>
-                                </div>
-                                <!--end::Col-->
                             </div>
                             <!--end::Row-->
                         </div>
@@ -130,44 +121,19 @@
             </div>
         </div>
     </form>
+
     <div class="d-flex flex-wrap flex-stack pb-3">
         <!--begin::Title-->
         <div class="d-flex flex-wrap align-items-center my-1">
             <h5 class=" me-5 my-1"><span id="numberItems"></span> {{$title}} encontradas
-                <span class="text-gray-400 fs-1">por precio ↓</span>
+                <span class="text-gray-400 fs-1">ordenadas por piso ↓</span>
             </h5>
         </div>
         <!--end::Title-->
     </div>
-    <!--end::Toolbar-->
 
-    <!--begin::Tab Content-->
-    <div class="tab-content">
-        <!--begin::Tab pane-->
-        <div id="kt_project_users_table_pane" >
-            <div class="table-responsive scrollbar">
-                <table id="kt_project_users_table" class="table table-bordered table-striped fs--1 mb-0">
-                    <thead class="bg-200 text-900">
-                    <tr>
-                        <th class="sort">ID</th>
-                        <th class="sort">Temporada</th>
-                        <th class="sort">Tipo de Habitación</th>
-                        <th class="sort">Precio</th>
-                        <th class="sort">Duración</th>
-                        @if($tipo=='Lista' or $tipo=='Eliminados')
-                            <th class="sort">Acciones</th>
-                        @endif
-                    </tr>
-                    </thead>
-                    <tbody id="body-table" class="list">
-
-                    </tbody>
-                </table>
-            </div>
-
-        </div>
-        <!--end::Tab pane-->
-        <!--begin::Pagination-->
+    <div class="">
+        <div class="row" id="body-card"></div>
         <div class="d-flex flex-stack flex-wrap pt-1">
             <div class="fw-bold text-gray-700" id="textPagination"></div>
             <!--begin::Pages-->
@@ -176,9 +142,40 @@
             </ul>
             <!--end::Pages-->
         </div>
-        <!--end::Pagination-->
     </div>
-    <!--end::Tab Content-->
+
+
+    <template id="item-card">
+        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch pb-4">
+            <div class="card d-flex flex-row col-md-12" data-color data-color_text>
+                <!-- Imagen en la izquierda -->
+                <div class="card-img-left">
+                    <img data-image src="" alt="" class="img-circle img-fluidcpt-3">
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div style="display: none;" data-id></div>
+                            <h2 class="lead text-center"><b data-type_room></b> <b data-level> </b><b data-number></b></h2>
+                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                <li class="small"><span class="fa-li"><i class="fas fa-book"></i></span>Descripción: <span data-description></span></li>
+                                <li class="small"><span class="fa-li"><i class="fas fa-check"></i></span>Estado: <span data-status></span></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-8 offset-2 text-center mt-3">
+                            <!-- Botones -->
+                            <div class="text-center">
+                                <a data-buttons></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </template>
 
     <template id="previous-page">
         <li class="page-item previous">
@@ -208,34 +205,17 @@
         </li>
     </template>
 
-
-
-    <template id="item-table">
-        <!--begin::Col-->
-        <tr>
-            <td data-id></td>
-            <td data-season></td>
-            <td data-type_room></td>
-            <td data-price></td>
-            <td data-duration_hours></td>
-            @if($tipo=='Lista' or $tipo=='Eliminados')
-                <td class="text-end" data-buttons>
-
-                </td>
-            @endif
-        </tr>
-        <!--end::Col-->
-    </template>
-
-    <div class="modal fade" id="roomPriceModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @if($tipo=='Lista')
+    <div class="modal fade" id="roomModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Datos del tipo de habitación</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="roomPriceForm">
+                <form id="roomForm" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -248,36 +228,42 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="season">Temporada <span class="text-danger">*</span></label>
-                            <select class="form-select " id="season" name="season" required data-options='{"removeItemButton":true,"placeholder":true}'>
+                            <label for="level">Piso <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="level" name="level" >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="number">Número <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="number" name="number" >
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Descripción</label>
+                            <textarea class="form-control" id="description" name="description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Estado<span class="text-danger">*</span></label>
+                            <select class="form-select " id="status" name="status" required data-options='{"removeItemButton":true,"placeholder":true}'>
                                 <option value="">-Seleccione-</option>
-                                @foreach ($seasons as $name => $id)
+                                @foreach ($states as $id => $name)
                                     <option value="{{ $id}}">{{ $name}}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="duration_hours">Duración <span class="text-danger">*</span></label>
-                            <select class="form-select " id="duration_hours" name="duration_hours" required data-options='{"removeItemButton":true,"placeholder":true}'>
-                                <option value="">-Seleccione-</option>
-                                <option value="1">1 Hora</option>
-                                <option value="24">1 Día</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="price">Precio<span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="price" name="price" >
+                            <label for="image">Imagen</label>
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="previewImage(this)">
+                            <img id="preview" src="#" alt="Vista previa de la imagen" style="display:none; max-width: 200px; margin-top: 10px;">
                         </div>
 
                         <div class="modal-footer">
                             <input type="hidden" id="id" name="id">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                            <button type="button" class="btn btn-primary" id="guardar" onclick="saveRoomPrice()">Guardar</button>
+                            <button type="button" class="btn btn-primary" id="guardar" onclick="saveRoom()">Guardar</button>
                         </div>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
+    @endif
 @endsection
