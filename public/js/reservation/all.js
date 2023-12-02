@@ -66,7 +66,7 @@ function showCustomerSearch() {
         }
         else{
             Toast.fire({
-                icon: 'error',
+                icon: 'warning',
                 title: 'Cliente no Encontrado.'
             })
 
