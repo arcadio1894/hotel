@@ -188,7 +188,14 @@
                             <ul class="nav collapse @yield('openUlReservation')" id="reservations">
                                 <li class="nav-item">
                                     <a class="nav-link @yield('activeListReservation')" href="{{ route('reservations.index')}}" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Lista General</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeListReservations')" href="{{ route('reservations.indexReservations')}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Lista de Reservas</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->

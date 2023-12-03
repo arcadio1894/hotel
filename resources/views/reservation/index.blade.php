@@ -296,8 +296,8 @@
                     <form class="row g-3" id="reservationForm">
                         @csrf
                         <div class="col-md-12" hidden>
-                            <label class="form-label" for="id">ID</label>
-                            <input class="form-control" id="id" type="text"/>
+                            <label class="form-label" for="idCustomer">ID</label>
+                            <input class="form-control" id="idCustomer" type="text"/>
                         </div>
 
                         <div class="col-md-8 d-none" id="inputName">
@@ -362,6 +362,7 @@
                       </form>
                 </div>
                 <div class="modal-footer">
+                    <input type="hidden" id="id" name="id">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary">Crear Reservación</button>
                 </div>

@@ -89,9 +89,13 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('/home/reservas')->group(function (){
             Route::name('reservations.')->group(function () {
                 Route::get('/listar', [ReservationController::class, 'index'])->name('index');
+                Route::get('/get/data/{numberPage}', [ReservationController::class, 'getDataReservation']);
+
+                Route::get('/lista/crear', [ReservationController::class, 'indexReservations'])->name('indexReservations');
+                Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);
+                Route::post('/crear', [ReservationController::class, 'storeReservations'])->name('storeReservations');
 
                 Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
-                Route::get('/get/data/{numberPage}', [ReservationController::class, 'getDataReservation']);
 
             });
         });

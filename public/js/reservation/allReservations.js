@@ -12,8 +12,8 @@ const Toast = Swal.mixin({
 $(document).ready(function () {
 
     $(".datetimepicker").flatpickr({
-        enableTime: true,
-        dateFormat: "d/m/y H:i",
+        enableTime: false,
+        dateFormat: "d/m/y",
         disableMobile: true
     });
 
@@ -80,7 +80,7 @@ function showCustomerSearch() {
     })
 }
 
-function cleanCustomer(){
+function cleanReservations(){
     $('#document').val('');
     $('#idCustomer').val('').prop('readonly', false);
     $('#name').val('').prop('readonly', false);
@@ -88,4 +88,53 @@ function cleanCustomer(){
     $('#code').val('');
     $('#inputName, #inputPhone').addClass('d-none');
     $('#reservationModal').modal('show');
+}
+
+
+function saveReservations() {
+    $("#guardar").prop("disabled", true);
+
+    // Recopila los datos del formulario
+    let formData = {
+        code: $("#code").val(),
+        idCustomer: $("#idCustomer").val(),
+        employeerid: $("#employeerid").val(),
+        startdate: $("#startdate").val(),
+        enddate: $("#enddate").val(),
+        totalguest: $("#totalguest").val(),
+    };
+
+    // Realiza la solicitud AJAX
+    $.ajax({
+        url: '/home/reservas/crear',
+        method: 'POST',
+        data: formData,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+        },
+        success: function (response) {
+            // Manejo de éxito
+            $("#reservationModal").modal("hide");
+            $("#guardar").prop("disabled", false);
+            Toast.fire({
+                icon: 'success',
+                title: response.success,
+            }).then(function () {
+                window.location.href = "/home/reservas/lista/crear";
+            });
+        },
+        error: function (xhr) {
+            // Manejo de errores
+            $("#guardar").prop("disabled", false);
+            // ... Resto del manejo de errores
+        }
+    });
+}
+function formatearFecha(fecha) {
+    const fechaFormateada = new Date(fecha).toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    });
+    return fechaFormateada;
 }
