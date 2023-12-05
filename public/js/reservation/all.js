@@ -79,6 +79,18 @@ function showCustomerSearch() {
 
     })
 }
+function addReservationDetail(){
+
+    cleanCustomer();
+    $('#addReservationDetailModal').modal('show');
+}
+
+function updateReservationDetail(){
+
+    cleanCustomer();
+    $('#addReservationDetailModal').modal('show');
+}
+
 
 function cleanCustomer(){
     $('#document').val('');
@@ -87,5 +99,5 @@ function cleanCustomer(){
     $('#phone').val('').prop('readonly', false);
     $('#code').val('');
     $('#inputName, #inputPhone').addClass('d-none');
-    $('#reservationModal').modal('show');
+
 }

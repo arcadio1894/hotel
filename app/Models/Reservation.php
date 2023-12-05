@@ -28,4 +28,10 @@ class Reservation extends Model
     {
         return $this->belongsTo(Paymethod::class);
     }
+
+    public function details()
+    {
+        return $this->hasMany(ReservationDetail::class);
+    }
+
 }
