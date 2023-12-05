@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Reservation;
+use App\Models\ReservationDetail;
 use App\Models\Room;
 use App\Models\Customer;
 
@@ -57,12 +58,6 @@ class ReservationController extends Controller
         if ($documentCliente) {
             $query->whereHas('customer', function ($query) use ($documentCliente) {
                 $query->where('document', $documentCliente);
-            });
-        }
-
-        if ($name) {
-            $query->whereHas('customer', function ($query) use ($name) {
-                $query->where('name', $name);
             });
         }
 
@@ -127,39 +122,56 @@ class ReservationController extends Controller
 
     }
 
-        public function storeReservations(Request $request)
-        {
-            //dump($request);
-            //dd($request);
-            $reservacion = new Reservation();
-            $reservacion->code = $request->input('code');
-            if($request->input('idCustomer')){
-                $reservacion->customer_id = $request->input('idCustomer');
-            }
-            else{
-                $customer = new Customer();
-                $customer->document_type = $request->input('documentType');
-                $customer->document = $request->input('document');
-                $customer->name = $request->input('name');
-                $customer->lastname = $request->input('lastname', null);
-                $customer->phone = $request->input('phone');
-                $customer->email = $request->input('email');
-                $customer->birth = $request->input('birth');
-                $customer->address = $request->input('address');
-                $customer->save();
-                $reservacion->customer_id = $customer->id;
-            }
-
-            $reservacion->employer_id = $request->input('employeerid');
-            $reservacion->start_date = $request->input('startdate');
-            $reservacion->end_date = $request->input('startdate');
-            $reservacion->total_guest = $request->input('totalguest');
-    
-            $reservacion->save();
-    
-            return response()->json(['success' => 'Reservación creada con éxito']);
+    public function storeReservations(Request $request)
+    {
+        //dump($request);
+        //dd($request);
+        $reservacion = new Reservation();
+        $reservacion->code = $request->input('code');
+        if($request->input('idCustomer')){
+            $reservacion->customer_id = $request->input('idCustomer');
+        }
+        else{
+            $customer = new Customer();
+            $customer->document_type = $request->input('documentType');
+            $customer->document = $request->input('document');
+            $customer->name = $request->input('name');
+            $customer->lastname = $request->input('lastname', null);
+            $customer->phone = $request->input('phone');
+            $customer->email = $request->input('email');
+            $customer->birth = $request->input('birth');
+            $customer->address = $request->input('address');
+            $customer->save();
+            $reservacion->customer_id = $customer->id;
         }
 
+        $reservacion->employer_id = $request->input('employeerid');
+        $reservacion->start_date = $request->input('startdate');
+        $reservacion->end_date = $request->input('startdate');
+        $reservacion->total_guest = $request->input('totalguest');
+
+        $reservacion->save();
+
+        return response()->json(['success' => 'Reservación creada con éxito']);
+    }
+
+
+    public function listAssignRooms($reservation_id){
+        $tipo = 'listaAsignaCuartos';
+        $room_types = DB::table('room_types')->get();
+        $paymethods = DB::table('paymethods')->get();
+        $usuario = Auth::user();
+        $user = (object)[
+            "id" => $usuario->id,
+            "name" => $usuario->name,
+        ];
+        // Puedes hacer las operaciones necesarias aquí antes de la redirección
+    
+        // Redirigir a la nueva página
+        return view('reservation.index', compact('tipo','room_types','paymethods','user','reservation_id'));
+    }
+
+    
 
     function index(){
         $tipo='lista';
@@ -182,40 +194,36 @@ class ReservationController extends Controller
         $type = $request->input('type');
         $status = $request->input('idle');
         $tipo = $request->input('tipo');
+        $reservation_id = $request->input('reservation_id');
         //dump($request);
         //dd($request);
         if($tipo=='lista'){
             $query = Room::join('room_types', 'rooms.room_type_id', '=', 'room_types.id')
                         ->select('rooms.id', 'rooms.room_type_id', 'room_types.name', 'rooms.level', 'rooms.number', 'rooms.status')
                         ->orderBy('level','ASC');
+            if ($type) {
+                $query->where('room_type_id', $type);
+            }
+            if ($status) {
+                $query->where('status', $status);
+            }
+        }
+        elseif($tipo=='listaAsignaCuartos'){
+            $room_indexs = ReservationDetail::where('reservation_id', $reservation_id)->pluck('room_id')->toArray();
+
+            $queryE = Room::whereIn('id', $room_indexs)->orderBy('level', 'ASC');
+            
+            $queryD = Room::where('status', 'D');
+            if ($type) {
+                $queryD->where('room_type_id', $type);
+            }
+            $queryD = $queryD->orderBy('level', 'ASC');
+            
+            $query = $queryE->union($queryD);
         }
         //dump($query);
         //dd($query);
-        /*
-        elseif($tipo=='eliminados'){
-                $query = Room::onlyTrashed()->orderBy('id', 'DESC');
-        }
-        elseif ($tipo=='reporte'){
-            $query = Room::withTrashed()->orderBy('id', 'DESC');
-        }*/
 
-        // Aplicar filtros si se proporcionan
-        /*
-        if ($documentCliente) {
-            $query->where('document', $documentCliente);
-        }
-
-        if ($name) {
-            $query->where('name', $name);
-        }
-        */
-
-        if ($type) {
-            $query->where('room_type_id', $type);
-        }
-        if ($status) {
-            $query->where('status', $status);
-        }
 
         $totalFilteredRecords = $query->count();
         $totalPages = ceil($totalFilteredRecords / $perPage);

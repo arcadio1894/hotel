@@ -40,69 +40,73 @@ function getDataOperations($numberPage,$type) {
     var type =$type;
     var idle =$('#estadoSwitch').val();
     var tipo = $('#tipo').val();
-    console.log(type,idle,tipo)
 
+    var reservation_id = $('#reservation_id').val();
+    console.log(type,idle,tipo,reservation_id)
 
-    $.get('/home/reservas/get/data/'+$numberPage, {
-        type: type,
-        idle: idle,
-        tipo: tipo
-    }, function(data) {
-        renderDataOperations(data);
+        $.get('/home/reservas/get/data/'+$numberPage, {
+            type: type,
+            idle: idle,
+            tipo: tipo,
+            reservation_id:reservation_id,
+        }, function(data) {
+            renderDataOperations(data);
 
-    }).fail(function(jqXHR, textStatus, errorThrown) {
-        // Función de error, se ejecuta cuando la solicitud GET falla
-        console.error(textStatus, errorThrown);
-        if (jqXHR.responseJSON.message && !jqXHR.responseJSON.errors) {
-            toastr.error(jqXHR.responseJSON.message, 'Error', {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "2000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            // Función de error, se ejecuta cuando la solicitud GET falla
+            console.error(textStatus, errorThrown);
+            if (jqXHR.responseJSON.message && !jqXHR.responseJSON.errors) {
+                toastr.error(jqXHR.responseJSON.message, 'Error', {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+            }
+            for (var property in jqXHR.responseJSON.errors) {
+                toastr.error(jqXHR.responseJSON.errors[property], 'Error', {
+                    "closeButton": true,
+                    "debug": false,
+                    "newestOnTop": false,
+                    "progressBar": true,
+                    "positionClass": "toast-top-right",
+                    "preventDuplicates": false,
+                    "onclick": null,
+                    "showDuration": "300",
+                    "hideDuration": "1000",
+                    "timeOut": "2000",
+                    "extendedTimeOut": "1000",
+                    "showEasing": "swing",
+                    "hideEasing": "linear",
+                    "showMethod": "fadeIn",
+                    "hideMethod": "fadeOut"
+                });
+            }
+        }, 'json')
+            .done(function() {
+                // Configuración de encabezados
+                var headers = {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+                };
+
+                $.ajaxSetup({
+                    headers: headers
+                });
             });
-        }
-        for (var property in jqXHR.responseJSON.errors) {
-            toastr.error(jqXHR.responseJSON.errors[property], 'Error', {
-                "closeButton": true,
-                "debug": false,
-                "newestOnTop": false,
-                "progressBar": true,
-                "positionClass": "toast-top-right",
-                "preventDuplicates": false,
-                "onclick": null,
-                "showDuration": "300",
-                "hideDuration": "1000",
-                "timeOut": "2000",
-                "extendedTimeOut": "1000",
-                "showEasing": "swing",
-                "hideEasing": "linear",
-                "showMethod": "fadeIn",
-                "hideMethod": "fadeOut"
-            });
-        }
-    }, 'json')
-        .done(function() {
-            // Configuración de encabezados
-            var headers = {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
-            };
-
-            $.ajaxSetup({
-                headers: headers
-            });
-        });
 }
+
+
 
 function renderDataOperations(data) {
     var dataAccounting = data.data;
@@ -179,10 +183,12 @@ function renderDataTableCard(data) {
         cardElement.classList.add("bg-danger");
     } else if (data.status === 'D') {
         cardElement.classList.add("bg-success");
+    } else if (data.status === 'E') {
+        cardElement.classList.add("bg-info");
     }
 
-/*
-    if($('#tipo').val()==="lista"){
+
+    if(data.status==="E"){
     // Configurar los botones en el nuevo td
     var buttonsTd = clone.querySelector("[data-buttons]");
     buttonsTd.innerHTML = ''; // Limpiar contenido existente
@@ -190,40 +196,39 @@ function renderDataTableCard(data) {
     var updateButton = document.createElement('button');
     updateButton.setAttribute('type', 'button');
     updateButton.setAttribute('class', 'btn btn-outline-primary');
-    updateButton.setAttribute('onclick', 'updateCustomer(this)');
+    updateButton.setAttribute('onclick', 'updateReservationDetail(this)');
     updateButton.setAttribute('data-id', data.id);
-    updateButton.setAttribute('data-document_type', data.document_type);
-    updateButton.setAttribute('data-document', data.document);
-    updateButton.setAttribute('data-name', data.name);
-    updateButton.setAttribute('data-lastname', data.lastname);
-    updateButton.setAttribute('data-phone', data.phone);
-    updateButton.setAttribute('data-email', data.email);
-    updateButton.setAttribute('data-birth', data.birth);
-    updateButton.setAttribute('data-address', data.address);
-
+    /*
+    updateButton.setAttribute('data-room_type_id', data.room_type_id);
+    updateButton.setAttribute('data-room_type_name', data.room_type_name);
+    updateButton.setAttribute('data-level', data.level);
+    updateButton.setAttribute('data-number', data.number);
+    updateButton.setAttribute('data-status', data.status);
+    */
+    
     updateButton.innerHTML = '<i class="nav-icon fas fa-pen"></i>';
     buttonsTd.appendChild(updateButton);
-
+    /*
     var deleteButton = document.createElement('button');
     deleteButton.setAttribute('type', 'button');
     deleteButton.setAttribute('class', 'btn btn-outline-danger');
     deleteButton.setAttribute('onclick', 'deleteCustomer(this)');
     deleteButton.setAttribute('data-id', data.id);
-    deleteButton.innerHTML = '<i class="nav-icon fas fa-trash"></i>';
+    deleteButton.innerHTML = '<i class="nav-icon fas fa-check"></i>';
     buttonsTd.appendChild(deleteButton);
+    */
     }
-    else{
-        if($('#tipo').val()==="eliminados")
+    else if(data.status==="D")
         {
             var buttonsTd = clone.querySelector("[data-buttons]");
             buttonsTd.innerHTML = '';
-            var restoreButton = document.createElement('button');
-            restoreButton.setAttribute('type', 'button');
-            restoreButton.setAttribute('class', 'btn btn-outline-warning');
-            restoreButton.setAttribute('onclick', 'restoreCustomer(this)');
-            restoreButton.setAttribute('data-id', data.id);
-            restoreButton.innerHTML = '<i class="nav-icon fas fa-check"></i>';
-            buttonsTd.appendChild(restoreButton);
+            var addButton = document.createElement('button');
+            addButton.setAttribute('type', 'button');
+            addButton.setAttribute('class', 'btn btn-outline-primary');
+            addButton.setAttribute('onclick', 'addReservationDetail(this)');
+            addButton.setAttribute('data-id', data.id);
+            addButton.innerHTML = '<i class="nav-icon fa fa-plus"></i>';
+            buttonsTd.appendChild(addButton);
         }
         else{
             if($('#tipo').val()==="reporte")
@@ -231,8 +236,8 @@ function renderDataTableCard(data) {
 
             }
         }
-    }
-    */
+    
+    
 
     $("#body-card").append(clone);
 

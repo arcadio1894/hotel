@@ -136,7 +136,7 @@ function saveReservations() {
                 icon: 'success',
                 title: response.success,
             }).then(function () {
-                window.location.href = "/home/reservas/lista/crear";
+                window.location.href = "/home/reservas/lista";
             });
         },
         error: function (xhr) {
@@ -144,6 +144,24 @@ function saveReservations() {
             console.log(xhr);
             $("#guardar").prop("disabled", false);
             // ... Resto del manejo de errores
+        }
+    });
+}
+
+function updateReservation(btn) {
+    reservation_id = $(btn).data('id');
+
+    $.ajax({
+        url: '/home/reservas/lista/' + reservation_id,
+        method: 'GET',
+        data: {_token: $('meta[name="csrf-token"]').attr('content')},  // Añadir el token CSRF
+        success: function (response) {
+            // Redirigir a la nueva página después de que la solicitud tenga éxito
+            window.location.href = '/home/reservas/lista/' + reservation_id;
+        },
+        error: function (xhr, status, error) {
+            // Manejar errores
+            console.error(xhr, status, error);
         }
     });
 }

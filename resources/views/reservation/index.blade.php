@@ -73,6 +73,9 @@
 
 @section('content')
     <input type="hidden" id="tipo" value="{{ $tipo }}">
+    @if($tipo == 'listaAsignaCuartos')
+        <input type="hidden" id="reservation_id" value="{{ $reservation_id }}">
+    @endif
         <!--begin::Card-->
         <!--begin::Form-->
         <form action="#">
@@ -241,9 +244,13 @@
                                     <p data-status style="display: inline;"></p>
                                 </span>
                             </p>
-                            <button type="button" class="btn btn-outline-primary" onclick="cleanCustomer()">
-                                <i class="fa fa-plus"></i> 
-                            </button>
+                            <p data-buttons>
+                                <!--
+                                <button type="button" class="btn btn-outline-primary" onclick="cleanCustomer()">
+                                    <i class="fa fa-plus"></i> 
+                                </button>
+                                -->
+                            </p>
                         </div>
                     </div>
                     <!--end::Card body-->
@@ -271,6 +278,112 @@
         </template>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <div class="modal fade" id="addReservationDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg mt-6">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Creación de Detalle de Reservación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+
+                                        
+                    <form class="row g-3" id="addReservationDetailForm">
+                        @csrf
+                        <h5 class="modal-title" >Reserva</h5>
+                        <div class="col-md-12" hidden>
+                            <label class="form-label" for="idCustomerAdd">ID</label>
+                            <input class="form-control" id="idCustomerAdd" type="text"/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="codeAdd">Codigo de Reserva</label>
+                            <input class="form-control" id="codeAdd" type="text" placeholder="RS-00000" readonly/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="startdateAdd">Fecha de Inicio</label>
+
+                            <input class="form-control datetimepicker" id="startdateAdd" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' disabled/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="enddateAdd">Fecha de Fin</label>
+               
+                            <input class="form-control datetimepicker" id="enddateAdd" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' disabled/>
+                            <span id="error-message" style="color: red;"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="statusAdd">Estado</label>
+                            <input class="form-control" id="statusAdd" type="text" placeholder="libre" readonly/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="initialpayAdd">Pago Inicial</label>
+                            <input class="form-control" id="initialpayAdd" type="text" placeholder="100" readonly/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="totalguestAdd">Total de Personas</label>
+                            <input class="form-control" id="totalguestAdd" type="text" placeholder="2" readonly/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="paymethodAdd">Método de Pago</label>
+                            <select class="form-select" id="paymethodAdd" disabled>
+                                <option selected="selected">Elegir</option>
+                                @foreach($paymethods as $paymethod)
+                                    <option value= "{{$paymethod->id}}">{{$paymethod->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-12" hidden>
+                            <label class="form-label" for="employeeridAdd">Atendido por:</label>
+                            <input class="form-control" id="employeeridAdd" type="text" value={{ $user->id}} readonly/>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="employeernameAdd">Atendido por:</label>
+                            <input class="form-control" id="employeernameAdd" type="text" value= {{$user->name}} readonly />
+                        </div>
+
+                        <h5 class="modal-title" >Detalles de Reserva</h5>
+
+                        <div class="col-12" hidden>
+                            <label class="form-label" for="roomidAdd">ID cuarto</label>
+                            <input class="form-control" id="roomidAdd" type="text" readonly/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="startHourAdd">Hora de Inicio</label>
+
+                            <input class="form-control datetimepicker" id="startHourAdd" type="text" placeholder="H:i" data-options='{"enableTime":true,"noCalendar":true,"dateFormat":"H:i","disableMobile":true}' />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="endHourAdd">Hora de Fin</label>
+               
+                            <input class="form-control datetimepicker" id="endHourAdd" type="text" placeholder="H:i" data-options='{"enableTime":true,"noCalendar":true,"dateFormat":"H:i","disableMobile":true}' />
+                            <span id="error-message" style="color: red;"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="numguest">Numero de Personas</label>
+                            <input class="form-control" id="numguest" type="text" placeholder="3"/>
+                        </div>
+
+                      </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="id" name="id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Crear Detalle de Reserva</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg mt-6">
             <div class="modal-content">

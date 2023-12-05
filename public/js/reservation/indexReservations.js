@@ -203,7 +203,7 @@ function renderDataTableCard(data) {
     var updateButton = document.createElement('button');
     updateButton.setAttribute('type', 'button');
     updateButton.setAttribute('class', 'btn btn-outline-primary');
-    updateButton.setAttribute('onclick', 'updateCustomer(this)');
+    updateButton.setAttribute('onclick', 'updateReservation(this)');
     updateButton.setAttribute('data-id', data.id);
     updateButton.setAttribute('data-code', data.code);
     updateButton.setAttribute('data-customer_id', data.customer_id);
