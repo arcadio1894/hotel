@@ -26,12 +26,14 @@ function getDataOperations($numberPage) {
     var name = $('#inputName').val(); // Obtén el valor del input de código de operación
     var type = $('#selectType').val();
     var tipo = $('#tipo').val();
+    var status = $('#inputStatus').val();
 
     $.get('/home/reservas/get/get/data/'+$numberPage, {
         document_cliente: documentCliente,
         name: name,
         type: type,
-        tipo: tipo
+        tipo: tipo,
+        status: status,
     }, function(data) {
         renderDataOperations(data);
 
@@ -149,14 +151,31 @@ function renderDataTableCard(data) {
     var clone = activateTemplate('#item-table');
     clone.querySelector("[data-id]").innerHTML = data.id;
     clone.querySelector("[data-code]").innerHTML = data.code;
-    clone.querySelector("[data-customer_id]").innerHTML = data.customer_id;
-    clone.querySelector("[data-employer_id]").innerHTML = data.employer_id;
-    clone.querySelector("[data-status_id]").innerHTML = data.status_id;
+    clone.querySelector("[data-customer_name]").innerHTML = data.customer_name + " " + data.customer_lastname;
+    clone.querySelector("[data-employer_name]").innerHTML = data.employer_name + " " + data.employer_lastname;
+    //clone.querySelector("[data-status_id]").innerHTML = data.status_id;
     clone.querySelector("[data-paymethod_id]").innerHTML = data.paymethod_id;
     clone.querySelector("[data-start_date]").innerHTML = data.start_date;
     clone.querySelector("[data-end_date]").innerHTML = data.end_date;
     clone.querySelector("[data-initial_pay]").innerHTML = data.initial_pay;
     clone.querySelector("[data-total_guest]").innerHTML = data.total_guest;
+    if (data.status_id === 1) {
+        clone.querySelector("[data-status]").innerHTML = "En espera";
+        //clone.querySelector("[data-color]").classList.add("bg-success");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
+    } else if (data.status_id === 2) {
+        clone.querySelector("[data-status]").innerHTML = "En Proceso";
+        //clone.querySelector("[data-color]").classList.add("bg-danger");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
+    }else if (data.status_id === 3) {
+        clone.querySelector("[data-status]").innerHTML = "Culminada";
+        //clone.querySelector("[data-color]").classList.add("bg-secondary");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
+    }else if (data.status_id === 4) {
+        clone.querySelector("[data-status]").innerHTML = "Cancelada";
+        //clone.querySelector("[data-color]").classList.add("bg-warning");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
+    }
 
     if($('#tipo').val()==="lista"){
     // Configurar los botones en el nuevo td

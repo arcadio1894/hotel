@@ -40,7 +40,7 @@
 @endif
 
 @section('title')
-    Clientes
+    Reservas
 @endsection
 
 @section('page-header')
@@ -125,8 +125,8 @@
                                     <!--begin::Select-->
                                     <select id="selectType" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione un Tipo de Documento" data-hide-search="true">
                                         <option value=""></option>
-                                        @foreach( $paymethods as $paymethod )
-                                            <option value="{{ $paymethod->id }}">{{ $paymethod->name }}</option>
+                                        @foreach( $documentTypes as $documentType )
+                                            <option value="{{ $documentType ->name }}">{{ $documentType ->name }}</option>
                                         @endforeach
                                     </select>
                                     <!--end::Select-->
@@ -136,6 +136,28 @@
                                 <div class="col">
                                     <label class="form-label fw-bolder text-dark">Documento</label>
                                     <input type="text" class="form-control form-control form-control-solid" name="inputDocumentCliente" id="inputDocumentCliente" />
+                                </div>
+                                <div class="col">
+                                    <label class="form-label fw-bolder text-dark">Método de pago</label>
+                                    <!--begin::Select-->
+                                    <select id="selectMethod" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione un método de pago" data-hide-search="true">
+                                        <option value=""></option>
+                                        @foreach( $paymethods as $paymethod )
+                                            <option value="{{ $paymethod->id }}">{{ $paymethod->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <!--end::Select-->
+                                </div>
+                                <div class="col">
+                                    <label class="form-label fw-bolder text-dark">Estado de Reserva</label>
+                                    <!--begin::Select-->
+                                    <select id="inputStatus" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione un Estado de reserva" data-hide-search="true">
+                                        <option value=""></option>
+                                        @foreach( $states as $state)
+                                            <option value="{{ $state->id }}">{{ $state->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <!--end::Select-->
                                 </div>
                                 <!--end::Col-->
                             </div>
@@ -176,14 +198,14 @@
                         <tr>
                             <th class="sort">ID</th>
                             <th class="sort">Código</th>
-                            <th class="sort">Customer_ID</th>
-                            <th class="sort">Employer_ID</th>
-                            <th class="sort">Status</th>
+                            <th class="sort">Cliente</th>
+                            <th class="sort">Empleado</th>
+                            <th class="sort">Estado</th>
                             <th class="sort">paymethod_id</th>
-                            <th class="sort">star_date</th>
-                            <th class="sort">end_date</th>
-                            <th class="sort">initial_pay</th>
-                            <th class="sort">tota_guest</th>
+                            <th class="sort">Pago inicial</th>
+                            <th class="sort">Fecha de inicio</th>
+                            <th class="sort">Fecha de fin</th>
+                            <th class="sort">N° Huespedes</th>
                             @if($tipo=='lista' or $tipo =='eliminados')
                             <th class="sort">Acciones</th>
                             @endif
@@ -245,13 +267,13 @@
         <tr>
             <td data-id></td>
             <td data-code></td>
-            <td data-customer_id></td>
-            <td data-employer_id></td>
-            <td data-status_id></td>
+            <td data-customer_name></td>
+            <td data-employer_name></td>
+            <td data-status></td>
             <td data-paymethod_id></td>
+            <td data-initial_pay></td>
             <td data-start_date></td>
             <td data-end_date></td>
-            <td data-initial_pay></td>
             <td data-total_guest></td>
             @if($tipo=='lista' or $tipo =='eliminados')
             <td class="text-end" data-buttons>

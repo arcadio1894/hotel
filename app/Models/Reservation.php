@@ -7,7 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    //use HasFactory;
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'document_type',
+        'document',
+        'name',
+        'lastname',
+        'phone',
+        'email',
+        'birth',
+        'address'
+    ];
 
     public function customer()
     {

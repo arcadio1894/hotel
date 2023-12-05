@@ -43,6 +43,9 @@
     @endif
 @endsection
 
+@section('title')
+    {{$title}}
+@endsection
 
 @section('page-header')
     <h3 class="m-0 text-dark">{{$title}}</h3>
@@ -159,7 +162,7 @@
                             <h2 class="lead text-center"><b data-type_room></b> <b data-level> </b><b data-number></b></h2>
                             <ul class="ml-4 mb-0 fa-ul text-muted">
                                 <li class="small"><span class="fa-li"><i class="fas fa-book"></i></span>Descripción: <span data-description></span></li>
-                                <li class="small"><span class="fa-li"><i class="fas fa-check"></i></span>Estado: <span data-status></span></li>
+                                <li class="small"><span class="fa-li"><i class="fas fa-check"></i></span>Piso: <span data-nivel></span></li>
                             </ul>
                         </div>
                     </div>

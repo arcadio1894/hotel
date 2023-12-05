@@ -16,12 +16,14 @@ class ReservationController extends Controller
     function indexReservations(){
         $tipo='lista';
         $paymethods = DB::table('paymethods')->get();
+        $documentTypes = DB::table('document_types')->get();
         $usuario = Auth::user();
         $user = (object)[
             "id" => $usuario->id,
             "name" => $usuario->name,
         ];
-        return view('reservation.indexReservations', compact('tipo','paymethods','user'));
+        $states=  DB::table('statuses')->get();
+        return view('reservation.indexReservations', compact('tipo','paymethods','user', 'documentTypes', 'states'));
 
     }
 
@@ -29,9 +31,9 @@ class ReservationController extends Controller
     {
         $perPage = 12;
 
-        //$documentCliente = $request->input('document_cliente');
-        //$name = $request->input('name');
-        $type = $request->input('type');
+        $documentCliente = $request->input('document_cliente');
+        $name = $request->input('name');
+        $documentType = $request->input('type');
         $status = $request->input('idle');
         $tipo = $request->input('tipo');
         //dump($request);
@@ -50,21 +52,32 @@ class ReservationController extends Controller
         }*/
 
         // Aplicar filtros si se proporcionan
-        /*
+
         if ($documentCliente) {
-            $query->where('document', $documentCliente);
+            $query->whereHas('customer', function ($query) use ($documentCliente) {
+                $query->where('document', $documentCliente);
+            });
         }
 
         if ($name) {
-            $query->where('name', $name);
+            $query->whereHas('customer', function ($query) use ($name) {
+                $query->where('name', $name);
+            });
         }
-        */
 
-        if ($type) {
-            $query->where('code', $type);
+        if ($name) {
+            $query->whereHas('customer', function ($query) use ($name) {
+                $query->where('name', $name);
+            });
+        }
+
+        if ($documentType) {
+            $query->whereHas('customer', function ($query) use ($documentType) {
+                $query->where('document_type', $documentType);
+            });
         }
         if ($status) {
-            $query->where('customer_id', $status);
+            $query->where('status', $status);
         }
 
         $totalFilteredRecords = $query->count();
@@ -85,7 +98,11 @@ class ReservationController extends Controller
                 "id" => $operation->id,
                 "code" => $operation->code,
                 "customer_id" => $operation->customer_id,
+                "customer_name" => $operation->customer->name,
+                "customer_lastname" => $operation->customer->lastname,
                 "employer_id" => $operation->employer_id,
+                "employer_name" => $operation->employer->name,
+                "employer_lastname" => $operation->employer->lastname,
                 "status_id" => $operation->status_id,
                 "paymethod_id" => $operation->paymethod_id,
                 "start_date" => $operation->start_date,
