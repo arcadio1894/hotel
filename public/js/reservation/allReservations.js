@@ -30,8 +30,6 @@ $(document).ready(function () {
                 title: 'La fecha de fin debe ser posterior a la fecha de inicio'
             })
             $("#error-message").text("La fecha de fin debe ser posterior a la fecha de inicio");
-            // Puedes agregar más lógica aquí según tus necesidades
-            // Por ejemplo, deshabilitar el botón de envío del formulario
         }
         else{
             $("#error-message").text("");
@@ -58,10 +56,15 @@ function showCustomerSearch() {
             })
 
 
-            $('#inputName, #inputPhone').removeClass('d-none');
+            $('#inputName, #inputPhone, #inputDocumentType, #inputLastname, #inputEmail, #inputAddress, #inputBirth').removeClass('d-none');
             $('#idCustomer').val(data.cliente.id).prop('readonly', true);
+            $('#documentType').val(data.cliente.document_type).prop('readonly', true);
             $('#name').val(data.cliente.name).prop('readonly', true);
             $('#phone').val(data.cliente.phone).prop('readonly', true);
+            $('#lastname').val(data.cliente.lastname).prop('readonly', true);
+            $('#email').val(data.cliente.email).prop('readonly', true);
+            $('#birth').val(data.cliente.birth).prop('readonly', true);
+            $('#address').val(data.cliente.address).prop('readonly', true);
             $('#code').val(data.codigo);
         }
         else{
@@ -70,10 +73,15 @@ function showCustomerSearch() {
                 title: 'Cliente no Encontrado.'
             })
 
-            $('#inputName, #inputPhone').removeClass('d-none');
+            $('#inputName, #inputPhone, #inputDocumentType, #inputLastname, #inputEmail, #inputAddress, #inputBirth').removeClass('d-none');
             $('#idCustomer').val('').prop('readonly', false);
             $('#name').val('').prop('readonly', false);
             $('#phone').val('').prop('readonly', false);
+            $('#documentType').val('').prop('readonly', false);
+            $('#lastname').val('').prop('readonly', false);
+            $('#email').val('').prop('readonly', false);
+            $('#birth').val('').prop('readonly', false);
+            $('#address').val('').prop('readonly', false);
             $('#code').val(data.codigo);
         }
 
@@ -86,7 +94,7 @@ function cleanReservations(){
     $('#name').val('').prop('readonly', false);
     $('#phone').val('').prop('readonly', false);
     $('#code').val('');
-    $('#inputName, #inputPhone').addClass('d-none');
+    $('#inputName, #inputPhone, #inputDocumentType, #inputLastname, #inputEmail, #inputAddress, #inputBirth').addClass('d-none');
     $('#reservationModal').modal('show');
 }
 
@@ -98,6 +106,14 @@ function saveReservations() {
     let formData = {
         code: $("#code").val(),
         idCustomer: $("#idCustomer").val(),
+        name: $('#name').val(),
+        document: $('#document').val(),
+        phone:$('#phone').val(),
+        documentType:$('#documentType').val(),
+        lastname: $('#lastname').val(),
+        email:$('#email').val(),
+        birth:$('#birth').val(),
+        address: $('#address').val(),
         employeerid: $("#employeerid").val(),
         startdate: $("#startdate").val(),
         enddate: $("#enddate").val(),
@@ -125,6 +141,7 @@ function saveReservations() {
         },
         error: function (xhr) {
             // Manejo de errores
+            console.log(xhr);
             $("#guardar").prop("disabled", false);
             // ... Resto del manejo de errores
         }

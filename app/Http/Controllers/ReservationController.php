@@ -6,6 +6,7 @@ use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\Customer;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -132,7 +133,23 @@ class ReservationController extends Controller
             //dd($request);
             $reservacion = new Reservation();
             $reservacion->code = $request->input('code');
-            $reservacion->customer_id = $request->input('idCustomer');
+            if($request->input('idCustomer')){
+                $reservacion->customer_id = $request->input('idCustomer');
+            }
+            else{
+                $customer = new Customer();
+                $customer->document_type = $request->input('documentType');
+                $customer->document = $request->input('document');
+                $customer->name = $request->input('name');
+                $customer->lastname = $request->input('lastname', null);
+                $customer->phone = $request->input('phone');
+                $customer->email = $request->input('email');
+                $customer->birth = $request->input('birth');
+                $customer->address = $request->input('address');
+                $customer->save();
+                $reservacion->customer_id = $customer->id;
+            }
+
             $reservacion->employer_id = $request->input('employeerid');
             $reservacion->start_date = $request->input('startdate');
             $reservacion->end_date = $request->input('startdate');
@@ -244,7 +261,6 @@ class ReservationController extends Controller
         $dni = $request->input('dni');
         $cliente = Customer::where('document', $dni)->first();
 
-        // Consulta el último registro en la tabla reservations
         $ultimoRegistro = Reservation::latest('id')->first();
 
         // Inicializa el ID

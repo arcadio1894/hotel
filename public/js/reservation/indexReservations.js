@@ -7,6 +7,24 @@ $(document).ready(function () {
     $(document).on('click', '[data-item]', showData);
     $("#btn-search").on('click', showDataSeach);
 
+    $('#document_type').change(function () {
+        // Obtener el valor seleccionado
+        var selectedValue = $(this).val();
+        // Modificar el label y ocultar o mostrar el input de lastname según la opción seleccionada
+        if (selectedValue === 'RUC') {
+            //$('#exampleModalLabel').text('Datos del Cliente Empresarial');
+            $('#name-label').text('Razon Social');
+            $('#lastname-group').hide();
+            $('#lastname').val(null);
+            $('#birth-label').text('Fecha de Constitución');
+        } else {
+            //$('#exampleModalLabel').text('Datos del Cliente');
+            $('#name-label').text('Nombre');
+            $('#lastname-group').show();
+            $('#birth-label').text('Fecha de Nacimiento');
+        }
+    });
+
 
 });
 

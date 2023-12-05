@@ -303,26 +303,54 @@
                             <label>&nbsp;</label><br>
                             <button type="button" id="buscarBtn" class="btn btn-primary">Buscar</button>
                         </div>
-                    <form>
-                    
-                        
+                    </form>
+                    <hr>
+                    <b>DATOS DEL CLIENTE</b>
                     <form class="row g-3" id="reservationForm">
                         @csrf
                         <div class="col-md-12" hidden>
                             <label class="form-label" for="idCustomer">ID</label>
-                            <input class="form-control" id="idCustomer" type="text"/>
+                            <input class="form-control" id="idCustomer" type="text">
+                        </div>
+                        <div class="col-md-4 d-none" id="inputDocumentType">
+                            <label for="document_type">Tipo de Documento <span class="text-danger">*</span></label>
+                            <select name="document_type" id="documentType" class="form-select">
+                                <option value="">Selecciona</option>
+                                @foreach( $documentTypes as $documentType )
+                                    <option value="{{ $documentType ->name }}">{{ $documentType ->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-4 d-none" id="inputName">
+                            <label class="form-label" id="name-label" for="name">Nombres<span class="text-danger">*</span></label>
+                            <input class="form-control" id="name" type="text" placeholder="Ejm: Ana María">
+                        </div>
+                        <div class="col-md-4 d-none" id="inputLastname">
+                            <label for="lastname">Apellidos <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="lastname" name="lastname"  placeholder="Ejm: Diaz Aguilar">
+                        </div>
+                        <div class="col-md-3 d-none" id="inputPhone" >
+                            <label class="form-label" for="phone">Teléfono<span class="text-danger">*</span></label>
+                            <input class="form-control" id="phone" type="text" placeholder="Ejm: 987654321">
+                        </div>
+                        <div class="col-md-6 d-none" id="inputEmail">
+                            <label for="email">Email <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="email" name="email"  placeholder="Ejm: alguien@correo.com">
+                        </div>
+                        <div class="col-md-3 d-none" id="inputBirth">
+                            <label for="birth" id="birth-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
+                            <input class="form-control datetimepicker" id="birth" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' />
+
+
+                        </div>
+                        <div class="col-md-12 d-none" id="inputAddress">
+                            <label for="address">Dirección <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="address" name="address"  placeholder="Ejm: Av. Grau 325 - Huanchaco">
                         </div>
 
-                        <div class="col-md-8 d-none" id="inputName">
-                            <label class="form-label" for="name">Nombres</label>
-                            <input class="form-control" id="name" type="text" placeholder="Pablito"/>
-                        </div>
-                        <div class="col-md-4 d-none" id="inputPhone" >
-                            <label class="form-label" for="phone">Teléfono</label>
-                            <input class="form-control" id="phone" type="text" placeholder="987654321"/>
-                        </div>
-
-
+                        <hr>
+                        <b>DATOS DE LA RESERVA</b>
+                        <hr>
                         <div class="col-md-4">
                             <label class="form-label" for="code">Codigo de Reserva</label>
                             <input class="form-control" id="code" type="text" placeholder="RS-00000" readonly/>
