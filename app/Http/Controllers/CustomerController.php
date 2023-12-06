@@ -180,7 +180,7 @@ class CustomerController extends Controller
         }
 
         if ($name) {
-            $query->where('name', $name);
+            $query->where('name', 'like','%'. $name .'%');
         }
 
         if ($type) {

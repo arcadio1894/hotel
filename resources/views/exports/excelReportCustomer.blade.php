@@ -16,8 +16,7 @@
             <th width="40px" style="background-color:#074f91; color: #ffffff; text-align: center">ID</th>
             <th width="150px" style="background-color:#074f91; color: #ffffff; text-align: center">Tipo de Documento</th>
             <th width="100px" style="background-color:#074f91; color: #ffffff; text-align: center">Nro. Documento</th>
-            <th width="200px" style="background-color:#074f91; color: #ffffff; text-align: center">Nombres</th>
-            <th width="200px" style="background-color:#074f91; color: #ffffff; text-align: center">Apellidos</th>
+            <th width="200px" style="background-color:#074f91; color: #ffffff; text-align: center">Nombres y Apellidos o RUC</th>
             <th width="100px" style="background-color:#074f91; color: #ffffff; text-align: center">Telefono</th>
             <th width="200px" style="background-color:#074f91; color: #ffffff; text-align: center">Email</th>
             <th width="100px" style="background-color:#074f91; color: #ffffff; text-align: center">Cumpleaños</th>
@@ -31,8 +30,7 @@
                 <td style="text-align: center;">{!! $customer['id']!!}</td>
                 <td>{!! htmlspecialchars($customer['document_type']) !!}</td>
                 <td>{!! '&nbsp;' . htmlspecialchars($customer['document']) !!}</td>
-                <td>{!! htmlspecialchars($customer['name']) !!}</td>
-                <td>{!! htmlspecialchars($customer['lastname']) !!}</td>
+                <td>{!! htmlspecialchars($customer['name']).' '. htmlspecialchars($customer['lastname'])!!}</td>
                 <td>{!! '&nbsp;' . htmlspecialchars($customer['phone']) !!}</td>
                 <td>{!! htmlspecialchars($customer['email']) !!}</td>
                 <td>{!! htmlspecialchars($customer['birth']) !!}</td>

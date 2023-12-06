@@ -9,7 +9,12 @@ use App\Http\Controllers\ReservationController;
 
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+
 use App\Http\Controllers\UserController;
+
+use App\Http\Controllers\RoomPriceController;
+use App\Http\Controllers\RoomController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -88,16 +93,15 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('/home/reservas')->group(function (){
             Route::name('reservations.')->group(function () {
                 Route::get('/listar', [ReservationController::class, 'index'])->name('index');
-                /*Route::get('/listar/eliminados', [CustomerController::class, 'showDeletes'])->name('showDeletes');
-                Route::post('/crear', [CustomerController::class, 'store'])->name('store');
-                Route::post('/editar/{customer}', [CustomerController::class, 'update'])->name('update');
-                Route::delete('/borrar/{customer}', [CustomerController::class, 'destroy'])->name('destroy');
-                Route::post('/restaurar/{customer}', [CustomerController::class, 'restore'])->name('restore');
-                Route::get('/reporte', [CustomerController::class, 'report'])->name('report');
-                Route::get('/reporte/descargar',[CustomerController::class,'generateReport'])->name('reportExcel');
-    
-                Route::get('/get/data/{numberPage}', [CustomerController::class, 'getDataOperations']);
-                */
+                Route::get('/get/data/{numberPage}', [ReservationController::class, 'getDataReservation']);
+
+                Route::get('/lista', [ReservationController::class, 'indexReservations'])->name('indexReservations');
+                Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);
+                Route::post('/crear', [ReservationController::class, 'storeReservations'])->name('storeReservations');
+                Route::get('/lista/{reservation_id}', [ReservationController::class, 'listAssignRooms'])->name('listAssignRooms');
+
+                Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
+
             });
         });
 
@@ -129,6 +133,7 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+
     //RUTAS DE USUARIOS
         Route::prefix('/home/users')->group(function(){
             Route::name('users.')->group(function(){
@@ -141,4 +146,28 @@ Route::middleware(['auth'])->group(function () {
             });
 
         });
+
+    Route::prefix('/home/room/prices')->group(function (){
+        Route::name('roomPrices.')->group(function () {
+            Route::get('listar', [RoomPriceController::class, 'index'])->name('index');
+            Route::get('/get/data/{numberPage}', [RoomPriceController::class, 'getDataRoomPrice']);
+            Route::get('listar/eliminados', [RoomPriceController::class, 'showDeletes'])->name('showDeletes');
+            Route::post('', [RoomPriceController::class, 'store'])->name('store');
+            Route::post('/edit/{room}', [RoomPriceController::class, 'update'])->name('update');
+            Route::delete('/delete/{room}', [RoomPriceController::class, 'destroy'])->name('destroy');
+        });
+    });
+
+    Route::prefix('/home/rooms')->group(function (){
+        Route::name('rooms.')->group(function () {
+            Route::get('listar', [RoomController::class, 'index'])->name('index');
+            Route::get('/get/data/{numberPage}', [RoomController::class, 'getDataRoom']);
+            Route::get('listar/eliminados', [RoomController::class, 'showDeletes'])->name('showDeletes');
+            Route::post('', [RoomController::class, 'store'])->name('store');
+            Route::post('/edit/{room}', [RoomController::class, 'update'])->name('update');
+            Route::delete('/delete/{room}', [RoomController::class, 'destroy'])->name('destroy');
+            Route::post('/restore/{room}', [RoomController::class, 'restore'])->name('restore');
+        });
+    });
+
 });

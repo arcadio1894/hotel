@@ -188,7 +188,14 @@
                             <ul class="nav collapse @yield('openUlReservation')" id="reservations">
                                 <li class="nav-item">
                                     <a class="nav-link @yield('activeListReservation')" href="{{ route('reservations.index')}}" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Lista General</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeListReservations')" href="{{ route('reservations.indexReservations')}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Lista de Reservas</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
@@ -208,7 +215,7 @@
                             </div>
                             <!-- parent pages-->
                             <a class="nav-link dropdown-indicator" href="#roomTypes" role="button" data-bs-toggle="collapse" @yield('activeRoomType') aria-controls="roomTypes">
-                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-warehouse"></span></span><span class="nav-link-text ps-1">Tipos de habitación</span>
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-object-group"></span></span><span class="nav-link-text ps-1">Tipos de habitación</span>
                                 </div>
                             </a>
                             <ul class="nav collapse @yield('openRoomType')" id="roomTypes">
@@ -246,6 +253,37 @@
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
+                                </li>
+                            </ul>
+                            <a class="nav-link dropdown-indicator " href="#roomPrices" role="button" data-bs-toggle="collapse" @yield('activeRoomPrice') aria-controls="roomPrices">
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-dollar-sign"></span></span><span class="nav-link-text ps-1">Precios</span>
+                                </div>
+                            </a>
+                            <ul class="nav collapse @yield('openRoomPrice')" id="roomPrices">
+                                <li class="nav-item ">
+                                    <a class="nav-link @yield('activeListRoomPrice')" href="{{route("roomPrices.index")}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
+                            <a class="nav-link dropdown-indicator " href="#rooms" role="button" data-bs-toggle="collapse" @yield('activeRoom') aria-controls="rooms">
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-home"></span></span><span class="nav-link-text ps-1">Habitaciones</span>
+                                </div>
+                            </a>
+                            <ul class="nav collapse @yield('openRoom')" id="rooms">
+                                <li class="nav-item ">
+                                    <a class="nav-link @yield('activeListRoom')" href="{{route("rooms.index")}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item ">
+                                    <a class="nav-link @yield('activeDeleteRoom')" href="{{route("rooms.showDeletes")}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Eliminados</span>
+                                        </div>
+                                    </a>
                                 </li>
                             </ul>
                         </li>

@@ -28,4 +28,9 @@ class Customer extends Model
     protected $casts = [
         'lastname' => 'string', // Asegurarse de que se caste a string
     ];
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
 }
