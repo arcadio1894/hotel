@@ -20,35 +20,35 @@
 
 @section('scripts')
     <script src="{{asset('vendors/choices/choices.min.js')}}"></script>
-    <script src="{{asset('js/employer/index.js')}}"></script>
-    <script src="{{asset('js/employer/pagination.js')}}"></script>
+    <script src="{{asset('js/user/index.js')}}"></script>
+    <script src="{{asset('js/user/pagination.js')}}"></script>
     <script>
         var csrfToken = "{{ csrf_token() }}";
     </script>
 @endsection
 
-@section('openEmployer')
+@section('openUser')
     show
 @endsection
 
-@section('activeEmployer')
+@section('activeUser')
     aria-expanded="true"
 @endsection
 
-@section('activeListEmployer')
+@section('activeListUser')
     @if($tipo=='lista')
         active
     @endif
 @endsection
 
-@section('activeDeleteEmployer')
+@section('activeDeleteUser')
     @if($tipo=='eliminados')
         active
     @endif
 @endsection
 
 @section('page-header')
-    <h3 class="m-0 text-dark">Listado de Empleados</h3>
+    <h3 class="m-0 text-dark">Listado de Usuarios</h3>
 @endsection
 
 @section('page-breadcrumb')
@@ -61,12 +61,12 @@
 @section('page-title')
     <div class="row">
         <div class="col-10">
-            <h5 class="card-title col-7">Administrar {{$tipo}} de los Empleados</h5>
+            <h5 class="card-title col-7">Administrar {{$tipo}} de los Usuarios</h5>
         </div>
         <div class="d-flex justify-content-end col-2">
             @if($tipo == 'lista')
-            <button type="button" class="btn btn-outline-success" onclick="addEmployer()">
-            <i class="fa fa-plus"></i> Nuevo
+            <button type="button" class="btn btn-outline-success" onclick="addUser()">
+            <i class="fa fa-plus"></i> Nuevo Usuario
         </button>
             @endif
         </div>
@@ -97,11 +97,16 @@
                     <div class="separator separator-dashed mt-2 mb-1"></div>
                     <div class="row ">
                         <div class="col">
-                            <div class="row ">
-                                <div class="col">
-                                    <label class="form-label fw-bolder text-dark">Documento</label>
-                                    <input type="text" class="form-control form-control form-control-solid" name="inputDocumentEmployer" id="inputDocumentEmployer" />
-                                </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label fw-bolder text-dark">Rol</label>
+                                <!--begin::Select-->
+                                <select id="selectType" class="form-select form-select-solid" data-control="select2" data-placeholder="Seleccione un Rol" data-hide-search="true">
+                                    <option value=""></option>
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role->id }}">{{ $role->description }}</option>
+                                    @endforeach
+                                </select>
+                                <!--end::Select-->
                             </div>
                         </div>
                     </div>
@@ -112,7 +117,7 @@
 
     <div class="d-flex flex-wrap flex-stack pb-3">
         <div class="d-flex flex-wrap align-items-center my-1">
-            <h5 class=" me-5 my-1"><span id="numberItems"></span> Empleados encontrados
+            <h5 class=" me-5 my-1"><span id="numberItems"></span> Usuarios encontrados
                 <span class="text-gray-400 fs-2"> ↓</span>
             </h5>
         </div>
@@ -125,14 +130,9 @@
                     <thead class="bg-200 text-900">
                     <tr>
                         <th class="sort">ID</th>
-                        <th class="sort">Nombres</th>
-                        <th class="sort">Apellidos</th>
-                        <th class="sort">Puesto</th>
-                        <th class="sort">Dni/C.E.</th>
-                        <th class="sort">Dirección</th>
+                        <th class="sort">Nombres y Apellidos</th>
                         <th class="sort">Correo</th>
-                        <th class="sort">Nacimiento</th>
-                        <th class="sort">Teléfono</th>
+                        <th class="sort">Rol</th>
                         @if($tipo=='lista' or $tipo =='eliminados')
                             <th class="sort">Acciones</th>
                         @endif
@@ -189,13 +189,8 @@
         <tr>
             <td data-id></td>
             <td data-name></td>
-            <td data-lastname></td>
-            <td data-position_name></td>
-            <td data-dni></td>
-            <td data-address></td>
             <td data-email></td>
-            <td data-birth></td>
-            <td data-phone></td>
+            <td data-role_name></td>
             @if($tipo=='lista' or $tipo =='eliminados')
                 <td class="text-end" data-buttons>
 
@@ -204,14 +199,14 @@
         </tr>
         <!--end::Col-->
     </template>
-    <div class="modal fade" id="employerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Datos del Empleado</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Datos del Usario</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form id="employerForm">
+                <form id="userForm">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -222,36 +217,18 @@
                             <label for="lastname">Apellidos <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="lastname" name="lastname">
                         </div>
-                        <div class="mb-3">
-                            <label for="position_id" >Puesto <span class="text-danger">*</span></label>
-                            <select class="form-select " id="position_id" name="position_id" required data-options='{"removeItemButton":true,"placeholder":true}'>
-                                <option value="">-Seleccione-</option>
-                                @foreach($positions as $position)
-                                    @if($position->name !== 'Sin Rol')
-                                        <option value="{{ $position->id }}">{{ $position->name }}</option>
-                                    @endif
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="dni">DNI/CE <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="dni" name="dni">
-                        </div>
-                        <div class="form-group">
-                            <label for="address">Dirección <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="address" name="address">
-                        </div>
                         <div class="form-group">
                             <label for="email">Correo <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="email" name="email">
                         </div>
-                        <div class="form-group">
-                            <label for="birth">Fecha de Nacimiento <span class="text-danger">*</span></label>
-                            <input type="date" class="form-control" id="birth" name="birth">
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Teléfono <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="phone" name="phone">
+                        <div class="col md-4 mb-3">
+                            <label for="role_id" >Rol <span class="text-danger">*</span></label>
+                            <select class="form-select " id="role_id" name="role_id" required data-options='{"removeItemButton":true,"placeholder":true}'>
+                                <option value="">-Seleccione-</option>
+                                @foreach($roles as $role)
+                                    <option value="{{ $role->id }}">{{ $role->description }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">

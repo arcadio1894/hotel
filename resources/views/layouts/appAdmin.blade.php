@@ -282,6 +282,18 @@
                                     <!-- more inner pages-->
                                 </li>
                             </ul>
+                            <!-- parent pages--><a class="nav-link dropdown-indicator" href="#user" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="user">
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-user"></span></span><span class="nav-link-text ps-1">Usuarios</span>
+                                </div>
+                            </a>
+                            <ul class="nav collapse  @yield('openUser')"  id="user">
+                                <li class="nav-item"><a class="nav-link @yield('activeListUser')" href="{{route("users.index")}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
                         </li>
                     </ul>
 
