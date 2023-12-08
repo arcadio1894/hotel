@@ -16,7 +16,8 @@ class Reservation extends Model
         'phone',
         'email',
         'birth',
-        'address'
+        'address',
+        'status_id'
     ];
 
     public function customer()
@@ -42,6 +43,11 @@ class Reservation extends Model
     public function details()
     {
         return $this->hasMany(ReservationDetail::class);
+    }
+
+    public function checkInOuts()
+    {
+        return $this->hasMany(CheckInOut::class);
     }
 
 }

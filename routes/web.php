@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckInOutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\SeasonController;
@@ -95,6 +96,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);
                 Route::post('/crear', [ReservationController::class, 'storeReservations'])->name('storeReservations');
                 Route::get('/lista/{reservation_id}', [ReservationController::class, 'listAssignRooms'])->name('listAssignRooms');
+                
+                Route::get('/lista/cancelar/{reservation_id}', [CheckInOutController::class, 'cancelReservation'])->name('cancelReservation');  
+                Route::get('/lista/checkin/{reservation_id}', [CheckInOutController::class, 'confirmCheckin'])->name('confirmCheckin');
+                Route::get('/lista/checkout/{reservation_id}', [CheckInOutController::class, 'confirmCheckout'])->name('confirmCheckout');
 
                 Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
 

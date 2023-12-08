@@ -118,19 +118,41 @@
                         </div>
                         <!--end::Input group-->
                         <!--begin:Action-->
-                        <div>
-                            <!--
-                            <label>&nbsp;</label><br>
-                            <button type="button" id="btn-search" class="btn btn-primary me-5">Buscar</button>
-                            -->
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" id="idle" type="checkbox" />
-                                <label class="form-check-label" for="idle">Ocupados</label>
-                            </div>
-                            <input type="hidden" id="estadoSwitch" name="estadoSwitch" value="D">      
 
+                        <label class="form-label fw-bolder text-dark">&nbsp; Estados :&nbsp;</label>
+
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio1" type="radio" name="inlineRadioOptions" value="D" checked/>
+                                <label class="form-check-label" for="inlineRadio1">D</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio2" type="radio" name="inlineRadioOptions" value="R" />
+                                <label class="form-check-label" for="inlineRadio2">R</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio3" type="radio" name="inlineRadioOptions" value="O" />
+                                <label class="form-check-label" for="inlineRadio3">O</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio4" type="radio" name="inlineRadioOptions" value="L" />
+                                <label class="form-check-label" for="inlineRadio4">L</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio5" type="radio" name="inlineRadioOptions" value="E" />
+                                <label class="form-check-label" for="inlineRadio5">E</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio6" type="radio" name="inlineRadioOptions" value="F" />
+                                <label class="form-check-label" for="inlineRadio6">F</label>
+                            </div>
                         </div>
                         <!--end:Action-->
+                        <label class="form-label fw-bolder text-dark">&nbsp; Fecha :&nbsp;</label>
+                        <div>
+                            <input class="form-control datetimepicker" id="dateSearch" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}'/>
+                        </div>
+
                     </div>
                     <!--end::Compact form-->
 
@@ -149,8 +171,8 @@
         <div class="d-flex flex-wrap flex-stack pb-3">
             <!--begin::Title-->
             <div class="d-flex flex-wrap align-items-center my-1">
-                <h5 class=" me-5 my-1"><span id="numberItems"></span> Habitaciones encontradas
-                    <span class="text-gray-400 fs-2">por fecha de creación ↓</span>
+                <h5 class=" me-5 my-1"><span id="numberItems"></span> Habitaciones encontradas por
+                    <span class="text-gray-400 fs-2">Nivel ↓</span>
                 </h5>
             </div>
             <!--end::Title-->

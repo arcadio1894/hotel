@@ -413,12 +413,87 @@
 
 
 
+
+    <div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg mt-6">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Creación de Checkin y Checkout</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+
+                        <h5 class="modal-title" id="exampleModalLabel">Checkin</h5>
+
+                    <form class="row g-4">
+                        @csrf
+                        <div class="col-md-12" hidden>
+                            <label class="form-label" for="idReservationCheckin">ID</label>
+                            <input class="form-control" id="idReservationCheckin" type="text">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="selectModeCheckin">Modo</label>
+                            <select class="form-select" aria-label="Default select example" id="selectModeCheckin">
+                                <option value="1">Por Dia</option>
+                                <option value="2">Por Horas</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3" id="inputDate">
+                            <label class="form-label" for="startdateCheckin">Fecha Check in</label>
+                            <input class="form-control datetimepicker" id="startdateCheckin" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' />
+                        </div>
+                        <div class="col-md-2 d-none " id="inputHour">
+                            <label class="form-label" for="starthourCheckin">Hora Check in</label>
+                            <input class="form-control datetimepicker" id="starthourCheckin" type="text" placeholder="H:i" data-options='{"enableTime":true,"noCalendar":true,"dateFormat":"H:i","disableMobile":true}' />
+                        </div>
+                        
+                        <div class="col-md-2 d-none" id="inputnumberHours">
+                            <label class="form-label" for="numberHours">Horas</label>
+                            <input class="form-control" id="numberHours" type="number"/>
+                        </div>
+
+                        <div class="col-md-2">
+                            <label>&nbsp;</label><br>
+                            <button type="button" id="startBtn" class="btn btn-primary" onclick="confirmCheckin()">Checkin</button>
+                        </div>
+
+                        <h5 class="modal-title" id="exampleModalLabel">Checkout</h5>
+
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="startdateCheckout">Fecha Check out</label>
+                            <input class="form-control datetimepicker" id="startdateCheckout" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="starthourCheckout">Hora Check out</label>
+                            <input class="form-control datetimepicker" id="starthourCheckout" type="text" placeholder="H:i" data-options='{"enableTime":true,"noCalendar":true,"dateFormat":"H:i","disableMobile":true}' />
+                        </div>
+                        <div class="col-md-4">
+                            <label>&nbsp;</label><br>
+                            <button type="button" id="endBtn" class="btn btn-primary" onclick="confirmCheckout()">Confirmar Checkout</button>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="id" name="id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <!--<button type="button" class="btn btn-primary">Crear Reservación</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     
 
 @endsection
 
 @section('plugins')
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 @endsection
 
 @section('scripts')

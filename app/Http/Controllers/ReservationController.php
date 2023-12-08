@@ -144,7 +144,7 @@ class ReservationController extends Controller
             $customer->save();
             $reservacion->customer_id = $customer->id;
         }
-
+        $reservacion->status_id = 1;
         $reservacion->employer_id = $request->input('employeerid');
         $reservacion->start_date = $request->input('startdate');
         $reservacion->end_date = $request->input('startdate');
@@ -195,6 +195,7 @@ class ReservationController extends Controller
         $status = $request->input('idle');
         $tipo = $request->input('tipo');
         $reservation_id = $request->input('reservation_id');
+        $dateSearch = $request->input('dateSearch');
         //dump($request);
         //dd($request);
         if($tipo=='lista'){
@@ -207,6 +208,36 @@ class ReservationController extends Controller
             if ($status) {
                 $query->where('status', $status);
             }
+            if($dateSearch and $status=='R'){
+                $reservations  = Reservation::whereDate('start_date', '<=', $dateSearch)
+                ->whereDate('end_date', '>=', $dateSearch)->orderBy('id','ASC')->pluck('id')->toArray();
+
+                foreach($reservations as $reservation){
+                    $reservation_details = ReservationDetail::where('reservation_id',$reservation)->pluck('room_id')->toArray();
+                    $query=Room::whereIn('id', $reservation_details);
+                    //dump($query);
+                    //dd($query);
+                }
+
+            }
+            /*if($dateSearch and $status=='O'){
+                $reservations  = Reservation::whereDate('start_date', '<=', $dateSearch)
+                ->whereDate('end_date', '>=', $dateSearch)->orderBy('id','ASC')->pluck('id')->toArray();
+
+                foreach($reservations as $reservation){
+                    $reservation_details = ReservationDetail::where('reservation_id',$reservation)->pluck('room_id')->toArray();
+                    $query=Room::whereIn('id', $reservation_details);
+                    //dump($query);
+                    //dd($query);
+                }
+                if ($status) {
+                    $query->where('status', $status);
+                }
+
+            }
+            */
+
+            
         }
         elseif($tipo=='listaAsignaCuartos'){
             $room_indexs = ReservationDetail::where('reservation_id', $reservation_id)->pluck('room_id')->toArray();
