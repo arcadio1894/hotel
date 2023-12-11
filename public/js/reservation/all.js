@@ -11,11 +11,11 @@ const Toast = Swal.mixin({
 });
 $(document).ready(function () {
 
-    $(".datetimepicker").flatpickr({
-        enableTime: true,
-        dateFormat: "d/m/y H:i",
+    /*$(".datetimepicker").flatpickr({
+        enableTime: false,
+        dateFormat: "d/m/y",
         disableMobile: true
-    });
+    });*/
 
     // Agrega el evento de cambio a los datepickers
     $("#startdate, #enddate").change(function () {

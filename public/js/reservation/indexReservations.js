@@ -200,10 +200,26 @@ function renderDataTableCard(data) {
     updateButton.innerHTML = '<i class="nav-icon fas fa-pen"></i>';
     buttonsTd.appendChild(updateButton);
 
+    var checkButton = document.createElement('button');
+    checkButton.setAttribute('type', 'button');
+    checkButton.setAttribute('class', 'btn btn-outline-secondary');
+    checkButton.setAttribute('onclick', 'checkDetail(this)');
+    checkButton.setAttribute('data-id', data.id);
+    checkButton.setAttribute('data-start_date', data.start_date);
+    checkButton.setAttribute('data-end_date', data.end_date);
+    checkButton.setAttribute('data-status_id', data.status_id);
+    if(data.status_id==3 || data.status_id==4){
+        checkButton.disabled=true;
+    }
+
+    checkButton.innerHTML = '<i class="nav-icon fas fa-sign-in-alt"></i> / <i class="nav-icon fas fa-sign-out-alt"></i>';
+    
+    buttonsTd.appendChild(checkButton);
+
     var deleteButton = document.createElement('button');
     deleteButton.setAttribute('type', 'button');
     deleteButton.setAttribute('class', 'btn btn-outline-danger');
-    deleteButton.setAttribute('onclick', 'deleteCustomer(this)');
+    deleteButton.setAttribute('onclick', 'deleteReservation(this)');
     deleteButton.setAttribute('data-id', data.id);
     deleteButton.innerHTML = '<i class="nav-icon fas fa-trash"></i>';
     buttonsTd.appendChild(deleteButton);

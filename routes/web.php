@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckInOutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\SeasonController;
@@ -94,13 +95,15 @@ Route::middleware(['auth'])->group(function () {
             Route::name('reservations.')->group(function () {
                 Route::get('/listar', [ReservationController::class, 'index'])->name('index');
                 Route::get('/get/data/{numberPage}', [ReservationController::class, 'getDataReservation']);
-
                 Route::get('/lista', [ReservationController::class, 'indexReservations'])->name('indexReservations');
                 Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);
                 Route::post('/crear', [ReservationController::class, 'storeReservations'])->name('storeReservations');
                 Route::get('/crear/nueva/reserva', [ReservationController::class, 'create'])->name('create');
                 Route::get('/get/rooms/{numberPage}', [ReservationController::class, 'getDataRooms']);
                 Route::get('/lista/{reservation_id}', [ReservationController::class, 'listAssignRooms'])->name('listAssignRooms');
+                Route::get('/lista/cancelar/{reservation_id}', [CheckInOutController::class, 'cancelReservation'])->name('cancelReservation');  
+                Route::get('/lista/checkin/{reservation_id}', [CheckInOutController::class, 'confirmCheckin'])->name('confirmCheckin');
+                Route::get('/lista/checkout/{reservation_id}', [CheckInOutController::class, 'confirmCheckout'])->name('confirmCheckout');
                 Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
                 Route::post('/generar/costo',[ReservationController::class, 'generarCosto']);
             });

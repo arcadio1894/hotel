@@ -12,18 +12,7 @@ $(document).ready(function () {
 
 function showDataSeach() {
     var type = $(this).val();
-    if ($("#idle").is(":checked")) {
-        // Si está activado, establece el valor "O"
-        $("#estadoSwitch").val("O");
-        $("cardColor").removeClass("bg-success");
-        $("cardColor").addClass("bg-warning");
-    } else {
-        // Si está desactivado, establece el valor "D"
-        $("#estadoSwitch").val("D");
-        $("cardColor").removeClass("bg-warning");
-        $("cardColor").addClass("bg-success");
-    }
-    
+
     getDataOperations(1,type);
 }
 
@@ -34,12 +23,15 @@ function showData() {
 }
 
 function getDataOperations($numberPage,$type) {
+    var datePicker = flatpickr("#dateSearch");
 
     //var type = $('#selectType').val();
 
     var type =$type;
-    var idle =$('#estadoSwitch').val();
+    //var idle =$('#estadoSwitch').val();
     var tipo = $('#tipo').val();
+    var idle = $('input[name="inlineRadioOptions"]:checked').val();
+    var dateSearch = $('#dateSearch').val();
 
     var reservation_id = $('#reservation_id').val();
     console.log(type,idle,tipo,reservation_id)
@@ -49,8 +41,10 @@ function getDataOperations($numberPage,$type) {
             idle: idle,
             tipo: tipo,
             reservation_id:reservation_id,
+            dateSearch:dateSearch,
         }, function(data) {
             renderDataOperations(data);
+            datePicker.clear();
 
         }).fail(function(jqXHR, textStatus, errorThrown) {
             // Función de error, se ejecuta cuando la solicitud GET falla

@@ -17,7 +17,16 @@ class Reservation extends Model
         'end_date',
         'initial_pay',
         'total_guest',
-        'code'
+        'code',
+        'document_type',
+        'document',
+        'name',
+        'lastname',
+        'phone',
+        'email',
+        'birth',
+        'address',
+        'status_id'
     ];
 
     public function customer()
@@ -43,6 +52,11 @@ class Reservation extends Model
     public function details()
     {
         return $this->hasMany(ReservationDetail::class);
+    }
+
+    public function checkInOuts()
+    {
+        return $this->hasMany(CheckInOut::class);
     }
 
 }

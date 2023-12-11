@@ -128,15 +128,14 @@ class ReservationController extends Controller
 
     public function storeReservations(StoreReservationRequest $request)
     {
-        try{
+        try {
 
             DB::beginTransaction();
             $reservacion = new Reservation();
             $reservacion->code = $request->input('code');
-            if($request->input('idCustomer')){
+            if ($request->input('idCustomer')) {
                 $reservacion->customer_id = $request->input('idCustomer');
-            }
-            else{
+            } else {
                 $customer = new Customer();
                 $customer->document_type = $request->input('documentType');
                 $customer->document = $request->input('document');
@@ -152,16 +151,16 @@ class ReservationController extends Controller
 
             $reservationType = $request->input('reservationType');
 
-            if ($reservationType==1){
+            if ($reservationType == 1) {
                 $selectedDate = $request->input('selectedDate');
-                $startTime= $request->input('selectedStartTime');
-                $hoursQuantity= $request->input('hoursQuantity');
+                $startTime = $request->input('selectedStartTime');
+                $hoursQuantity = $request->input('hoursQuantity');
                 $startDateTime = Carbon::parse($selectedDate . ' ' . $startTime);
                 $endDateTime = $startDateTime->copy()->addHours($hoursQuantity);
-            }else if ($reservationType==2){
-                $startDate= $request->input('startDate');
-                $endDate= $request->input('endDate');
-                $startTime= $request->input('startTime');
+            } else if ($reservationType == 2) {
+                $startDate = $request->input('startDate');
+                $endDate = $request->input('endDate');
+                $startTime = $request->input('startTime');
                 $startDateTime = Carbon::parse($startDate . ' ' . $startTime);
                 $endDateTime = Carbon::parse($endDate . ' 12:00:00');
             }
@@ -175,10 +174,10 @@ class ReservationController extends Controller
             $reservacion->status_id = 1;
             $reservacion->save();
             $selectedRooms = $request->input('selectedRooms');
-            foreach ($selectedRooms as $selectedRoom){
-                $detailReservation= new ReservationDetail();
-                $detailReservation->reservation_id=$reservacion->id;
-                $detailReservation->room_id=$selectedRoom;
+            foreach ($selectedRooms as $selectedRoom) {
+                $detailReservation = new ReservationDetail();
+                $detailReservation->reservation_id = $reservacion->id;
+                $detailReservation->room_id = $selectedRoom;
                 $detailReservation->save();
             }
             DB::commit();
@@ -188,7 +187,6 @@ class ReservationController extends Controller
             return response()->json(['error' => 'Error al crear La reservación. Detalles: ' . $e->getMessage(), 'customError' => true], 500);
         }
     }
-
 
     public function listAssignRooms($reservation_id){
         $tipo = 'listaAsignaCuartos';
@@ -226,6 +224,7 @@ class ReservationController extends Controller
         $status = $request->input('idle');
         $tipo = $request->input('tipo');
         $reservation_id = $request->input('reservation_id');
+        $dateSearch = $request->input('dateSearch');
         //dump($request);
         //dd($request);
         if($tipo=='lista'){
@@ -238,6 +237,36 @@ class ReservationController extends Controller
             if ($status) {
                 $query->where('status', $status);
             }
+            if($dateSearch and $status=='R'){
+                $reservations  = Reservation::whereDate('start_date', '<=', $dateSearch)
+                ->whereDate('end_date', '>=', $dateSearch)->orderBy('id','ASC')->pluck('id')->toArray();
+
+                foreach($reservations as $reservation){
+                    $reservation_details = ReservationDetail::where('reservation_id',$reservation)->pluck('room_id')->toArray();
+                    $query=Room::whereIn('id', $reservation_details);
+                    //dump($query);
+                    //dd($query);
+                }
+
+            }
+            /*if($dateSearch and $status=='O'){
+                $reservations  = Reservation::whereDate('start_date', '<=', $dateSearch)
+                ->whereDate('end_date', '>=', $dateSearch)->orderBy('id','ASC')->pluck('id')->toArray();
+
+                foreach($reservations as $reservation){
+                    $reservation_details = ReservationDetail::where('reservation_id',$reservation)->pluck('room_id')->toArray();
+                    $query=Room::whereIn('id', $reservation_details);
+                    //dump($query);
+                    //dd($query);
+                }
+                if ($status) {
+                    $query->where('status', $status);
+                }
+
+            }
+            */
+
+            
         }
         elseif($tipo=='listaAsignaCuartos'){
             $room_indexs = ReservationDetail::where('reservation_id', $reservation_id)->pluck('room_id')->toArray();
