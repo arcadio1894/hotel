@@ -62,7 +62,7 @@
         </div>
         <div class="d-flex justify-content-end col-2">
             @if($tipo == 'lista')
-            <button type="button" class="btn btn-outline-success" onclick="cleanReservations()">
+            <button type="button" class="btn btn-outline-success" onclick="makeReservations()">
                 <i class="fa fa-plus"></i> Nuevo
             </button>
             @endif
@@ -313,8 +313,8 @@
                             <input class="form-control" id="idCustomer" type="text">
                         </div>
                         <div class="col-md-4 d-none" id="inputDocumentType">
-                            <label for="document_type">Tipo de Documento <span class="text-danger">*</span></label>
-                            <select name="document_type" id="documentType" class="form-select">
+                            <label for="documentType">Tipo de Documento <span class="text-danger">*</span></label>
+                            <select name="documentType" id="documentType" class="form-select">
                                 <option value="">Selecciona</option>
                                 @foreach( $documentTypes as $documentType )
                                     <option value="{{ $documentType ->name }}">{{ $documentType ->name }}</option>
@@ -326,7 +326,7 @@
                             <input class="form-control" id="name" type="text" placeholder="Ejm: Ana María">
                         </div>
                         <div class="col-md-4 d-none" id="inputLastname">
-                            <label for="lastname">Apellidos <span class="text-danger">*</span></label>
+                            <label for="lastname" id="lastname-label">Apellidos <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="lastname" name="lastname"  placeholder="Ejm: Diaz Aguilar">
                         </div>
                         <div class="col-md-3 d-none" id="inputPhone" >
@@ -339,7 +339,7 @@
                         </div>
                         <div class="col-md-3 d-none" id="inputBirth">
                             <label for="birth" id="birth-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
-                            <input class="form-control datetimepicker" id="birth" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' />
+                            <input class="form-control datetimepicker" id="birth" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}'>
 
 
                         </div>
@@ -347,25 +347,53 @@
                             <label for="address">Dirección <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="address" name="address"  placeholder="Ejm: Av. Grau 325 - Huanchaco">
                         </div>
+                        <hr>
 
-                        <hr>
                         <b>DATOS DE LA RESERVA</b>
-                        <hr>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label class="form-label" for="code">Codigo de Reserva</label>
                             <input class="form-control" id="code" type="text" placeholder="RS-00000" readonly/>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label" for="startdate">Fecha de Inicio</label>
-                            <input class="form-control datetimepicker" id="startdate" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' />
-                            
+                        <div class="col-md-6">
+                            <label for="reservationType">Tipo de reserva <span class="text-danger">*</span></label>
+                            <select name="reservationType" id="reservationType" class="form-select">
+                                <option value="0">Selecciona</option>
+                                <option value="1">Por Hora</option>
+                                <option value="2">Por día</option>
+                            </select>
+                        </div>
+                        <!-- Campos para "Reserva por horas" -->
+                        <div class="row" id="hourFields" style="display: none;">
+                            <div class="col-md-4">
+                                <label for="selectedDate">Fecha: <span class="text-danger">*</span></label>
+                                <input class="form-control" type="date" id="selectedDate" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="selectedStartTime">Hora de inicio: <span class="text-danger">*</span></label>
+                                <input class="form-control"  type="time" id="selectedStartTime" value="<?php echo date('H:i'); ?>">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="selectedEndTime">Hora de fin: <span class="text-danger">*</span></label>
+                                <input class="form-control"  type="time" id="selectedEndTime" value="<?php echo date('H:i'); ?>">
+                            </div>
                         </div>
 
-                        <div class="col-md-4">
-                            <label class="form-label" for="enddate">Fecha de Fin</label>
-                            <input class="form-control datetimepicker" id="enddate" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' />
-                            
-                            <span id="error-message" style="color: red;"></span>
+                        <!-- Campos para "Reserva por días" -->
+                        <div class="row" id="dayFields" style="display: none;">
+                            <div class="col-md-6">
+                                <label for="startDate">Fecha de Inicio: <span class="text-danger">*</span></label>
+                                <input class="form-control" type="date" id="startDate" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endDate">Fecha de Fin: <span class="text-danger">*</span></label>
+                                <input class="form-control" type="date" id="endDate" value="<?php echo date('Y-m-d'); ?>">
+                            </div>
+                        </div>
+
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="totalguest">Numero de Personas</label>
+                            <input class="form-control" id="totalguest" type="text" placeholder="2" />
                         </div>
 
                         <div class="col-md-3">
@@ -375,10 +403,6 @@
                         <div class="col-md-3">
                             <label class="form-label" for="initialpay">Pago Inicial</label>
                             <input class="form-control" id="initialpay" type="text" placeholder="100" readonly />
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label" for="totalguest">Numero de Personas</label>
-                            <input class="form-control" id="totalguest" type="text" placeholder="2" />
                         </div>
                         <div class="col-md-3">
                             <label class="form-label" for="paymethod">Método de Pago</label>

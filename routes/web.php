@@ -94,10 +94,11 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/lista', [ReservationController::class, 'indexReservations'])->name('indexReservations');
                 Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);
                 Route::post('/crear', [ReservationController::class, 'storeReservations'])->name('storeReservations');
+                Route::get('/crear/nueva/reserva', [ReservationController::class, 'create'])->name('create');
+                Route::get('/get/rooms/{numberPage}', [ReservationController::class, 'getDataRooms']);
                 Route::get('/lista/{reservation_id}', [ReservationController::class, 'listAssignRooms'])->name('listAssignRooms');
-
                 Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
-
+                Route::post('/generar/costo',[ReservationController::class, 'generarCosto']);
             });
         });
 

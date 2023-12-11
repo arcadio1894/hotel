@@ -69,9 +69,9 @@ class RoomPriceController extends Controller
         {
             array_push($arrayRoomPrices, [
                 "id" => $roomPrice->id,
-                "season" => $roomPrice->season->name,
+                "season" => $roomPrice->season ? $roomPrice->season->name : null,
                 "type_room" => $roomPrice->room_type->name,
-                "season_id" => $roomPrice->season->id,
+                "season_id" => $roomPrice->season ? $roomPrice->season->id : null,
                 "type_room_id" => $roomPrice->room_type->id,
                 "price" => $roomPrice->price,
                 "duration_hours" => $roomPrice->duration_hours,

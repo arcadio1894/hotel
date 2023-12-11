@@ -9,6 +9,7 @@ const Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer)
     }
 });
+var csrfToken = $('meta[name="csrf-token"]').attr('content');
 $(document).ready(function () {
 
     $(".datetimepicker").flatpickr({
@@ -38,12 +39,36 @@ $(document).ready(function () {
 
 
     $("#buscarBtn").on('click', showCustomerSearch);
+
+    $('#documentType').change(function () {
+        // Obtener el valor seleccionado
+        var selectedValue = $(this).val();
+        if (selectedValue === 'RUC') {
+            $('#name-label').text('Razon Social');
+            $('#inputLastname').hide();
+            $('#lastname').val(null);
+            $('#birth-label').text('Fecha de Constitución');
+        } else {
+            $('#name-label').text('Nombre');
+            $('#inputLastname').show();
+            $('#birth-label').text ('Fecha de Nacimiento');
+        }
+    });
+
+    $('#reservationType').change(function () {
+        var selectedValue = $(this).val();
+        if (selectedValue === '1') {
+            $("#hourFields").show();
+            $("#dayFields").hide();
+        } else {
+            $("#hourFields").hide();
+            $("#dayFields").show();
+        }
+    });
 });
 
 function showCustomerSearch() {
     var documento = $('#document').val();
-    
-
 
     $.get('/home/reservas/buscar-cliente', {
         dni: documento
@@ -58,14 +83,25 @@ function showCustomerSearch() {
 
             $('#inputName, #inputPhone, #inputDocumentType, #inputLastname, #inputEmail, #inputAddress, #inputBirth').removeClass('d-none');
             $('#idCustomer').val(data.cliente.id).prop('readonly', true);
-            $('#documentType').val(data.cliente.document_type).prop('readonly', true);
+            $('#documentType').val(data.cliente.document_type).prop('disabled', true);
             $('#name').val(data.cliente.name).prop('readonly', true);
             $('#phone').val(data.cliente.phone).prop('readonly', true);
             $('#lastname').val(data.cliente.lastname).prop('readonly', true);
             $('#email').val(data.cliente.email).prop('readonly', true);
-            $('#birth').val(data.cliente.birth).prop('readonly', true);
+            $('#birth').val(data.cliente.birth).prop('disabled', true);
             $('#address').val(data.cliente.address).prop('readonly', true);
             $('#code').val(data.codigo);
+            if (data.cliente.document_type === 'RUC') {
+                // Mostrar campos específicos para RUC
+                $('#name-label').text('Razon Social');
+                $('#inputLastname').hide();
+                $('#lastname').val(null);
+                $('#birth-label').text('Fecha de Constitución');
+            } else {
+                $('#name-label').text('Nombre');
+                $('#inputLastname').show();
+                $('#birth-label').text ('Fecha de Nacimiento');
+            }
         }
         else{
             Toast.fire({
@@ -77,10 +113,10 @@ function showCustomerSearch() {
             $('#idCustomer').val('').prop('readonly', false);
             $('#name').val('').prop('readonly', false);
             $('#phone').val('').prop('readonly', false);
-            $('#documentType').val('').prop('readonly', false);
+            $('#documentType').val('').prop('disabled', false);
             $('#lastname').val('').prop('readonly', false);
             $('#email').val('').prop('readonly', false);
-            $('#birth').val('').prop('readonly', false);
+            $('#birth').val('').prop('disabled', false);
             $('#address').val('').prop('readonly', false);
             $('#code').val(data.codigo);
         }
@@ -89,20 +125,27 @@ function showCustomerSearch() {
 }
 
 function cleanReservations(){
-    $('#document').val('');
+    /*$('#document').val('');
     $('#idCustomer').val('').prop('readonly', false);
     $('#name').val('').prop('readonly', false);
     $('#phone').val('').prop('readonly', false);
-    $('#code').val('');
-    $('#inputName, #inputPhone, #inputDocumentType, #inputLastname, #inputEmail, #inputAddress, #inputBirth').addClass('d-none');
+    $('#code').val('');*/
+    //$('#inputName, #inputPhone, #inputDocumentType, #inputLastname, #inputEmail, #inputAddress, #inputBirth').addClass('d-none');
     $('#reservationModal').modal('show');
+}
+
+function makeReservations() {
+    window.location.href = "/home/reservas/crear/nueva/reserva";
 }
 
 
 function saveReservations() {
     $("#guardar").prop("disabled", true);
+    var selectedRooms=[];
+    $("input[data-room-id]:checked").each(function() {
+        selectedRooms.push($(this).data("room-id"));
+    });
 
-    // Recopila los datos del formulario
     let formData = {
         code: $("#code").val(),
         idCustomer: $("#idCustomer").val(),
@@ -115,11 +158,19 @@ function saveReservations() {
         birth:$('#birth').val(),
         address: $('#address').val(),
         employeerid: $("#employeerid").val(),
-        startdate: $("#startdate").val(),
-        enddate: $("#enddate").val(),
-        totalguest: $("#totalguest").val(),
-    };
+        reservationType:$('#reservationType').val(),
+        selectedDate:$("#selectedDate").val(),
+        selectedStartTime:  $("#selectedStartTime").val(),
+        hoursQuantity:$('#hoursQuantity').val(),
+        startDate: $("#startDate").val(),
+        endDate: $("#endDate").val(),
+        total_guest: $("#total_guest").val(),
+        startTime: $("#startTime").val(),
+        paymethod: $("#paymethod").val(),
+        initialpay: $("#initialpay").val(),
+        selectedRooms:selectedRooms,
 
+    };
     // Realiza la solicitud AJAX
     $.ajax({
         url: '/home/reservas/crear',
@@ -140,10 +191,27 @@ function saveReservations() {
             });
         },
         error: function (xhr) {
-            // Manejo de errores
-            console.log(xhr);
             $("#guardar").prop("disabled", false);
-            // ... Resto del manejo de errores
+            if (xhr.responseJSON && xhr.responseJSON.errors) {
+                let errors = xhr.responseJSON.errors;
+                let errorMessage = "Errores de validación:<br>";
+
+                for (let field in errors) {
+                    errorMessage += `- ${errors[field][0]}<br>`;
+                }
+
+                Toast.fire({
+                    icon: 'error',
+                    title: errorMessage
+                });
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Hubo un error al procesar la solicitud'
+                }).then(function () {
+                    window.location.href = "/home/reservas/lista";
+                });
+            }
         }
     });
 }

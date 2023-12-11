@@ -9,14 +9,15 @@ class Reservation extends Model
 {
     protected $primaryKey = 'id';
     protected $fillable = [
-        'document_type',
-        'document',
-        'name',
-        'lastname',
-        'phone',
-        'email',
-        'birth',
-        'address'
+        'customer_id',
+        'employer_id',
+        'status_id',
+        'paymethod_id',
+        'start_date',
+        'end_date',
+        'initial_pay',
+        'total_guest',
+        'code'
     ];
 
     public function customer()

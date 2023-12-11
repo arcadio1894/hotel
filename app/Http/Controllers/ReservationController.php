@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GetDataRoomsRequest;
+use App\Http\Requests\StoreReservationRequest;
 use App\Models\Reservation;
 use App\Models\ReservationDetail;
 use App\Models\Room;
 use App\Models\Customer;
 
+use App\Models\RoomType;
+use App\Models\Season;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -41,7 +45,7 @@ class ReservationController extends Controller
         //dump($request);
         //dd($request);
         if($tipo=='lista'){
-            $query = Reservation::orderBy('id','ASC');
+            $query = Reservation::orderBy('id','DESC');
         }
         //dump($query);
         //dd($query);
@@ -122,37 +126,67 @@ class ReservationController extends Controller
 
     }
 
-    public function storeReservations(Request $request)
+    public function storeReservations(StoreReservationRequest $request)
     {
-        //dump($request);
-        //dd($request);
-        $reservacion = new Reservation();
-        $reservacion->code = $request->input('code');
-        if($request->input('idCustomer')){
-            $reservacion->customer_id = $request->input('idCustomer');
+        try{
+
+            DB::beginTransaction();
+            $reservacion = new Reservation();
+            $reservacion->code = $request->input('code');
+            if($request->input('idCustomer')){
+                $reservacion->customer_id = $request->input('idCustomer');
+            }
+            else{
+                $customer = new Customer();
+                $customer->document_type = $request->input('documentType');
+                $customer->document = $request->input('document');
+                $customer->name = $request->input('name');
+                $customer->lastname = $request->input('lastname', null);
+                $customer->phone = $request->input('phone');
+                $customer->email = $request->input('email');
+                $customer->birth = $request->input('birth');
+                $customer->address = $request->input('address');
+                $customer->save();
+                $reservacion->customer_id = $customer->id;
+            }
+
+            $reservationType = $request->input('reservationType');
+
+            if ($reservationType==1){
+                $selectedDate = $request->input('selectedDate');
+                $startTime= $request->input('selectedStartTime');
+                $hoursQuantity= $request->input('hoursQuantity');
+                $startDateTime = Carbon::parse($selectedDate . ' ' . $startTime);
+                $endDateTime = $startDateTime->copy()->addHours($hoursQuantity);
+            }else if ($reservationType==2){
+                $startDate= $request->input('startDate');
+                $endDate= $request->input('endDate');
+                $startTime= $request->input('startTime');
+                $startDateTime = Carbon::parse($startDate . ' ' . $startTime);
+                $endDateTime = Carbon::parse($endDate . ' 12:00:00');
+            }
+
+            $reservacion->employer_id = $request->input('employeerid');
+            $reservacion->start_date = $startDateTime;
+            $reservacion->end_date = $endDateTime;
+            $reservacion->total_guest = $request->input('total_guest');
+            $reservacion->paymethod_id = $request->input('paymethod');
+            $reservacion->initial_pay = $request->input('initialpay');
+            $reservacion->status_id = 1;
+            $reservacion->save();
+            $selectedRooms = $request->input('selectedRooms');
+            foreach ($selectedRooms as $selectedRoom){
+                $detailReservation= new ReservationDetail();
+                $detailReservation->reservation_id=$reservacion->id;
+                $detailReservation->room_id=$selectedRoom;
+                $detailReservation->save();
+            }
+            DB::commit();
+            return response()->json(['success' => 'Reservación creada con éxito']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al crear La reservación. Detalles: ' . $e->getMessage(), 'customError' => true], 500);
         }
-        else{
-            $customer = new Customer();
-            $customer->document_type = $request->input('documentType');
-            $customer->document = $request->input('document');
-            $customer->name = $request->input('name');
-            $customer->lastname = $request->input('lastname', null);
-            $customer->phone = $request->input('phone');
-            $customer->email = $request->input('email');
-            $customer->birth = $request->input('birth');
-            $customer->address = $request->input('address');
-            $customer->save();
-            $reservacion->customer_id = $customer->id;
-        }
-
-        $reservacion->employer_id = $request->input('employeerid');
-        $reservacion->start_date = $request->input('startdate');
-        $reservacion->end_date = $request->input('startdate');
-        $reservacion->total_guest = $request->input('totalguest');
-
-        $reservacion->save();
-
-        return response()->json(['success' => 'Reservación creada con éxito']);
     }
 
 
@@ -165,9 +199,6 @@ class ReservationController extends Controller
             "id" => $usuario->id,
             "name" => $usuario->name,
         ];
-        // Puedes hacer las operaciones necesarias aquí antes de la redirección
-    
-        // Redirigir a la nueva página
         return view('reservation.index', compact('tipo','room_types','paymethods','user','reservation_id'));
     }
 
@@ -292,5 +323,190 @@ class ReservationController extends Controller
         return response()->json($respuesta);
     }
 
+    public function create(){
+        $tipo='lista';
+        $paymethods = DB::table('paymethods')->get();
+        $documentTypes = DB::table('document_types')->get();
+        $usuario = Auth::user();
+        $user = (object)[
+            "id" => $usuario->id,
+            "name" => $usuario->name,
+        ];
+        $states=  DB::table('statuses')->get();
+
+        $roomTypes=RoomType::orderBy('capacity')->get();
+        return view('reservation.create', compact('tipo','paymethods','user', 'documentTypes', 'states', 'roomTypes'));
+
+    }
+    function limitarTexto($texto, $longitud = 50) {
+        if (strlen($texto) > $longitud) {
+            $texto = substr($texto, 0, $longitud - 3) . '...';
+        }
+        return $texto;
+    }
+
+    public function getDataRooms(GetDataRoomsRequest $request, $pageNumber = 1){
+        $perPage = 9;
+
+        $reservationType = $request->input('reservationType');
+        $total_guest= $request->input('total_guest');
+        $selectRoomType= $request->input('selectRoomType');
+
+        if ($reservationType==1){
+            $selectedDate = $request->input('selectedDate');
+            $startTime= $request->input('selectedStartTime');
+            $hoursQuantity= $request->input('hoursQuantity');
+            $startDateTime = Carbon::parse($selectedDate . ' ' . $startTime);
+            $endDateTime = $startDateTime->copy()->addHours($hoursQuantity);
+        }else{
+            $startDate= $request->input('startDate');
+            $endDate= $request->input('endDate');
+            $startTime= $request->input('startTime');
+            $startDateTime = Carbon::parse($startDate . ' ' . $startTime);
+            $endDateTime = Carbon::parse($endDate . ' 12:00:00');
+        }
+
+        $occupiedRooms = ReservationDetail::whereHas('reservation', function ($query) use ($startDateTime, $endDateTime) {
+            $query->where(function ($q) use ($startDateTime, $endDateTime) {
+                $q->whereBetween('start_date', [$startDateTime, $endDateTime])
+                    ->orWhereBetween('end_date', [$startDateTime, $endDateTime])
+                    ->orWhere(function ($qq) use ($startDateTime, $endDateTime) {
+                        $qq->where('start_date', '<', $startDateTime)
+                            ->where('end_date', '>', $endDateTime);
+                    });
+            });
+        })->pluck('room_id')->toArray();
+
+        if($selectRoomType){
+            $roomsInitial=Room::where('room_type_id', $selectRoomType)->get();
+        }
+        else{
+            $roomsInitial=Room::all();
+        }
+
+        $availableRooms = $roomsInitial->reject(function ($room) use ($occupiedRooms) {
+            return in_array($room->id, $occupiedRooms);
+        });
+
+        $season = Season::whereBetween('start_date', [$startDateTime, $endDateTime])
+            ->orWhereBetween('end_date', [$startDateTime, $endDateTime])
+            ->orWhere(function ($qq) use ($startDateTime, $endDateTime) {
+                $qq->where('start_date', '<=', $startDateTime)
+                    ->where('end_date', '>=', $endDateTime);
+            })->first();
+
+        $sortedRooms = $availableRooms->sortBy([
+            ['level', 'asc'],
+            ['roomType.capacity', 'desc'],
+        ]);
+        $selectedRooms = collect();
+        $remainingGuests = $total_guest;
+
+        foreach ($sortedRooms as $room) {
+            if ($remainingGuests > 0) {
+                $selectedRooms->push($room);
+                $remainingGuests -= $room->roomType->capacity;
+            } else {
+                break;
+            }
+        }
+
+        $otherRooms = $sortedRooms->diff($selectedRooms);
+
+        $filteredRooms = $selectedRooms->merge($otherRooms);
+
+
+        $totalFilteredRecords = $filteredRooms->count();
+        $totalPages = ceil($totalFilteredRecords / $perPage);
+        $startRecord = ($pageNumber - 1) * $perPage + 1;
+        $endRecord = min($totalFilteredRecords, $pageNumber * $perPage);
+
+        $rooms = $filteredRooms->skip(($pageNumber - 1) * $perPage)
+            ->take($perPage);
+
+        $arrayRooms = [];
+
+        foreach ( $rooms as $room )
+        {
+            $price = null;
+
+            if ($reservationType == 1 || $reservationType == 2) {
+                $priceQuery = $room->roomPrices()
+                    ->when($season, function ($query) use ($season, $reservationType) {
+                        $query->where('season_id', $season->id)
+                            ->where('duration_hours', $reservationType == 1 ? 1 : 24);
+                    })
+                    ->when(!$season, function ($query) use ($reservationType) {
+                        $query->whereNull('season_id')
+                            ->where('duration_hours', $reservationType == 1 ? 1 : 24);
+                    });
+
+                $price = $priceQuery->exists() ? $priceQuery->first()->price : null;
+            }
+            array_push($arrayRooms, [
+                "id" => $room->id,
+                "type_room_id" => $room->roomType->id,
+                "type_room" => $room->roomType->name,
+                "level" => $room->level,
+                "number" => $room->number,
+                "description" => $room->description,
+                "description_short" => $this->limitarTexto($room->description),
+                "image" => $room->image,
+                "status" => $room->status,
+                "capacity"=>$room->roomType->capacity,
+                "price"=>$price,
+            ]);
+        }
+
+
+        $pagination = [
+            'currentPage' => (int)$pageNumber,
+            'totalPages' => (int)$totalPages,
+            'startRecord' => $startRecord,
+            'endRecord' => $endRecord,
+            'totalRecords' => $totalFilteredRecords,
+            'totalFilteredRecords' => $totalFilteredRecords
+        ];
+
+        return ['data' => $arrayRooms, 'pagination' => $pagination];
+    }
+
+    public function generarCosto(Request $request) {
+        $reservationType = $request->input('reservationType');
+        $selectedRoomPrices = $request->input('selectedRoomPrices');
+        $selectedRoom_ids = $request->input('selectedRooms');
+        $selectedRooms=Room::whereIn('id', $selectedRoom_ids)->get();
+
+        $totalCost = 0;
+        $detalleReserva = [];
+
+        if ($reservationType == 1) {
+            $hoursQuantity = $request->input('hoursQuantity');
+            foreach ($selectedRoomPrices as $index => $roomPrice) {
+                $totalCost += $roomPrice * $hoursQuantity;
+
+                $detalleReserva[] = [
+                    'habitacion' => $selectedRooms[$index]->roomType->name . ' - ' .$selectedRooms[$index]->level.$selectedRooms[$index]->number,
+                    'precioTotal' => $roomPrice * $hoursQuantity,
+                ];
+            }
+        } else {
+            $startDate = Carbon::parse($request->input('startDate'));
+            $endDate = Carbon::parse($request->input('endDate'));
+            $diffInDays = $startDate->diffInDays($endDate);
+
+            foreach ($selectedRoomPrices as $index => $roomPrice) {
+                $totalCost += $roomPrice * $diffInDays;
+
+                // Agregar detalle de reserva para cada habitación
+                $detalleReserva[] = [
+                    'habitacion' => $selectedRooms[$index]->roomType->name . ' - ' .$selectedRooms[$index]->level.$selectedRooms[$index]->number,
+                    'precioTotal' => $roomPrice * $diffInDays,
+                ];
+            }
+        }
+
+        return response()->json(['costoTotal' => $totalCost, 'detalleReserva' => $detalleReserva]);
+    }
 
 }
