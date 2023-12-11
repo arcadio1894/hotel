@@ -9,8 +9,12 @@ use App\Http\Controllers\ReservationController;
 
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+
+use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\RoomPriceController;
 use App\Http\Controllers\RoomController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -130,6 +134,20 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+
+    //RUTAS DE USUARIOS
+        Route::prefix('/home/users')->group(function(){
+            Route::name('users.')->group(function(){
+                Route::get('/listar',[UserController::class,'index'])->name('index');
+                Route::post('/', [UserController::class,'store'])->name('store');
+                Route::post('/edit/{user}', [UserController::class,'update'])->name('update');
+                Route::delete('/delete/{user}',[UserController::class,'destroy'])->name('destroy');
+
+                Route::get('/get/data/{numberPage}', [UserController::class, 'getDataOperations']);
+            });
+
+        });
+
     Route::prefix('/home/room/prices')->group(function (){
         Route::name('roomPrices.')->group(function () {
             Route::get('listar', [RoomPriceController::class, 'index'])->name('index');
@@ -152,4 +170,5 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/restore/{room}', [RoomController::class, 'restore'])->name('restore');
         });
     });
+
 });

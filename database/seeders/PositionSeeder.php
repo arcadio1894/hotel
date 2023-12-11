@@ -39,6 +39,10 @@ class PositionSeeder extends Seeder
             'name' => 'Seguridad',
             'description' => 'Seguridad de los clientes y local'
         ]);
+        Position::create([
+            'name' => 'Sin Rol',
+            'description' => 'Sin rol'
+        ]);
 
     }
 }

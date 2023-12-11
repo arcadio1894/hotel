@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Http\Requests\CreateCustomerRequest;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Maatwebsite\Excel\Facades\Excel;
 
 use App\Exports\ReportCustomerExport;
@@ -47,7 +49,15 @@ class CustomerController extends Controller
                 throw new \Exception('El RUC debe ser de 11 Dígitos.');
             }
             DB::beginTransaction();
+            $user = new User;
+
+            $user->name = $request->name.' '.$request->lastname;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->dni);
+            $user->save();
+
             $customer = new Customer();
+            $customer->user_id = $user->id;
             $customer->document_type = $request->input('document_type');
             $customer->document = $request->input('document');
             $customer->name = $request->input('name');
@@ -56,6 +66,7 @@ class CustomerController extends Controller
             $customer->email = $request->input('email');
             $customer->birth = Carbon::createFromFormat('Y-m-d', $request->input('birth'))->format('d-m-Y');
             $customer->address = $request->input('address');
+
 
             $customer->save();
             DB::commit();
