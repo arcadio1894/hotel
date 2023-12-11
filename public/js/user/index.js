@@ -55,11 +55,28 @@ function save() {
 
 function addUser(){
     $('#id').val('');
+    $('#document_type').val('');
+
+    $('#document_type option:not(:selected)').prop('disabled', false);
+    $('#document_type option:selected').prop('disabled', false);
+    $('#document_type option[value="RUC"]').show();
+
+    $('#document').val('');
     $('#name').val('');
     $('#lastname').val('');
     $('#email').val('');
     $('#role_id').val('');
     $('#userModal').modal('show');
+}
+function updateDocumentType() {
+    var documentTypeValue = $('#document_type').val();
+    if ($('#role_id').val() === "5" && documentTypeValue === 'RUC') {
+        $('#name-label').text('Razon Social');
+        $('#lastname-group').hide();
+    } else {
+        $('#name-label').text('Nombre');
+        $('#lastname-group').show();
+    }
 }
 
 function updateUser(btn) {
@@ -67,12 +84,51 @@ function updateUser(btn) {
     $('#name').val($(btn).data('name'));
     $('#lastname').val($(btn).data('lastname'));
     $('#email').val($(btn).data('email'));
+    $('#document_type').val($(btn).data('document_type'));
     $('#role_id').val($(btn).data('role_id'));
     console.log($(btn).data('id'));
     console.log($(btn).data('name'));
     console.log($(btn).data('lastname'));
     console.log($(btn).data('email'));
     console.log($(btn).data('role_id'));
+    console.log($(btn).data('document_type'));
+
+    updateDocumentType();
+
+
+    $('#document_type').on('change', function () {
+        updateDocumentType();
+        $('#lastname-group').show();
+    });
+    if ($('#role_id').val() === "5") {
+        $('#exampleModalLabel').text('Datos del Usuario Cliente');
+        $('#role_id option:not([value="5"])').attr('disabled', true);
+        $('#role_id option[value="5"]').show();
+        $('#document_type').on('change', function () {
+            var documentTypeValue = $(this).val();
+            if (documentTypeValue === 'RUC') {
+                $('#name').text('Razon Social');
+                $('#lastname-group').hide();
+            } else {
+                $('#name').text('Nombre');
+                $('#lastname-group').show();
+            }
+        });
+        var initialDocumentTypeValue = $('#document_type').val();
+        if (initialDocumentTypeValue === 'RUC') {
+            $('#name-label').text('Razon Social');
+            $('#lastname-group').hide();
+        }
+    } else {
+        $('#exampleModalLabel').text('Datos del Usuario Empleado');
+        $('#role_id option:not(:selected)').prop('disabled', false);
+        $('#role_id option:selected').prop('disabled', false);
+        $('#role_id option[value="5"]').hide();
+        $('#name').text('Nombre');
+        $('#lastname-group').show();
+        $('#document_type').hide();
+    }
+
     $('#userModal').modal('show');
 
 }

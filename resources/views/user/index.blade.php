@@ -209,18 +209,6 @@
                 <form id="userForm">
                     @csrf
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="name">Nombres <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="name" name="name">
-                        </div>
-                        <div class="form-group">
-                            <label for="lastname">Apellidos <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="lastname" name="lastname">
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Correo <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="email" name="email">
-                        </div>
                         <div class="col md-4 mb-3">
                             <label for="role_id" >Rol <span class="text-danger">*</span></label>
                             <select class="form-select " id="role_id" name="role_id" required data-options='{"removeItemButton":true,"placeholder":true}'>
@@ -229,6 +217,31 @@
                                     <option value="{{ $role->id }}">{{ $role->description }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="document_type" id="document_typelabel">Tipo de Documento <span class="text-danger">*</span></label>
+                            <select name="document_type" id="document_type" class="form-select">
+                                <option value="">-Seleccione-</option>
+                                @foreach ($document_types as $type)
+                                    <option value="{{ $type }}">{{ $type }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="name" id="name-label">Nombre <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="name" name="name" >
+                        </div>
+                        <div class="form-group" id="lastname-group">
+                            <label for="lastname">Apellidos <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="lastname" name="lastname" >
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="email" name="email">
+                        </div>
+                        <div class="form-group">
+                            <label for="document" id="documentlabel">Nro. Documento <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="document" name="document" >
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -240,4 +253,6 @@
             </div>
         </div>
     </div>
+
+
 @endsection

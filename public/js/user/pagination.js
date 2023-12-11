@@ -5,9 +5,57 @@ $(document).ready(function () {
     console.log($tipo);
 
     $(document).on('click', '[data-item]', showData);
+    $('#document_typelabel').hide();
+    $('#document_type').hide();
+    $('#documentlabel').hide();
+    $('#document').hide();
     $("#btn-search").on('click', showDataSeach);
+    $('#role_id').change(function () {
+        // Obtener el valor seleccionado
+        var selectedRole = $(this).val();
 
 
+        if (selectedRole === '5') {
+
+            $('#exampleModalLabel').text('Datos del Usuario Cliente');
+            $('#document_type').show();
+            $('#document_typelabel').show();
+            $('#name_label').show();
+            $('#lastname_group').show();
+            $('#email').show();
+            $('#documentlabel').show();
+            $('#document').show();
+        } else {
+
+            $('#exampleModalLabel').text('Datos del Usuario Empleado');
+            $('#document_type').hide();
+            $('#document_typelabel').hide();
+            $('#name').show();
+            $('#name_label').show();
+            $('#lastname').show();
+            $('#lastname_group').show();
+            $('#email').show();
+            $('#documentlabel').hide();
+            $('#document').hide();
+        }
+    });
+
+    $('#document_type').change(function () {
+        var selectedValue = $(this).val();
+
+        if (selectedValue === 'RUC') {
+            $('#exampleModalLabel').text('Datos del Cliente Empresarial');
+            $('#name-label').text('Razon Social');
+            $('#lastname-group').hide();
+            $('#lastname').val(null);
+
+        } else {
+            $('#exampleModalLabel').text('Datos del Cliente');
+            $('#name-label').text('Nombre');
+            $('#lastname-group').show();
+
+        }
+    });
 });
 
 
@@ -146,8 +194,13 @@ function renderDataOperations(data) {
 function renderDataTableCard(data) {
     var clone = activateTemplate('#item-table');
     clone.querySelector("[data-id]").innerHTML = data.id;
-    clone.querySelector("[data-name]").innerHTML = data.name;
+    if (data.lastname !== null) {
+        clone.querySelector("[data-name]").innerHTML = data.name+ ' ' + data.lastname;
+    } else {
+        clone.querySelector("[data-name]").innerHTML = data.name;
+    }
     clone.querySelector("[data-email]").innerHTML = data.email;
+
     if (data.role_name) {
         clone.querySelector("[data-role_name]").innerHTML = data.role_name;
     } else {
@@ -168,7 +221,9 @@ function renderDataTableCard(data) {
     updateButton.setAttribute('data-name', data.name);
     updateButton.setAttribute('data-lastname', data.lastname);
     updateButton.setAttribute('data-email', data.email);
-    updateButton.setAttribute('data-role_id', data.role_name);
+    updateButton.setAttribute('data-role_id', data.role_id);
+    updateButton.setAttribute('data-document_type', data.document_type);
+
 
     updateButton.innerHTML = '<i class="nav-icon fas fa-pen"></i>';
     buttonsTd.appendChild(updateButton);
