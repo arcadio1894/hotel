@@ -16,7 +16,7 @@ class CreateRoomPricesTable extends Migration
         Schema::create('room_prices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('room_id')->constrained('rooms');
-            $table->foreignId('season_id')->constrained('seasons');
+            $table->foreignId('season_id')->constrained('seasons')->nullable();
             $table->integer('duration_hours');
             $table->decimal('price', 8, 2);
             $table->timestamps();
