@@ -367,6 +367,8 @@ class ReservationController extends Controller
         return view('reservation.create', compact('tipo','paymethods','user', 'documentTypes', 'states', 'roomTypes'));
 
     }
+
+
     function limitarTexto($texto, $longitud = 50) {
         if (strlen($texto) > $longitud) {
             $texto = substr($texto, 0, $longitud - 3) . '...';
@@ -537,5 +539,37 @@ class ReservationController extends Controller
 
         return response()->json(['costoTotal' => $totalCost, 'detalleReserva' => $detalleReserva]);
     }
+
+    public function edit($id){
+        $reserva = Reservation::findOrFail($id);
+        $startDate = Carbon::parse($reserva->start_date)->startOfDay();
+        $endDate = Carbon::parse($reserva->end_date)->startOfDay();
+        $reserva->reservationType = $startDate->diffInDays($endDate) < 1 ? 1 : 2;
+        $reserva->start_date = Carbon::parse($reserva->start_date);
+        $tipo='lista';
+        $paymethods = DB::table('paymethods')->get();
+        $documentTypes = DB::table('document_types')->get();
+        $usuario = Auth::user();
+        $user = (object)[
+            "id" => $usuario->id,
+            "name" => $usuario->name,
+        ];
+        $states=  DB::table('statuses')->get();
+
+        $roomTypes=RoomType::orderBy('capacity')->get();
+        return view('reservation.update', compact('tipo','paymethods','user', 'documentTypes', 'states', 'roomTypes', 'reserva', 'startDate', 'endDate'));
+
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+
+            return response()->json(['success' => 'Reservación actualizada con éxito']);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error al actualizar la reservación. Detalles: ' . $e->getMessage(), 'customError' => true], 500);
+        }
+    }
+
 
 }

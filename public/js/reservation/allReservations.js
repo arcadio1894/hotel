@@ -232,12 +232,12 @@ function updateReservation(btn) {
     reservation_id = $(btn).data('id');
 
     $.ajax({
-        url: '/home/reservas/lista/' + reservation_id,
+        url: '/home/reservas/editar/' + reservation_id,
         method: 'GET',
         data: {_token: $('meta[name="csrf-token"]').attr('content')},  // Añadir el token CSRF
         success: function (response) {
             // Redirigir a la nueva página después de que la solicitud tenga éxito
-            window.location.href = '/home/reservas/lista/' + reservation_id;
+            window.location.href = '/home/reservas/editar/' + reservation_id;
         },
         error: function (xhr, status, error) {
             // Manejar errores

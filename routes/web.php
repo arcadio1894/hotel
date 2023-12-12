@@ -99,6 +99,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);
                 Route::post('/crear', [ReservationController::class, 'storeReservations'])->name('storeReservations');
                 Route::get('/crear/nueva/reserva', [ReservationController::class, 'create'])->name('create');
+                Route::get('/editar/{id}', [ReservationController::class, 'edit'])->name('reservations.edit');
+                Route::put('/editar/{id}', [ReservationController::class, 'update'])->name('reservations.update');
                 Route::get('/get/rooms/{numberPage}', [ReservationController::class, 'getDataRooms']);
                 Route::get('/lista/{reservation_id}', [ReservationController::class, 'listAssignRooms'])->name('listAssignRooms');
                 Route::get('/lista/cancelar/{reservation_id}', [CheckInOutController::class, 'cancelReservation'])->name('cancelReservation');  
