@@ -8,7 +8,7 @@ use App\Models\RoomType;
 use App\Models\Season;
 use Illuminate\Database\Seeder;
 
-class Rooms extends Seeder
+class RoomsSeeder extends Seeder
 {
     /**
      * Run the database seeds.

@@ -11,11 +11,11 @@ const Toast = Swal.mixin({
 });
 $(document).ready(function () {
 
-    $(".datetimepicker").flatpickr({
-        enableTime: true,
-        dateFormat: "d/m/y H:i",
+    /*$(".datetimepicker").flatpickr({
+        enableTime: false,
+        dateFormat: "d/m/y",
         disableMobile: true
-    });
+    });*/
 
     // Agrega el evento de cambio a los datepickers
     $("#startdate, #enddate").change(function () {
@@ -59,7 +59,7 @@ function showCustomerSearch() {
 
 
             $('#inputName, #inputPhone').removeClass('d-none');
-            $('#id').val(data.cliente.id).prop('readonly', true);
+            $('#idCustomer').val(data.cliente.id).prop('readonly', true);
             $('#name').val(data.cliente.name).prop('readonly', true);
             $('#phone').val(data.cliente.phone).prop('readonly', true);
             $('#code').val(data.codigo);
@@ -71,7 +71,7 @@ function showCustomerSearch() {
             })
 
             $('#inputName, #inputPhone').removeClass('d-none');
-            $('#id').val('').prop('readonly', false);
+            $('#idCustomer').val('').prop('readonly', false);
             $('#name').val('').prop('readonly', false);
             $('#phone').val('').prop('readonly', false);
             $('#code').val(data.codigo);
@@ -79,13 +79,25 @@ function showCustomerSearch() {
 
     })
 }
+function addReservationDetail(){
+
+    cleanCustomer();
+    $('#addReservationDetailModal').modal('show');
+}
+
+function updateReservationDetail(){
+
+    cleanCustomer();
+    $('#addReservationDetailModal').modal('show');
+}
+
 
 function cleanCustomer(){
     $('#document').val('');
-    $('#id').val('').prop('readonly', false);
+    $('#idCustomer').val('').prop('readonly', false);
     $('#name').val('').prop('readonly', false);
     $('#phone').val('').prop('readonly', false);
     $('#code').val('');
     $('#inputName, #inputPhone').addClass('d-none');
-    $('#reservationModal').modal('show');
+
 }

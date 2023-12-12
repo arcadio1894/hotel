@@ -25,7 +25,7 @@ class UpdateRoomPriceRequest extends FormRequest
     {
         return [
             'room_type' => 'required|exists:room_types,id',
-            'season' => 'required|exists:seasons,id',
+            'season' => 'nullable|exists:seasons,id',
             'duration_hours' => 'required|numeric',
             'price' => 'required|numeric',
         ];
@@ -36,7 +36,7 @@ class UpdateRoomPriceRequest extends FormRequest
         return [
             'room_type.required' => 'El campo :attribute es obligatorio.',
             'room_type.exists' => 'El :attribute seleccionado no existe en la base de datos.',
-            'season.required' => 'El campo :attribute es obligatorio.',
+
             'season.exists' => 'El :attribute seleccionado no existe en la base de datos.',
             'duration_hours.required' => 'El campo :attribute es obligatorio.',
             'duration_hours.numeric' => 'El campo :attribute debe ser un número.',

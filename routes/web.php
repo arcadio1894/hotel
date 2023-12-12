@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CheckInOutController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoomTypeController;
 use App\Http\Controllers\SeasonController;
@@ -9,8 +10,12 @@ use App\Http\Controllers\ReservationController;
 
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+
+use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\RoomPriceController;
 use App\Http\Controllers\RoomController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -89,10 +94,20 @@ Route::middleware(['auth'])->group(function () {
         Route::prefix('/home/reservas')->group(function (){
             Route::name('reservations.')->group(function () {
                 Route::get('/listar', [ReservationController::class, 'index'])->name('index');
-
-                Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
                 Route::get('/get/data/{numberPage}', [ReservationController::class, 'getDataReservation']);
-
+                Route::get('/lista', [ReservationController::class, 'indexReservations'])->name('indexReservations');
+                Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);
+                Route::post('/crear', [ReservationController::class, 'storeReservations'])->name('storeReservations');
+                Route::get('/crear/nueva/reserva', [ReservationController::class, 'create'])->name('create');
+                Route::get('/editar/{id}', [ReservationController::class, 'edit'])->name('reservations.edit');
+                Route::put('/editar/{id}', [ReservationController::class, 'update'])->name('reservations.update');
+                Route::get('/get/rooms/{numberPage}', [ReservationController::class, 'getDataRooms']);
+                Route::get('/lista/{reservation_id}', [ReservationController::class, 'listAssignRooms'])->name('listAssignRooms');
+                Route::get('/lista/cancelar/{reservation_id}', [CheckInOutController::class, 'cancelReservation'])->name('cancelReservation');  
+                Route::get('/lista/checkin/{reservation_id}', [CheckInOutController::class, 'confirmCheckin'])->name('confirmCheckin');
+                Route::get('/lista/checkout/{reservation_id}', [CheckInOutController::class, 'confirmCheckout'])->name('confirmCheckout');
+                Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
+                Route::post('/generar/costo',[ReservationController::class, 'generarCosto']);
             });
         });
 
@@ -124,6 +139,20 @@ Route::middleware(['auth'])->group(function () {
         });
     });
 
+
+    //RUTAS DE USUARIOS
+        Route::prefix('/home/users')->group(function(){
+            Route::name('users.')->group(function(){
+                Route::get('/listar',[UserController::class,'index'])->name('index');
+                Route::post('/', [UserController::class,'store'])->name('store');
+                Route::post('/edit/{user}', [UserController::class,'update'])->name('update');
+                Route::delete('/delete/{user}',[UserController::class,'destroy'])->name('destroy');
+
+                Route::get('/get/data/{numberPage}', [UserController::class, 'getDataOperations']);
+            });
+
+        });
+
     Route::prefix('/home/room/prices')->group(function (){
         Route::name('roomPrices.')->group(function () {
             Route::get('listar', [RoomPriceController::class, 'index'])->name('index');
@@ -146,4 +175,5 @@ Route::middleware(['auth'])->group(function () {
             Route::post('/restore/{room}', [RoomController::class, 'restore'])->name('restore');
         });
     });
+
 });

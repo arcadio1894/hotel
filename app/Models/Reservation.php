@@ -7,7 +7,27 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
-    //use HasFactory;
+    protected $primaryKey = 'id';
+    protected $fillable = [
+        'customer_id',
+        'employer_id',
+        'status_id',
+        'paymethod_id',
+        'start_date',
+        'end_date',
+        'initial_pay',
+        'total_guest',
+        'code',
+        'document_type',
+        'document',
+        'name',
+        'lastname',
+        'phone',
+        'email',
+        'birth',
+        'address',
+        'status_id'
+    ];
 
     public function customer()
     {
@@ -28,4 +48,15 @@ class Reservation extends Model
     {
         return $this->belongsTo(Paymethod::class);
     }
+
+    public function details()
+    {
+        return $this->hasMany(ReservationDetail::class);
+    }
+
+    public function checkInOuts()
+    {
+        return $this->hasMany(CheckInOut::class);
+    }
+
 }

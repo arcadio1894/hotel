@@ -43,7 +43,6 @@ function getDataOperations($numberPage) {
         durationHoursRoom: durationHoursRoom
     }, function(data) {
         renderDataOperations(data);
-
     }).fail(function(jqXHR, textStatus, errorThrown) {
         // Función de error, se ejecuta cuando la solicitud GET falla
         console.error(textStatus, errorThrown);
@@ -157,10 +156,14 @@ function renderDataOperations(data) {
 function renderDataTableCard(data) {
     var clone = activateTemplate('#item-table');
     clone.querySelector("[data-id]").innerHTML = data.id;
-    clone.querySelector("[data-season]").innerHTML = data.season;
+   // clone.querySelector("[data-season]").innerHTML = data.season;
     clone.querySelector("[data-type_room]").innerHTML = data.type_room;
     clone.querySelector("[data-price]").innerHTML = data.price;
-
+    if (data.season) {
+        clone.querySelector("[data-season]").innerHTML = data.season;
+    } else {
+        clone.querySelector("[data-season]").innerHTML = 'Ninguna';
+    }
     if (data.duration_hours == 24) {
         clone.querySelector("[data-duration_hours]").innerHTML = "1 Día";
     } else {

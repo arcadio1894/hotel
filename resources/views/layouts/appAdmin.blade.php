@@ -188,7 +188,14 @@
                             <ul class="nav collapse @yield('openUlReservation')" id="reservations">
                                 <li class="nav-item">
                                     <a class="nav-link @yield('activeListReservation')" href="{{ route('reservations.index')}}" aria-expanded="false">
-                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Lista General</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link @yield('activeListReservations')" href="{{ route('reservations.indexReservations')}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Lista de Reservas</span>
                                         </div>
                                     </a>
                                     <!-- more inner pages-->
@@ -307,6 +314,18 @@
                             </a>
                             <ul class="nav collapse  @yield('openRole')"  id="rol">
                                 <li class="nav-item"><a class="nav-link @yield('activeListRole')" href="{{route("roles.index")}}" aria-expanded="false">
+                                        <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
+                                        </div>
+                                    </a>
+                                    <!-- more inner pages-->
+                                </li>
+                            </ul>
+                            <!-- parent pages--><a class="nav-link dropdown-indicator" href="#user" role="button" data-bs-toggle="collapse" aria-expanded="false" aria-controls="user">
+                                <div class="d-flex align-items-center"><span class="nav-link-icon"><span class="fas fa-user"></span></span><span class="nav-link-text ps-1">Usuarios</span>
+                                </div>
+                            </a>
+                            <ul class="nav collapse  @yield('openUser')"  id="user">
+                                <li class="nav-item"><a class="nav-link @yield('activeListUser')" href="{{route("users.index")}}" aria-expanded="false">
                                         <div class="d-flex align-items-center"><span class="nav-link-text ps-1">Listar</span>
                                         </div>
                                     </a>

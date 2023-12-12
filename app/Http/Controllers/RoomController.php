@@ -39,6 +39,13 @@ class RoomController extends Controller
         return view('room.index', compact('title','tipo'));
     }
 
+    function limitarTexto($texto, $longitud = 50) {
+        if (strlen($texto) > $longitud) {
+            $texto = substr($texto, 0, $longitud - 3) . '...';
+        }
+        return $texto;
+    }
+
     public function getDataRoom(Request $request, $pageNumber = 1){
         $perPage = 12;
 
@@ -91,6 +98,7 @@ class RoomController extends Controller
                 "level" => $room->level,
                 "number" => $room->number,
                 "description" => $room->description,
+                "description_short" => $this->limitarTexto($room->description),
                 "image" => $room->image,
                 "status" => $room->status,
             ]);

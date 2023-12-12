@@ -158,44 +158,41 @@ function renderDataOperations(data) {
 function renderDataTableCard(data) {
     var clone = activateTemplate('#item-card');
     clone.querySelector("[data-id]").innerHTML = data.id;
-    if (data.type_room == null) {
-        clone.querySelector("[data-type_room]").innerHTML = "Sin descripción";
-    } else {
-        clone.querySelector("[data-type_room]").innerHTML = data.type_room;
-    }
-    clone.querySelector("[data-level]").innerHTML = data.level + "-";
+    clone.querySelector("[data-type_room]").innerHTML = data.type_room;
+    clone.querySelector("[data-level]").innerHTML = data.level;
+    clone.querySelector("[data-nivel]").innerHTML = data.level;
     clone.querySelector("[data-number]").innerHTML = data.number;
-    if (data.status === 'D') {
+    /*if (data.status === 'D') {
         clone.querySelector("[data-status]").innerHTML = "Disponible";
-        clone.querySelector("[data-color]").classList.add("bg-success");
-        clone.querySelector("[data-color_text]").classList.add("text-light");
+        //clone.querySelector("[data-color]").classList.add("bg-success");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
     } else if (data.status === 'O') {
         clone.querySelector("[data-status]").innerHTML = "Ocupado";
-        clone.querySelector("[data-color]").classList.add("bg-danger");
-        clone.querySelector("[data-color_text]").classList.add("text-light");
+        //clone.querySelector("[data-color]").classList.add("bg-danger");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
     }else if (data.status === 'F') {
         clone.querySelector("[data-status]").innerHTML = "Fuera de servicio";
-        clone.querySelector("[data-color]").classList.add("bg-secondary");
-        clone.querySelector("[data-color_text]").classList.add("text-light");
+        //clone.querySelector("[data-color]").classList.add("bg-secondary");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
     }else if (data.status === 'R') {
         clone.querySelector("[data-status]").innerHTML = "Reservada";
-        clone.querySelector("[data-color]").classList.add("bg-warning");
-        clone.querySelector("[data-color_text]").classList.add("text-light");
+        //clone.querySelector("[data-color]").classList.add("bg-warning");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
     }
     else if (data.status === 'L') {
         clone.querySelector("[data-status]").innerHTML = "Limpieza";
-        clone.querySelector("[data-color]").classList.add("bg-primary");
-        clone.querySelector("[data-color_text]").classList.add("text-light");
+        //clone.querySelector("[data-color]").classList.add("bg-primary");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
     }
     else if (data.status === 'E') {
         clone.querySelector("[data-status]").innerHTML = "En Espera";
-        clone.querySelector("[data-color]").classList.add("bg-info");
-        clone.querySelector("[data-color_text]").classList.add("text-light");
-    }
+        //clone.querySelector("[data-color]").classList.add("bg-info");
+        //clone.querySelector("[data-color_text]").classList.add("text-light");
+    }*/
     if (data.description == null) {
         clone.querySelector("[data-description]").innerHTML = "Sin descripción";
     } else {
-        clone.querySelector("[data-description]").innerHTML = data.description;
+        clone.querySelector("[data-description]").innerHTML = data.description_short;
     }
 
     var imageElement = clone.querySelector("[data-image]");
@@ -210,7 +207,7 @@ function renderDataTableCard(data) {
 
         var updateButton = document.createElement('button');
         updateButton.setAttribute('type', 'button');
-        updateButton.setAttribute('class', 'btn btn-outline-light');
+        updateButton.setAttribute('class', 'btn btn-outline-primary');
         updateButton.setAttribute('onclick', 'updateRoom(this)');
         updateButton.setAttribute('data-id', data.id);
         updateButton.setAttribute('data-type_room_id', data.type_room_id);
@@ -225,7 +222,7 @@ function renderDataTableCard(data) {
 
         var deleteButton = document.createElement('button');
         deleteButton.setAttribute('type', 'button');
-        deleteButton.setAttribute('class', 'btn btn-outline-dark');
+        deleteButton.setAttribute('class', 'btn btn-outline-danger');
         deleteButton.setAttribute('onclick', 'deleteRoom(this)');
         deleteButton.setAttribute('data-id', data.id);
         deleteButton.innerHTML = '<i class="nav-icon fas fa-trash"></i>';
@@ -238,7 +235,7 @@ function renderDataTableCard(data) {
             buttonsTd.innerHTML = '';
             var restoreButton = document.createElement('button');
             restoreButton.setAttribute('type', 'button');
-            restoreButton.setAttribute('class', 'btn btn-outline-light');
+            restoreButton.setAttribute('class', 'btn btn-outline-warning');
             restoreButton.setAttribute('onclick', 'restoreRoom(this)');
             restoreButton.setAttribute('data-id', data.id);
             restoreButton.innerHTML = '<i class="nav-icon fas fa-check"></i>';

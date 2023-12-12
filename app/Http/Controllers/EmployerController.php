@@ -163,7 +163,7 @@ class EmployerController extends Controller
         }
 
         if ($names) {
-            $query->where('name', $names);
+            $query->where('name', "like" ,"%" . $names."%" );
         }
 
 

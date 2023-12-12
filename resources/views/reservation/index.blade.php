@@ -73,6 +73,9 @@
 
 @section('content')
     <input type="hidden" id="tipo" value="{{ $tipo }}">
+    @if($tipo == 'listaAsignaCuartos')
+        <input type="hidden" id="reservation_id" value="{{ $reservation_id }}">
+    @endif
         <!--begin::Card-->
         <!--begin::Form-->
         <form action="#">
@@ -115,19 +118,41 @@
                         </div>
                         <!--end::Input group-->
                         <!--begin:Action-->
-                        <div>
-                            <!--
-                            <label>&nbsp;</label><br>
-                            <button type="button" id="btn-search" class="btn btn-primary me-5">Buscar</button>
-                            -->
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" id="idle" type="checkbox" />
-                                <label class="form-check-label" for="idle">Ocupados</label>
-                            </div>
-                            <input type="hidden" id="estadoSwitch" name="estadoSwitch" value="D">      
 
+                        <label class="form-label fw-bolder text-dark">&nbsp; Estados :&nbsp;</label>
+
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio1" type="radio" name="inlineRadioOptions" value="D" checked/>
+                                <label class="form-check-label" for="inlineRadio1">D</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio2" type="radio" name="inlineRadioOptions" value="R" />
+                                <label class="form-check-label" for="inlineRadio2">R</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio3" type="radio" name="inlineRadioOptions" value="O" />
+                                <label class="form-check-label" for="inlineRadio3">O</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio4" type="radio" name="inlineRadioOptions" value="L" />
+                                <label class="form-check-label" for="inlineRadio4">L</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio5" type="radio" name="inlineRadioOptions" value="E" />
+                                <label class="form-check-label" for="inlineRadio5">E</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" id="inlineRadio6" type="radio" name="inlineRadioOptions" value="F" />
+                                <label class="form-check-label" for="inlineRadio6">F</label>
+                            </div>
                         </div>
                         <!--end:Action-->
+                        <label class="form-label fw-bolder text-dark">&nbsp; Fecha :&nbsp;</label>
+                        <div>
+                            <input class="form-control datetimepicker" id="dateSearch" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}'/>
+                        </div>
+
                     </div>
                     <!--end::Compact form-->
 
@@ -146,8 +171,8 @@
         <div class="d-flex flex-wrap flex-stack pb-3">
             <!--begin::Title-->
             <div class="d-flex flex-wrap align-items-center my-1">
-                <h5 class=" me-5 my-1"><span id="numberItems"></span> Habitaciones encontradas
-                    <span class="text-gray-400 fs-2">por fecha de creación ↓</span>
+                <h5 class=" me-5 my-1"><span id="numberItems"></span> Habitaciones encontradas por
+                    <span class="text-gray-400 fs-2">Nivel ↓</span>
                 </h5>
             </div>
             <!--end::Title-->
@@ -241,9 +266,13 @@
                                     <p data-status style="display: inline;"></p>
                                 </span>
                             </p>
-                            <button type="button" class="btn btn-outline-primary" onclick="cleanCustomer()">
-                                <i class="fa fa-plus"></i> 
-                            </button>
+                            <p data-buttons>
+                                <!--
+                                <button type="button" class="btn btn-outline-primary" onclick="cleanCustomer()">
+                                    <i class="fa fa-plus"></i> 
+                                </button>
+                                -->
+                            </p>
                         </div>
                     </div>
                     <!--end::Card body-->
@@ -271,6 +300,112 @@
         </template>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <div class="modal fade" id="addReservationDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg mt-6">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Creación de Detalle de Reservación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    
+
+                                        
+                    <form class="row g-3" id="addReservationDetailForm">
+                        @csrf
+                        <h5 class="modal-title" >Reserva</h5>
+                        <div class="col-md-12" hidden>
+                            <label class="form-label" for="idCustomerAdd">ID</label>
+                            <input class="form-control" id="idCustomerAdd" type="text"/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="codeAdd">Codigo de Reserva</label>
+                            <input class="form-control" id="codeAdd" type="text" placeholder="RS-00000" readonly/>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label" for="startdateAdd">Fecha de Inicio</label>
+
+                            <input class="form-control datetimepicker" id="startdateAdd" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' disabled/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="enddateAdd">Fecha de Fin</label>
+               
+                            <input class="form-control datetimepicker" id="enddateAdd" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}' disabled/>
+                            <span id="error-message" style="color: red;"></span>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="statusAdd">Estado</label>
+                            <input class="form-control" id="statusAdd" type="text" placeholder="libre" readonly/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="initialpayAdd">Pago Inicial</label>
+                            <input class="form-control" id="initialpayAdd" type="text" placeholder="100" readonly/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="totalguestAdd">Total de Personas</label>
+                            <input class="form-control" id="totalguestAdd" type="text" placeholder="2" readonly/>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="paymethodAdd">Método de Pago</label>
+                            <select class="form-select" id="paymethodAdd" disabled>
+                                <option selected="selected">Elegir</option>
+                                @foreach($paymethods as $paymethod)
+                                    <option value= "{{$paymethod->id}}">{{$paymethod->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-12" hidden>
+                            <label class="form-label" for="employeeridAdd">Atendido por:</label>
+                            <input class="form-control" id="employeeridAdd" type="text" value={{ $user->id}} readonly/>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label" for="employeernameAdd">Atendido por:</label>
+                            <input class="form-control" id="employeernameAdd" type="text" value= {{$user->name}} readonly />
+                        </div>
+
+                        <h5 class="modal-title" >Detalles de Reserva</h5>
+
+                        <div class="col-12" hidden>
+                            <label class="form-label" for="roomidAdd">ID cuarto</label>
+                            <input class="form-control" id="roomidAdd" type="text" readonly/>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="startHourAdd">Hora de Inicio</label>
+
+                            <input class="form-control datetimepicker" id="startHourAdd" type="text" placeholder="H:i" data-options='{"enableTime":true,"noCalendar":true,"dateFormat":"H:i","disableMobile":true}' />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="endHourAdd">Hora de Fin</label>
+               
+                            <input class="form-control datetimepicker" id="endHourAdd" type="text" placeholder="H:i" data-options='{"enableTime":true,"noCalendar":true,"dateFormat":"H:i","disableMobile":true}' />
+                            <span id="error-message" style="color: red;"></span>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="numguest">Numero de Personas</label>
+                            <input class="form-control" id="numguest" type="text" placeholder="3"/>
+                        </div>
+
+                      </form>
+                </div>
+                <div class="modal-footer">
+                    <input type="hidden" id="id" name="id">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Crear Detalle de Reserva</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
     <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg mt-6">
             <div class="modal-content">
@@ -296,8 +431,8 @@
                     <form class="row g-3" id="reservationForm">
                         @csrf
                         <div class="col-md-12" hidden>
-                            <label class="form-label" for="id">ID</label>
-                            <input class="form-control" id="id" type="text"/>
+                            <label class="form-label" for="idCustomer">ID</label>
+                            <input class="form-control" id="idCustomer" type="text"/>
                         </div>
 
                         <div class="col-md-8 d-none" id="inputName">
@@ -362,6 +497,7 @@
                       </form>
                 </div>
                 <div class="modal-footer">
+                    <input type="hidden" id="id" name="id">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                     <button type="button" class="btn btn-primary">Crear Reservación</button>
                 </div>
