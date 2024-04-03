@@ -93,7 +93,8 @@ Route::middleware(['auth'])->group(function () {
         //  MANTENEDOR: RESERVAS
         Route::prefix('/home/reservas')->group(function (){
             Route::name('reservations.')->group(function () {
-                Route::get('/listar', [ReservationController::class, 'index'])->name('index');
+                Route::get('/listar', [ReservationController::class, 'indexV2'])->name('index');
+                Route::get('/get/data/reservations/{numberPage}', [ReservationController::class, 'getDataGeneralReservations']);
                 Route::get('/get/data/{numberPage}', [ReservationController::class, 'getDataReservation']);
                 Route::get('/lista', [ReservationController::class, 'indexReservations'])->name('indexReservations');
                 Route::get('/get/get/data/{numberPage}', [ReservationController::class, 'getDataReservations']);

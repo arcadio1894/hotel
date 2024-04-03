@@ -29,6 +29,8 @@ class Reservation extends Model
         'status_id'
     ];
 
+    protected $dates = ['start_date', 'end_date'];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class);

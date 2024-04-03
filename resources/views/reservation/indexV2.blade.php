@@ -21,22 +21,10 @@
 @section('openUlReservation')
     show
 @endsection
-@if($tipo=='lista')
-    @section('activeListReservation')
-        active
-    @endsection
-@else
-    @if($tipo=='eliminados')
-        @section('activeDeletedReservation')
-        active
-        @endsection
-    @else
-        @section('activeReportReservation')
-        active
-        @endsection
-    @endif
 
-@endif
+@section('activeListReservation')
+    active
+@endsection
 
 @section('title')
     Reservas
@@ -49,232 +37,211 @@
 @section('page-breadcrumb')
     <ol class="breadcrumb float-sm-right">
         <li class="breadcrumb-item"><a href="{{route('home')}}">Inicio</a></li>
-        <li class="breadcrumb-item active">{{$tipo}} de Reservas</li>
+        <li class="breadcrumb-item active">Listado General de Reservas</li>
     </ol>
 @endsection
 
 @section('page-title')
     <div class="row">
         <div class="col-10">
-            
-                <h5 class="card-title col-7">Administrar {{$tipo}} de los Reservas</h5>
+            <h5 class="card-title col-7">Administrar lista de los Reservas</h5>
         </div>
         <div class="d-flex justify-content-end col-2">
-            @if($tipo == 'lista')
-            <!--
-            <button type="button" class="btn btn-outline-success" onclick="cleanReservation()">
-                <i class="fa fa-plus"></i> Nuevo
-            </button>
-            -->
-            @endif
+
         </div>
     </div>
 @endsection
 
 @section('content')
-    <input type="hidden" id="tipo" value="{{ $tipo }}">
-    @if($tipo == 'listaAsignaCuartos')
-        <input type="hidden" id="reservation_id" value="{{ $reservation_id }}">
-    @endif
+    <!--begin::Card-->
+    <!--begin::Form-->
+    <form action="#">
         <!--begin::Card-->
-        <!--begin::Form-->
-        <form action="#">
-            <!--begin::Card-->
-            <div class="card mb-3">
-                <!--begin::Card body-->
-                <div class="card-body">
-                    <!--begin::Compact form-->
-                    <div class="d-flex align-items-center">
-                        <!--begin::Input group-->
-                        <div class="col-md-4">
-                            <label class="form-label fw-bolder text-dark">Tipos de Habitación: </label>
+        <div class="card mb-3">
+            <!--begin::Card body-->
+            <div class="card-body">
 
-                            <div class="btn-group" role="group" aria-label="Tipo de Habitación">
-                                <button class="btn btn-primary btn-search" type="button" value="">Todas</button>
-                                @foreach( $room_types as $room_type )
-                                    <button class="btn btn-secondary btn-search" type="button" value="{{ $room_type->id }}">{{ $room_type->name }}</button>
-                                @endforeach
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bolder text-dark">&nbsp; Estados :&nbsp;</label>
-
-                            <div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" id="inlineRadio1" type="radio" name="inlineRadioOptions" value="D" checked/>
-                                    <label class="form-check-label" for="inlineRadio1">D</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" id="inlineRadio2" type="radio" name="inlineRadioOptions" value="R" />
-                                    <label class="form-check-label" for="inlineRadio2">R</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" id="inlineRadio3" type="radio" name="inlineRadioOptions" value="O" />
-                                    <label class="form-check-label" for="inlineRadio3">O</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" id="inlineRadio4" type="radio" name="inlineRadioOptions" value="L" />
-                                    <label class="form-check-label" for="inlineRadio4">L</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" id="inlineRadio5" type="radio" name="inlineRadioOptions" value="E" />
-                                    <label class="form-check-label" for="inlineRadio5">E</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" id="inlineRadio6" type="radio" name="inlineRadioOptions" value="F" />
-                                    <label class="form-check-label" for="inlineRadio6">F</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label fw-bolder text-dark">&nbsp; Fecha :&nbsp;</label>
-
-                            <div>
-                                <input class="form-control datetimepicker" id="dateSearch" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}'/>
-                            </div>
-                        </div>
-
+                <!--begin::Input group-->
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label fw-bolder text-dark" for="room_type">Tipos de Habitación: </label>
+                        <select class="form-select" id="room_type">
+                            <option value="0" selected="selected">TODAS</option>
+                            @foreach($room_types as $room_type)
+                                <option value= "{{$room_type->id}}">{{ strtoupper($room_type->name)}}</option>
+                            @endforeach
+                        </select>
                     </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bolder text-dark" for="state">&nbsp; Estados :&nbsp;</label>
+                        <select class="form-select" id="state">
+                            @foreach($arrayStates as $state)
+                                @if ($state['value'] == 'd')
+                                    <option value= "{{$state['value']}}" selected="selected">{{$state['display']}}</option>
+                                @else
+                                    <option value= "{{$state['value']}}">{{$state['display']}}</option>
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-bolder text-dark" for="dateSearch">&nbsp; Fecha :&nbsp;</label>
 
+                        <div>
+                            <input class="form-control datetimepicker" id="dateSearch" type="text" placeholder="dd/mm/yy" data-options='{"disableMobile":true}'/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-bolder text-dark" for="dateSearch2">&nbsp; Hora :&nbsp;</label>
+
+                        <div>
+                            <input class="form-control datetimepicker2" id="dateSearch2" type="text"/>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-bolder text-dark" for="dateSearch">&nbsp;</label><br>
+
+                        <button class="btn btn-primary" id="btn-search">Buscar</button>
+                    </div>
+                </div>
+
+            </div>
+            <!--end::Card body-->
+        </div>
+        <!--end::Card-->
+    </form>
+    <!--end::Form-->
+
+    <!--begin::Toolbar-->
+    <div class="d-flex flex-wrap flex-stack pb-3">
+        <!--begin::Title-->
+        <div class="d-flex flex-wrap align-items-center my-1">
+            <h5 class=" me-5 my-1"><span id="numberItems"></span> Habitaciones encontradas por
+                <span class="text-gray-400 fs-2">Nivel ↓</span>
+            </h5>
+        </div>
+        <!--end::Title-->
+    </div>
+    <!--end::Toolbar-->
+
+    <!--begin::Tab Content-->
+    <div class="tab-content">
+        <!--begin::Tab pane-->
+
+        <!--begin::Row-->
+        <div class="row" id="body-card">
+
+        </div>
+        <!--end::Row-->
+
+        <!--begin::Pagination-->
+        <div class="d-flex flex-stack flex-wrap pt-1">
+            <div class="fw-bold text-gray-700" id="textPagination"></div>
+            <!--begin::Pages-->
+            <ul class="pagination" style="margin-left: auto" id="pagination">
+
+            </ul>
+            <!--end::Pages-->
+        </div>
+        <!--end::Pagination-->
+    </div>
+    <!--end::Tab Content-->
+
+    <template id="previous-page">
+        <li class="page-item previous">
+            <a href="#" class="page-link" data-item>
+                <i class="previous"></i>
+            </a>
+        </li>
+    </template>
+
+    <template id="item-page">
+        <li class="page-item" data-active>
+            <a href="#" class="page-link" data-item="">5</a>
+        </li>
+    </template>
+
+    <template id="next-page">
+        <li class="page-item next">
+            <a href="#" class="page-link" data-item>
+                <i class="next"></i>
+            </a>
+        </li>
+    </template>
+
+    <template id="disabled-page">
+        <li class="page-item disabled">
+            <span class="page-link">...</span>
+        </li>
+    </template>
+
+    <template id="item-card">
+        <!--begin::Col-->
+        <!--<div class="col-md-4 col-xxl-4">-->
+        <div class="col-12 col-sm-6 col-md-3 pb-4">
+            <!--begin::Card-->
+                <!--begin::Card body-->
+                <div class="card">
+                    <!--<img src="https://images.unsplash.com/photo-1579705790929-7b93d00463f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" class="card-img-top" alt="...">-->
+                    <div class="card-header" >
+                        <h5 class="card-title">
+                            <span style="display: inline;">
+                                Habitación
+                                <p data-number style="display: inline;"></p>
+                                <p data-room_type_name style="display: inline;"></p>
+                                <p data-room_type_id hidden></p>
+                            </span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Descripción de la habitación aquí...
+                        <p data-id hidden></p>
+                            <span style="display: inline;">
+                                Nivel:
+                                <p data-level style="display: inline;"></p>
+                            </span>
+                        </p>
+                        <p class="card-text">
+                            <p data-id hidden></p>
+                            <span style="display: inline;">
+                                Estado:
+                                <p data-status style="display: inline;"></p>
+                            </span>
+                        </p>
+                        <p class="card-text">
+                            <p data-id hidden></p>
+                            <span style="display: inline;">
+                                    Tiempo Faltante:
+                                <p data-time style="display: inline;"></p>
+                            </span>
+                        </p>
+                        <p data-buttons>
+                            <!--
+                            <button type="button" class="btn btn-outline-primary" onclick="cleanCustomer()">
+                                <i class="fa fa-plus"></i>
+                            </button>
+                            -->
+                        </p>
+                    </div>
                 </div>
                 <!--end::Card body-->
-            </div>
             <!--end::Card-->
-        </form>
-        <!--end::Form-->
-
-
-        <!--begin::Toolbar-->
-        <div class="d-flex flex-wrap flex-stack pb-3">
-            <!--begin::Title-->
-            <div class="d-flex flex-wrap align-items-center my-1">
-                <h5 class=" me-5 my-1"><span id="numberItems"></span> Habitaciones encontradas por
-                    <span class="text-gray-400 fs-2">Nivel ↓</span>
-                </h5>
-            </div>
-            <!--end::Title-->
         </div>
-        <!--end::Toolbar-->
+        <!--end::Col-->
+    </template>
 
-        <!--begin::Tab Content-->
-        <div class="tab-content">
-                    <!--begin::Tab pane-->
-            <div id="kt_project_users_card_pane" class="tab-pane fade show active">
-                <!--begin::Row-->
-                <div class="row g-9 g-xl-6" id="body-card">
-
-
-                </div>
-                <!--end::Row-->
-            </div>
-
-            <!--begin::Pagination-->
-            <div class="d-flex flex-stack flex-wrap pt-1">
-                <div class="fw-bold text-gray-700" id="textPagination"></div>
-                <!--begin::Pages-->
-                <ul class="pagination" style="margin-left: auto" id="pagination">
-
-                </ul>
-                <!--end::Pages-->
-            </div>
-            <!--end::Pagination-->
-        </div>
-        <!--end::Tab Content-->
-
-        <template id="previous-page">
-            <li class="page-item previous">
-                <a href="#" class="page-link" data-item>
-                    <i class="previous"></i>
-                </a>
-            </li>
-        </template>
-
-        <template id="item-page">
-            <li class="page-item" data-active>
-                <a href="#" class="page-link" data-item="">5</a>
-            </li>
-        </template>
-
-        <template id="next-page">
-            <li class="page-item next">
-                <a href="#" class="page-link" data-item>
-                    <i class="next"></i>
-                </a>
-            </li>
-        </template>
-
-        <template id="disabled-page">
-            <li class="page-item disabled">
-                <span class="page-link">...</span>
-            </li>
-        </template>
-
-
-        <template id="item-card">
-            <!--begin::Col-->
-            <!--<div class="col-md-4 col-xxl-4">-->
-            <div class="col-md-3">
-                <!--begin::Card-->
-                    <!--begin::Card body-->
-                    <div class="card bg-success" style="width: 22rem;">
-                        <!--<img src="https://images.unsplash.com/photo-1579705790929-7b93d00463f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80" class="card-img-top" alt="...">-->
-                        <div class="card-body">
-                            <h5 class="card-title">
-                                <span style="display: inline;">
-                                    Habitación 
-                                    <p data-number style="display: inline;"></p> 
-                                    - 
-                                    <p data-room_type_name style="display: inline;"></p>
-                                    <p data-room_type_id hidden></p>
-                                </span>
-                            </h5>
-
-                            <p class="card-text">Descripción de la habitación aquí...
-                                    <p data-id hidden></p>
-                                <span style="display: inline;">
-                                    Nivel: 
-                                    <p data-level style="display: inline;"></p>
-                                </span>
-                            </p>
-                            <p class="card-text">
-                                <p data-id hidden></p>
-                                <span style="display: inline;">
-                                    Estado: 
-                                    <p data-status style="display: inline;"></p>
-                                </span>
-                            </p>
-                            <p data-buttons>
-                                <!--
-                                <button type="button" class="btn btn-outline-primary" onclick="cleanCustomer()">
-                                    <i class="fa fa-plus"></i> 
-                                </button>
-                                -->
-                            </p>
-                        </div>
-                    </div>
-                    <!--end::Card body-->
-                <!--end::Card-->
-            </div>
-            <!--end::Col-->
-        </template>
-
-        <template id="item-table">
-            <!--begin::Col-->
-            <tr>
-                <td data-id></td>
-                <td data-room_type_id></td>
-                <td data-room_type_name></td>
-                <td data-level></td>
-                <td data-number></td>
-                <td data-status></td>
-                @if($tipo=='lista' or $tipo =='eliminados')
-                <td class="text-end" data-buttons>
-
-                </td>
-                @endif
-            </tr>
-            <!--end::Col-->
-        </template>
+    <template id="item-table">
+        <!--begin::Col-->
+        <tr>
+            <td data-id></td>
+            <td data-room_type_id></td>
+            <td data-room_type_name></td>
+            <td data-level></td>
+            <td data-number></td>
+            <td data-status></td>
+        </tr>
+        <!--end::Col-->
+    </template>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="modal fade" id="addReservationDetailModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -380,8 +347,6 @@
             </div>
         </div>
     </div>
-
-
 
     <div class="modal fade" id="reservationModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg mt-6">
@@ -498,6 +463,19 @@
     <script>
         var csrfToken = "{{ csrf_token() }}";
     </script>
-    <script src="{{ asset('js/reservation/all.js') }}"></script>
-    <script src="{{asset('js/reservation/index.js')}}"></script>
+    <script>
+        flatpickr("#dateSearch", {
+            defaultDate: "today",
+            dateFormat: "d/m/Y"
+        });
+        var now = new Date();
+        flatpickr("#dateSearch2", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: false,
+            defaultDate: now,
+        });
+    </script>
+    <script src="{{asset('js/reservation/indexV2.js')}}"></script>
 @endsection

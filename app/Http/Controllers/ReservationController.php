@@ -9,6 +9,8 @@ use App\Models\ReservationDetail;
 use App\Models\Room;
 use App\Models\Customer;
 
+use App\Models\RoomCleaning;
+use App\Models\RoomOut;
 use App\Models\RoomType;
 use App\Models\Season;
 use Carbon\Carbon;
@@ -19,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 class ReservationController extends Controller
 {
 
-    function indexReservations(){
+    public function indexReservations(){
         $tipo='lista';
         $paymethods = DB::table('paymethods')->get();
         $documentTypes = DB::table('document_types')->get();
@@ -200,9 +202,7 @@ class ReservationController extends Controller
         return view('reservation.index', compact('tipo','room_types','paymethods','user','reservation_id'));
     }
 
-    
-
-    function index(){
+    public function index(){
         $tipo='lista';
         $room_types = DB::table('room_types')->get()/*->pluck('name')->toArray()*/;
         $paymethods = DB::table('paymethods')->get();
@@ -214,6 +214,348 @@ class ReservationController extends Controller
         return view('reservation.index', compact('tipo','room_types','paymethods','user'));
     }
 
+    public function indexV2(){
+        $tipo='lista';
+        $room_types = DB::table('room_types')->get()/*->pluck('name')->toArray()*/;
+        $paymethods = DB::table('paymethods')->get();
+        $usuario = Auth::user();
+        $user = (object)[
+            "id" => $usuario->id,
+            "name" => $usuario->name,
+        ];
+        $arrayStates = [
+            ["value" => "d", "display" => "DISPONIBLE"],
+            ["value" => "r", "display" => "RESERVADA"],
+            ["value" => "o", "display" => "OCUPADA"],
+            ["value" => "l", "display" => "LIMPIEZA"],
+            ["value" => "f", "display" => "FUERA DE SERVICIO"]
+        ];
+        return view('reservation.indexV2', compact('tipo','room_types','paymethods','user', 'arrayStates'));
+    }
+
+    public function getDataGeneralReservations(Request $request, $pageNumber = 1)
+    {
+        $perPage = 12;
+
+        $room_type = $request->input('room_type');
+        $state = $request->input('state');
+        $date = $request->input('date');
+        $hour = $request->input('hour');
+        $fechaFormateada = Carbon::createFromFormat('d/m/Y H:i', $date . ' ' . $hour)->format('Y-m-d H:i:s');
+
+        //dd($request);
+
+        // Logica para tomar todas las habitaciones por tipo de habitacion
+        if ( $room_type == 0 )
+        {
+            $rooms = Room::all();
+        } else {
+            $rooms = Room::where('room_type_id', $room_type)->get();
+        }
+
+        $habitaciones = null;
+
+        switch ($state) {
+            case 'd':
+                // TODO: Tomar las disponibles para la fecha actual
+                // Reservaciones ocupadas en la fecha indicadas
+                /*$reservations = Reservation::whereDate('start_date', '<=', $fechaFormateada)
+                    ->whereDate('end_date', '>=', $fechaFormateada)
+                    ->whereIn('status_id', [1, 2]) // Ocupada
+                    ->with('details') // Cargar la relación 'details'
+                    ->get();*/
+                $reservations = Reservation::where(function ($query) use ($fechaFormateada) {
+                    $query->where('start_date', '<=', $fechaFormateada)
+                        ->where('end_date', '>=', $fechaFormateada);
+                })
+                    ->whereIn('status_id', [1, 2]) // Ocupada
+                    ->with('details') // Cargar la relación 'details'
+                    ->get();
+
+                // Habitaciones en limpieza para esa fecha, Agregar la hora
+                /*$roomsCleanings = RoomCleaning::whereDate('date_start', '<=', $fechaFormateada)
+                    ->whereDate('date_end', '>=', $fechaFormateada)
+                    ->pluck('room_id')
+                    ->toArray();*/
+
+                // Habitaciones en fuera de limpieza
+                /*$roomsOuts = RoomOut::whereDate('date_start', '<=', $fechaFormateada)
+                    ->whereDate('date_end', '>=', $fechaFormateada)
+                    ->pluck('room_id')
+                    ->toArray();*/
+                $roomsOuts = RoomOut::where(function ($query) use ($fechaFormateada) {
+                    $query->where('date_start', '<=', $fechaFormateada)
+                        ->where('date_end', '>=', $fechaFormateada);
+                })
+                    ->pluck('room_id')
+                    ->toArray();
+
+                $roomIds = collect([]);
+
+                $reservationRoomIds = $reservations->flatMap(function ($reservation) {
+                    return $reservation->details->pluck('room_id');
+                });
+
+                $roomIds = $roomIds->merge($reservationRoomIds)/*->merge($roomsCleanings)*/->merge($roomsOuts);
+
+                // Eliminar duplicados
+                $roomIds = $roomIds->unique()->values();
+
+                $habitaciones = $rooms->reject(function ($room) use ($roomIds) {
+                    return in_array($room->id, $roomIds->toArray());
+                });
+
+                // TODO: Verificar fecha y hora en todas las habitaciones
+
+                break;
+            case 'r':
+                // TODO: Tomar las reservadas para la fecha actual
+                /*$reservations = Reservation::whereDate('start_date', '<=', $fechaFormateada)
+                    ->whereDate('end_date', '>=', $fechaFormateada)
+                    ->whereIn('status_id', [1])
+                    ->with('details') // Cargar la relación 'details'
+                    ->get();*/
+                $reservations = Reservation::where(function ($query) use ($fechaFormateada) {
+                    $query->where('start_date', '<=', $fechaFormateada)
+                        ->where('end_date', '>=', $fechaFormateada);
+                })
+                    ->whereIn('status_id', [1])
+                    ->with('details') // Cargar la relación 'details'
+                    ->get();
+                $roomIds = $reservations->flatMap(function ($reservation) {
+                    return $reservation->details->pluck('room_id');
+                });
+
+                // Eliminar duplicados
+                $roomIds = $roomIds->unique()->values();
+
+                $habitaciones = $rooms->whereIn('id', $roomIds->toArray());
+                break;
+            case 'o':
+                // TODO: Tomar las disponibles para la fecha actual
+                /*$reservations = Reservation::whereDate('start_date', '<=', $fechaFormateada)
+                    ->whereDate('end_date', '>=', $fechaFormateada)
+                    ->whereIn('status_id', [2])
+                    ->with('details') // Cargar la relación 'details'
+                    ->get();*/
+                $reservations = Reservation::where(function ($query) use ($fechaFormateada) {
+                    $query->where('start_date', '<=', $fechaFormateada)
+                        ->where('end_date', '>=', $fechaFormateada);
+                })
+                    ->whereIn('status_id', [2])
+                    ->with('details') // Cargar la relación 'details'
+                    ->get();
+                $roomIds = $reservations->flatMap(function ($reservation) {
+                    return $reservation->details->pluck('room_id');
+                });
+
+                // Eliminar duplicados
+                $roomIds = $roomIds->unique()->values();
+
+                $habitaciones = $rooms->whereIn('id', $roomIds->toArray());
+                break;
+            case 'l':
+                // TODO: Tomar las en limpieza para la fecha actual
+                /*$roomsCleanings = RoomCleaning::whereDate('date_start', '<=', $fechaFormateada)
+                    ->whereDate('date_end', '>=', $fechaFormateada)
+                    ->pluck('room_id')
+                    ->toArray();*/
+                $roomsCleanings = RoomCleaning::where(function ($query) use ($fechaFormateada) {
+                    $query->where('date_start', '<=', $fechaFormateada)
+                        ->where('date_end', '>=', $fechaFormateada);
+                })
+                    ->pluck('room_id')
+                    ->toArray();
+                $habitaciones = $rooms->whereIn('id', $roomsCleanings);
+                break;
+            case 'f':
+                // TODO: Tomar las en limpieza para la fecha actual
+                /*$roomsOuts = RoomOut::whereDate('date_start', '<=', $fechaFormateada)
+                    ->whereDate('date_end', '>=', $fechaFormateada)
+                    ->pluck('room_id')
+                    ->toArray();*/
+                $roomsOuts = RoomOut::where(function ($query) use ($fechaFormateada) {
+                    $query->where('date_start', '<=', $fechaFormateada)
+                        ->where('date_end', '>=', $fechaFormateada);
+                })
+                    ->pluck('room_id')
+                    ->toArray();
+                $habitaciones = $rooms->whereIn('id', $roomsOuts);
+                break;
+            default:
+                echo "La opción no coincide con ninguna de las opciones esperadas";
+        }
+
+        $totalFilteredRecords = $habitaciones->count();
+        $totalPages = ceil($totalFilteredRecords / $perPage);
+
+        $startRecord = ($pageNumber - 1) * $perPage + 1;
+        $endRecord = min($totalFilteredRecords, $pageNumber * $perPage);
+
+        $finalRooms = $habitaciones->slice(($pageNumber - 1) * $perPage, $perPage);
+
+        $arrayRooms = [];
+
+        foreach ( $finalRooms as $room )
+        {
+            $status = $this->getStateRoom($room, $fechaFormateada);
+            $tiempoParaDisponible = 0;
+
+            $estado = "";
+            $colorHeader = "";
+            switch ($status) {
+                case "d":
+                    $estado = "Disponible";
+                    $colorHeader = "bg-success";
+                    break;
+                case "r":
+                    $estado = "Reservada";
+                    $colorHeader = "bg-warning";
+                    break;
+                case "o":
+                    $estado = "Ocupada";
+                    $colorHeader = "bg-danger";
+                    $tiempoParaDisponible = $this->getTimeForEnableOcupada($room, $fechaFormateada);
+                    break;
+                case "l":
+                    $estado = "En limpieza";
+                    $colorHeader = "bg-primary";
+                    $tiempoParaDisponible = $this->getTimeForEnable($room, $fechaFormateada);
+                    break;
+                case "f":
+                    $estado = "Fuera de servicio";
+                    $colorHeader = "bg-secondary";
+                    break;
+            }
+
+            array_push($arrayRooms, [
+                "id" => $room->id,
+                "room_type_id" => $room->room_type_id,
+                "room_type_name" => $room->name,
+                "level" => $room->level,
+                "number" => $room->number,
+                "status" => $status,
+                "textStatus" => $estado,
+                "colorHeader" => $colorHeader,
+                "tiempoParaDisponible" => $tiempoParaDisponible
+            ]);
+        }
+
+        $pagination = [
+            'currentPage' => (int)$pageNumber,
+            'totalPages' => (int)$totalPages,
+            'startRecord' => $startRecord,
+            'endRecord' => $endRecord,
+            'totalRecords' => $totalFilteredRecords,
+            'totalFilteredRecords' => $totalFilteredRecords
+        ];
+
+        return ['data' => $arrayRooms, 'pagination' => $pagination];
+    }
+
+    public function getTimeForEnableOcupada($room, $fechaFormateada)
+    {
+        $reservationDetail = ReservationDetail::with(['reservation' => function($query) {
+            $query->where('status_id', 2);
+        }])
+            ->where('room_id', $room->id)
+            ->whereHas('reservation', function($query) {
+                $query->where('status_id', 2);
+            })
+            ->first();
+
+        $fechaTermino = Carbon::parse($reservationDetail->reservation->end_date);
+
+        $fechaActual = Carbon::parse($fechaFormateada);
+
+        $diferenciaMinutos = $fechaActual->diff($fechaTermino);
+
+        $formatoDiferencia = '%a días %h horas %i minutos';
+        $horasMinutos = $diferenciaMinutos->format($formatoDiferencia);
+
+        return $horasMinutos;
+    }
+
+    public function getTimeForEnable($room, $fechaFormateada)
+    {
+        $roomCleaning = RoomCleaning::where('room_id', $room->id)
+            ->where(function ($query) use ($fechaFormateada) {
+                $query->where('date_start', '<=', $fechaFormateada)
+                    ->where('date_end', '>=', $fechaFormateada);
+            })
+            ->first();
+
+        $fechaTermino = Carbon::parse($roomCleaning->date_end);
+
+        $fechaActual = Carbon::parse($fechaFormateada);
+
+        $diferenciaMinutos = $fechaActual->diff($fechaTermino);
+
+        $formatoDiferencia = '%a días %h horas %i minutos';
+        $horasMinutos = $diferenciaMinutos->format($formatoDiferencia);
+
+        return $horasMinutos;
+    }
+
+    public function getStateRoom($room, $fechaFormateada)
+    {
+        $roomOuts = RoomOut::where('room_id', $room->id)
+            ->where(function ($query) use ($fechaFormateada) {
+                $query->where('date_start', '<=', $fechaFormateada)
+                    ->where('date_end', '>=', $fechaFormateada);
+            })
+            ->first();
+        if ($roomOuts) {
+            return "f";
+        }
+
+        $roomCleanings = RoomCleaning::where('room_id', $room->id)
+            ->where(function ($query) use ($fechaFormateada) {
+                $query->where('date_start', '<=', $fechaFormateada)
+                    ->where('date_end', '>=', $fechaFormateada);
+            })
+            ->first();
+        if ($roomCleanings) {
+            return "l";
+        }
+
+        $reservations = Reservation::where(function ($query) use ($fechaFormateada) {
+            $query->where('start_date', '<=', $fechaFormateada)
+                ->where('end_date', '>=', $fechaFormateada);
+        })
+            ->whereIn('status_id', [2])
+            ->with('details') // Cargar la relación 'details'
+            ->get();
+        $roomIds = $reservations->flatMap(function ($reservation) {
+            return $reservation->details->pluck('room_id');
+        });
+
+        $roomIds = $roomIds->unique()->values();
+
+        if ($roomIds->contains($room->id)) {
+            return "o";
+        }
+
+        $reservations2 = Reservation::where(function ($query) use ($fechaFormateada) {
+            $query->where('start_date', '<=', $fechaFormateada)
+                ->where('end_date', '>=', $fechaFormateada);
+        })
+            ->whereIn('status_id', [1])
+            ->with('details') // Cargar la relación 'details'
+            ->get();
+        $roomIds2 = $reservations2->flatMap(function ($reservation) {
+            return $reservation->details->pluck('room_id');
+        });
+
+        $roomIds2 = $roomIds2->unique()->values();
+
+        if ($roomIds2->contains($room->id)) {
+            return "r";
+        }
+
+        return "d";
+    }
+    
     public function getDataReservation(Request $request, $pageNumber = 1)
     {
         $perPage = 12;
@@ -323,7 +665,7 @@ class ReservationController extends Controller
 
     }
 
-        // Ejemplo de búsqueda de cliente en el controlador
+    // Ejemplo de búsqueda de cliente en el controlador
     public function buscarCliente(Request $request)
     {
         $dni = $request->input('dni');
@@ -367,7 +709,6 @@ class ReservationController extends Controller
         return view('reservation.create', compact('tipo','paymethods','user', 'documentTypes', 'states', 'roomTypes'));
 
     }
-
 
     function limitarTexto($texto, $longitud = 50) {
         if (strlen($texto) > $longitud) {

@@ -113,20 +113,20 @@ class UserController extends Controller
     {
         try {
             DB::beginTransaction();
-        $user = new User;
+            $user = new User;
 
-        $user->name = $request->name.' '.$request->lastname;
-        $user->email = $request->email;
-        $user->password = bcrypt('hotel123');
-        $user->save();
-        $roleId = $request->input('role_id');
-        $role = Role::find($roleId);
+            $user->name = $request->name.' '.$request->lastname;
+            $user->email = $request->email;
+            $user->password = bcrypt('hotel123');
+            $user->save();
+            $roleId = $request->input('role_id');
+            $role = Role::find($roleId);
 
 
-        if ($role) {
-            $user->assignRole($role->name);
+            if ($role) {
+                $user->assignRole($role->name);
 
-        }
+            }
 
             if ($role && $role->name === 'customer') {
                 // Verifica las condiciones antes de crear el cliente
@@ -193,6 +193,7 @@ class UserController extends Controller
 
     public function update(Request $request)
     {
+        dd($request);
         return DB::transaction(function () use ($request) {
             $user = User::find($request->get('id'));
 
@@ -200,31 +201,30 @@ class UserController extends Controller
                 return response()->json(['error' => 'Usuario no encontrado'], 404);
             }
 
-            $user->name = $request->input('name');
+            $user->name = $request->input('name').' '.$request->input('lastname');
             $user->email = $request->input('email');
             $roleId = $request->input('role_id');
             $role = Role::find($roleId);
             $user->save();
 
-
-                if ($role->name === 'customer') {
-                    $customer = Customer::where('user_id', $user->id)->first();
-                    if ($customer) {
-                        $customer->name = $request->input('name');
-                        $customer->lastname = $request->input('lastname');
-                        $customer->email = $user->email;
-                        $customer->save();
-                    }
-                } elseif($role && $role->name !== 'customer')  {
-                    $employer = Employer::where('user_id', $user->id)->first();
-                    if ($employer) {
-                        $employer->name = $request->input('name');
-                        $employer->lastname = $request->input('lastname');
-                        $employer->email = $user->email;
-
-                        $employer->save();
-                    }
+            if ($role->name === 'customer') {
+                $customer = Customer::where('user_id', $user->id)->first();
+                if ($customer) {
+                    $customer->name = $request->input('name');
+                    $customer->lastname = $request->input('lastname');
+                    $customer->email = $user->email;
+                    $customer->save();
                 }
+            } elseif($role && $role->name !== 'customer')  {
+                $employer = Employer::where('user_id', $user->id)->first();
+                if ($employer) {
+                    $employer->name = $request->input('name');
+                    $employer->lastname = $request->input('lastname');
+                    $employer->email = $user->email;
+
+                    $employer->save();
+                }
+            }
 
             return response()->json(['success' => 'Usuario actualizado correctamente']);
         });

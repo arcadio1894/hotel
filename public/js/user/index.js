@@ -24,7 +24,7 @@ function save() {
                 icon: 'success',
                 title: response.success,
             }).then(function () {
-                window.location.href = "/home/users/listar";
+                //window.location.href = "/home/users/listar";
             });
         },
         error: function (xhr) {
@@ -46,7 +46,7 @@ function save() {
                     icon: 'error',
                     title: 'Hubo un error al guardar'
                 }).then(function () {
-                    window.location.href = "/home/users/listar";
+                    //window.location.href = "/home/users/listar";
                 });
             }
         }
