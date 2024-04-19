@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class StoreReservationRequest extends FormRequest
 {
@@ -11,8 +13,9 @@ class StoreReservationRequest extends FormRequest
         return true;
     }
 
-    public function rules()
+    public function rules(Request $request)
     {
+        $customerId = $request->input('idCustomer');
         return [
             'code' => 'required|string',
             'idCustomer' => 'nullable|numeric',
@@ -21,7 +24,14 @@ class StoreReservationRequest extends FormRequest
             'name' => 'required_if:idCustomer,null|string|max:255',
             'lastname' => 'nullable|string|max:255',
             'phone' => 'required_if:idCustomer,null|numeric|digits_between:9,9',
-            'email' => 'required_if:idCustomer,null|email|unique:customers|max:255',
+            'email' => [
+                'required_if:idCustomer,null',
+                'email',
+                Rule::unique('customers')->ignore($customerId)->where(function ($query) use ($customerId) {
+                    return $customerId !== null;
+                }),
+                'max:255',
+            ],
             'birth' => 'required_if:idCustomer,null|date',
             'address' => 'required_if:idCustomer,null|string|min:8|max:255',
             'employeerid' => 'required|numeric',

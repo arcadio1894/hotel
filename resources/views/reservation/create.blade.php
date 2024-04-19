@@ -27,22 +27,11 @@
 @section('openUlReservation')
     show
 @endsection
-@if($tipo=='lista')
-    @section('activeListReservations')
-        active
-    @endsection
-@else
-    @if($tipo=='eliminados')
-        @section('activeDeletedReservations')
-        active
-        @endsection
-    @else
-        @section('activeReportReservations')
-        active
-        @endsection
-    @endif
 
-@endif
+@section('activeListReservations')
+    active
+@endsection
+
 
 @section('title')
     Reserva
@@ -170,6 +159,7 @@
                 <input class="form-control"  type="time" id="startTime" value="<?php echo date('H:i'); ?>">
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-4">
                 <label class="form-label" for="total_guest">Número de Personas <span class="text-danger">*</span></label>

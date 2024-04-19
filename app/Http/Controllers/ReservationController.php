@@ -130,12 +130,13 @@ class ReservationController extends Controller
 
     public function storeReservations(StoreReservationRequest $request)
     {
+        //dd($request);
         try {
 
             DB::beginTransaction();
             $reservacion = new Reservation();
             $reservacion->code = $request->input('code');
-            if ($request->input('idCustomer')) {
+            if ($request->input('idCustomer') != "" || $request->input('idCustomer') != null) {
                 $reservacion->customer_id = $request->input('idCustomer');
             } else {
                 $customer = new Customer();
@@ -723,6 +724,7 @@ class ReservationController extends Controller
         $reservationType = $request->input('reservationType');
         $total_guest= $request->input('total_guest');
         $selectRoomType= $request->input('selectRoomType');
+        $occupiedRooms = [];
 
         if ($reservationType==1){
             $selectedDate = $request->input('selectedDate');
@@ -738,7 +740,24 @@ class ReservationController extends Controller
             $endDateTime = Carbon::parse($endDate . ' 12:00:00');
         }
 
-        $occupiedRooms = ReservationDetail::whereHas('reservation', function ($query) use ($startDateTime, $endDateTime) {
+        $reservations = Reservation::where(function ($query) use ($startDateTime, $endDateTime) {
+            $query->where('start_date', '<=', $startDateTime)
+                ->where('end_date', '>=', $endDateTime);
+        })
+            ->whereIn('status_id', [2])
+            ->with('details') // Cargar la relación 'details'
+            ->get();
+
+        $roomIds = $reservations->flatMap(function ($reservation) {
+            return $reservation->details->pluck('room_id');
+        });
+
+
+
+        // Eliminar duplicados
+        $occupiedRooms = $roomIds->unique()->values(); // Habitaciones ocupadas
+
+        /*$occupiedRooms = ReservationDetail::whereHas('reservation', function ($query) use ($startDateTime, $endDateTime) {
             $query->where(function ($q) use ($startDateTime, $endDateTime) {
                 $q->whereBetween('start_date', [$startDateTime, $endDateTime])
                     ->orWhereBetween('end_date', [$startDateTime, $endDateTime])
@@ -747,7 +766,8 @@ class ReservationController extends Controller
                             ->where('end_date', '>', $endDateTime);
                     });
             });
-        })->pluck('room_id')->toArray();
+        })->pluck('room_id')->toArray();*/
+
 
         if($selectRoomType){
             $roomsInitial=Room::where('room_type_id', $selectRoomType)->get();
@@ -757,8 +777,9 @@ class ReservationController extends Controller
         }
 
         $availableRooms = $roomsInitial->reject(function ($room) use ($occupiedRooms) {
-            return in_array($room->id, $occupiedRooms);
+            return in_array($room->id, $occupiedRooms->toArray());
         });
+
 
         $season = Season::whereBetween('start_date', [$startDateTime, $endDateTime])
             ->orWhereBetween('end_date', [$startDateTime, $endDateTime])
