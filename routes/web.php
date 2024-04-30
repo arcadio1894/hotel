@@ -109,6 +109,10 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/lista/checkout/{reservation_id}', [CheckInOutController::class, 'confirmCheckout'])->name('confirmCheckout');
                 Route::get('/buscar-cliente',[ReservationController::class, 'buscarCliente']);
                 Route::post('/generar/costo',[ReservationController::class, 'generarCosto']);
+                Route::get('/crear/nueva/reserva/habitacion/{room_id}', [ReservationController::class, 'createByRoom'])->name('create.by.room');
+                Route::post('/generar/costo/por/habitacion',[ReservationController::class, 'generarCostoPorHabitacion']);
+                Route::post('/guardar/reserva/por/habitacion', [ReservationController::class, 'storeReservationByRoom'])->name('storeReservationByRoom');
+
             });
         });
 

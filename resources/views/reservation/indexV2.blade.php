@@ -191,6 +191,7 @@
                                 <p data-room_type_name style="display: inline;"></p>
                                 <p data-room_type_id hidden></p>
                             </span>
+                            <a href="#" target="_blank" data-button_reservation class="btn btn-light float-end"><i class="far fa-share-square"></i></a>
                         </h5>
                     </div>
                     <div class="card-body">

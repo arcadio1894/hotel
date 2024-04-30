@@ -5,6 +5,8 @@ $(document).ready(function () {
     $(document).on('click', '[data-item]', showData);
     $("#btn-search").on('click', showDataSeach);
 
+
+
 });
 
 
@@ -99,7 +101,7 @@ function renderDataOperations(data) {
     $("#body-card").html('');
     $("#pagination").html('');
     $("#textPagination").html('');
-    $("#textPagination").html('Mostrando '+pagination.startRecord+' a '+pagination.endRecord+' de '+pagination.totalFilteredRecords+' operaciones');
+    $("#textPagination").html('Mostrando '+pagination.startRecord+' a '+pagination.endRecord+' de '+pagination.totalFilteredRecords+' habitaciones');
     $('#numberItems').html('');
     $('#numberItems').html(pagination.totalFilteredRecords);
 
@@ -156,6 +158,9 @@ function renderDataTableCard(data) {
     clone.querySelector("[data-number]").innerHTML = data.number;
     clone.querySelector("[data-status]").innerHTML = data.textStatus;
     clone.querySelector("[data-time]").innerHTML = data.tiempoParaDisponible;
+
+    let url = document.location.origin + '/home/reservas/crear/nueva/reserva/habitacion/' + data.id;
+    clone.querySelector("[data-button_reservation]").setAttribute('href', url);
 
     var header = cardElement.querySelector(".card-header");
     header.classList.add(data.colorHeader);
