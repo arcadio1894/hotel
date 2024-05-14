@@ -112,6 +112,8 @@ Route::middleware(['auth'])->group(function () {
                 Route::get('/crear/nueva/reserva/habitacion/{room_id}', [ReservationController::class, 'createByRoom'])->name('create.by.room');
                 Route::post('/generar/costo/por/habitacion',[ReservationController::class, 'generarCostoPorHabitacion']);
                 Route::post('/guardar/reserva/por/habitacion', [ReservationController::class, 'storeReservationByRoom'])->name('storeReservationByRoom');
+                Route::get('/get/info/payment/{idReservation}', [ReservationController::class, 'getInfoPaymentReservation']);
+                Route::get('/save/payment/reservation/{idReservation}', [ReservationController::class, 'savePaymentReservation']);
 
             });
         });

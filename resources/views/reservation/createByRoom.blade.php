@@ -239,6 +239,7 @@
                     <tfoot>
                     <tr>
                         <th>Total Final:</th>
+                        <input type="hidden" id="totalFinalMonto">
                         <td id="totalFinal">S/. 0.00</td>
                     </tr>
                     </tfoot>

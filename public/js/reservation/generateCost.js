@@ -49,6 +49,7 @@ function generarCosto() {
             }
 
             $("#totalFinal").text("S/. " + response.costoTotal);
+            $("#totalFinalMonto").val(response.costoTotal);
         },
         error: function(error) {
             console.error("Error al calcular el costo: ", error);

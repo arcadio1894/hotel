@@ -7,6 +7,7 @@ use App\Http\Requests\StoreReservationRequest;
 use App\Models\Employer;
 use App\Models\Reservation;
 use App\Models\ReservationDetail;
+use App\Models\ReservationPay;
 use App\Models\Room;
 use App\Models\Customer;
 
@@ -169,12 +170,20 @@ class ReservationController extends Controller
                 $endDateTime = Carbon::parse($endDate . ' 12:00:00');
             }
 
+            $state_paid = 1; // Pago completado
+            if ( $request->input('initialpay') < $request->input('totalpay') )
+            {
+                $state_paid = 0; // Pago con deuda
+            }
+
             $reservacion->employer_id = $request->input('employeerid');
             $reservacion->start_date = $startDateTime;
             $reservacion->end_date = $endDateTime;
             $reservacion->total_guest = $request->input('total_guest');
             $reservacion->paymethod_id = $request->input('paymethod');
             $reservacion->initial_pay = $request->input('initialpay');
+            $reservacion->total_pay = $request->input('totalpay');
+            $reservacion->state_paid = $state_paid;
             $reservacion->status_id = 1;
             $reservacion->save();
             $selectedRooms = $request->input('selectedRooms');
@@ -1060,12 +1069,20 @@ class ReservationController extends Controller
                 $endDateTime = Carbon::parse($endDate . ' 12:00:00');
             }
 
+            $state_paid = 1; // Pago completado
+            if ( $request->input('initialpay') < $request->input('totalpay') )
+            {
+                $state_paid = 0; // Pago con deuda
+            }
+
             $reservacion->employer_id = $request->input('employeerid');
             $reservacion->start_date = $startDateTime;
             $reservacion->end_date = $endDateTime;
             $reservacion->total_guest = $request->input('total_guest');
             $reservacion->paymethod_id = $request->input('paymethod');
             $reservacion->initial_pay = $request->input('initialpay');
+            $reservacion->total_pay = $request->input('totalpay');
+            $reservacion->state_paid = $state_paid;
             $reservacion->status_id = 1;
             $reservacion->save();
             $selectedRooms = $request->input('selectedRooms');
@@ -1114,5 +1131,62 @@ class ReservationController extends Controller
         }
     }
 
+    public function getInfoPaymentReservation($idReservation)
+    {
+        $reservation = Reservation::find($idReservation);
+
+        $total_pay = $reservation->total_pay;
+
+        $initial_pay = $reservation->initial_pay;
+
+        $pagos = ReservationPay::where("reservation_id", $reservation->id)->get();
+
+        $state_paid = $reservation->state_paid;
+
+        $totalPago = $initial_pay;
+
+        if ( isset($pagos) )
+        {
+            foreach ( $pagos as $pago )
+            {
+                $totalPago += $pago->pay;
+            }
+        }
+
+        $missing_pay = $total_pay - $totalPago;
+
+        return response()->json([
+            'initial_pay' => $initial_pay,
+            'total_pay' => $total_pay,
+            'totalPago' => $totalPago,
+            'missing_pay' => $missing_pay,
+            'state_paid' => $state_paid,
+            'idReservation' => $idReservation
+        ]);
+    }
+
+    public function savePaymentReservation(Request $request, $idReservation)
+    {
+        $id_reservation = $request->input('idReservation');
+        $new_pay = $request->input('new_pay');
+
+        try {
+
+            DB::beginTransaction();
+
+            $reservacion = Reservation::find($id_reservation);
+            $reservationPayment = ReservationPay::create([
+                'reservation_id' => $reservacion->id,
+                'pay' => $new_pay,
+                'date_pay' => Carbon::now("America/Lima"),
+            ]);
+
+            DB::commit();
+            return response()->json(['success' => 'Pago registrado con éxito']);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => 'Error al crear el pago. Detalles: ' . $e->getMessage(), 'customError' => true], 500);
+        }
+    }
 
 }

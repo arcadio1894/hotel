@@ -180,6 +180,7 @@ function saveReservations() {
         startTime: $("#startTime").val(),
         paymethod: $("#paymethod").val(),
         initialpay: $("#initialpay").val(),
+        totalpay: $("#totalFinalMonto").val(),
         selectedRooms:selectedRooms,
 
     };

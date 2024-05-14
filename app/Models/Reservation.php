@@ -26,7 +26,9 @@ class Reservation extends Model
         'email',
         'birth',
         'address',
-        'status_id'
+        'status_id',
+        "total_pay",
+        "state_paid"
     ];
 
     protected $dates = ['start_date', 'end_date'];

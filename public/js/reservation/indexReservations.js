@@ -7,9 +7,210 @@ $(document).ready(function () {
     $(document).on('click', '[data-item]', showData);
     $("#btn-search").on('click', showDataSeach);
 
+    $(document).on('click', '[data-pay]', showModalPay);
 
+    $paymodal = $("#payModal");
+
+    $("#btnSavePayment").on('click', savePayment);
 });
 
+var $paymodal;
+
+function savePayment() {
+    var idReservation = $("#idReservation").val();
+    var new_pay = $("#new_pay").val(); // Nuevo pago
+    var missing_pay = $("#missing_pay").val();//Falta pagar
+    var total_pago = $("#total_pago").val(); // Lo que ya pago
+
+    if ( missing_pay <= 0 )
+    {
+        toastr.error("Ya no hay deuda", 'Error', {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "2000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        });
+        return 0;
+    } else {
+        if ( missing_pay < new_pay )
+        {
+            toastr.error("El monto ingresado es mayor a la deuda", 'Error', {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+            return 0;
+        }
+    }
+
+    $.get('/home/reservas/save/payment/reservation/'+idReservation, {
+        idReservation: idReservation,
+        new_pay: new_pay,
+    }, function(data) {
+        toastr.error(data.success, 'Error', {
+            "closeButton": true,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "2000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        });
+
+        $paymodal.modal("hide");
+
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        // Función de error, se ejecuta cuando la solicitud GET falla
+        console.error(textStatus, errorThrown);
+        if (jqXHR.responseJSON.message && !jqXHR.responseJSON.errors) {
+            toastr.error(jqXHR.responseJSON.message, 'Error', {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+        }
+        for (var property in jqXHR.responseJSON.errors) {
+            toastr.error(jqXHR.responseJSON.errors[property], 'Error', {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+        }
+    }, 'json')
+        .done(function() {
+            // Configuración de encabezados
+            var headers = {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            };
+
+            $.ajaxSetup({
+                headers: headers
+            });
+        });
+}
+
+function showModalPay() {
+
+    var idReservation = $(this).attr("data-pay");
+
+    $.get('/home/reservas/get/info/payment/'+idReservation, function(data) {
+
+        $("#idReservation").val(data.idReservation);
+        $("#initial_pay").val(data.initial_pay);
+        $("#total_pay").val(data.total_pay);
+        $("#total_pago").val(data.totalPago);
+        $("#missing_pay").val(data.missing_pay);
+
+    }).fail(function(jqXHR, textStatus, errorThrown) {
+        // Función de error, se ejecuta cuando la solicitud GET falla
+        console.error(textStatus, errorThrown);
+        if (jqXHR.responseJSON.message && !jqXHR.responseJSON.errors) {
+            toastr.error(jqXHR.responseJSON.message, 'Error', {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+        }
+        for (var property in jqXHR.responseJSON.errors) {
+            toastr.error(jqXHR.responseJSON.errors[property], 'Error', {
+                "closeButton": true,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-top-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "2000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            });
+        }
+    }, 'json')
+        .done(function() {
+            // Configuración de encabezados
+            var headers = {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            };
+
+            $.ajaxSetup({
+                headers: headers
+            });
+        });
+
+    $paymodal.modal("show");
+}
 
 function showDataSeach() {
     getDataOperations(1)
@@ -244,6 +445,13 @@ function renderDataTableCard(data) {
             }
         }
     }
+
+    var payButton = document.createElement('button');
+    payButton.setAttribute('type', 'button');
+    payButton.setAttribute('class', 'btn btn-outline-warning');
+    payButton.setAttribute('data-pay', data.id);
+    payButton.innerHTML = '<i class="nav-icon fas fa-comment-dollar"></i>';
+    buttonsTd.appendChild(payButton);
 
     $("#body-table").append(clone);
 

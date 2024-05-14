@@ -435,9 +435,6 @@
         </div>
     </div>
 
-
-
-
     <div class="modal fade" id="checkModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg mt-6">
             <div class="modal-content">
@@ -509,9 +506,58 @@
         </div>
     </div>
 
+    <div class="modal fade" id="payModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg mt-6">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Registro de pagos</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
 
+                    <h5 class="modal-title" id="exampleModalLabel">Pagos de la reservación</h5>
 
-    
+                    <form class="row g-4">
+                        @csrf
+                        <div class="col-md-12" hidden>
+                            <input class="form-control" id="idReservation" type="text">
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="initial_pay">Pago Inicial</label>
+                            <input class="form-control" id="initial_pay" type="text">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="total_pay">Pago Abonado</label>
+                            <input class="form-control" id="total_pago" type="text">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="total_pay">Pago Total</label>
+                            <input class="form-control" id="total_pay" type="text">
+                        </div>
+
+                        <input type="hidden" id="missing_pay" name="missing_pay">
+
+                        <h5 class="modal-title" id="exampleModalLabel">Registrar pago</h5>
+
+                        <div class="col-md-3">
+                            <label class="form-label" for="new_pay">Nuevo pago</label>
+                            <input class="form-control" id="new_pay" type="text">
+                        </div>
+                        <div class="col-md-4">
+                            <label>&nbsp;</label><br>
+                            <button type="button" id="btnSavePayment" class="btn btn-primary">Guardar pago</button>
+                        </div>
+
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <!--<button type="button" class="btn btn-primary">Crear Reservación</button>-->
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 
